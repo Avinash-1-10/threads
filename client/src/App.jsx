@@ -7,9 +7,9 @@ import Header from "./components/Header";
 
 const App = () => {
   return (
-    <Center>
+    <Center flexDirection={"column"}>
+      <Header />
       <Container maxWidth="620px">
-        <Header />
         <Routes>
           <Route path="/:username" element={<UserPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />
