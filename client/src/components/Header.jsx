@@ -11,11 +11,21 @@ import { IoCreateOutline } from "react-icons/io5";
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode(); // Destructuring colorMode and toggleColorMode
   return (
-    <Flex w={"full"} justifyContent={"space-between"} mt={6} mb={12} px={120}>
+    <Flex
+      w={"full"}
+      justifyContent={"space-between"}
+      pt={6}
+      pb={4}
+      px={120}
+      position={"fixed"}
+      top={0}
+      zIndex={60}
+      bg={"#101010"}
+    >
       <FaThreads
         style={{
           color: colorMode === "dark" ? "white" : "black",
-          fontSize: "30px",
+          fontSize: "35px",
           cursor: "pointer",
         }}
         onClick={toggleColorMode}
@@ -30,7 +40,7 @@ const Header = () => {
         <FiSearch />
         <IoCreateOutline />
         <IoMdHeart />
-        <FaUser color="white"/>
+        <FaUser color="white" />
       </Flex>
       <HiOutlineMenuAlt3 fontSize={"28px"} color="gray.light" />
     </Flex>

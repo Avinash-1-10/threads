@@ -13,6 +13,7 @@ import {
   MenuItem,
   Toast,
   useToast,
+  Button,
 } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
@@ -87,14 +88,46 @@ const UserHeader = () => {
             </Box>
           </Flex>
         </Flex>
+        <Button
+          w={"full"}
+          p={1}
+          border={"0.5px solid"}
+          borderColor={"gray.light"}
+          h={"35px"}
+          bg={"inherit"}
+          style={{ fontSize: "14px", padding: "1" }}
+          _hover={{ bg: "inherit"}}
+        >
+          Edit Profile
+        </Button>
         <Flex w={"full"}>
-          <Flex flex={1} borderBottom={"1.5px solid white"} justifyContent={"center"} pb={3} cursor={"pointer"}>
+          <Flex
+            flex={1}
+            borderBottom={"1.5px solid white"}
+            justifyContent={"center"}
+            pb={3}
+            cursor={"pointer"}
+          >
             <Text fontWeight={"bold"}>Threads</Text>
           </Flex>
-          <Flex flex={1} borderBottom={"1px solid gray"} justifyContent={"center"} color={"gray.light"} pb={3} cursor={"pointer"}>
+          <Flex
+            flex={1}
+            borderBottom={"1px solid gray"}
+            justifyContent={"center"}
+            color={"gray.light"}
+            pb={3}
+            cursor={"pointer"}
+          >
             <Text fontWeight={"bold"}>Replies</Text>
           </Flex>
-          <Flex flex={1} borderBottom={"1px solid gray"} justifyContent={"center"} color={"gray.light"} pb={3} cursor={"pointer"}>
+          <Flex
+            flex={1}
+            borderBottom={"1px solid gray"}
+            justifyContent={"center"}
+            color={"gray.light"}
+            pb={3}
+            cursor={"pointer"}
+          >
             <Text fontWeight={"bold"}>Reposts </Text>
           </Flex>
         </Flex>

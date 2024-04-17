@@ -9,7 +9,7 @@ const App = () => {
   return (
     <Center flexDirection={"column"}>
       <Header />
-      <Container maxWidth="620px">
+      <Container maxWidth="620px" mt={"90px"}>
         <Routes>
           <Route path="/:username" element={<UserPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />
