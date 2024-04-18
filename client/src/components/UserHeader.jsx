@@ -57,7 +57,12 @@ const UserHeader = () => {
             <Avatar
               name="Mark Zukerberg"
               src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-              size={"xl"}
+              size={
+                {
+                  base:"lg",
+                  md:"xl"
+                }
+              }
             />
           </Box>
         </Flex>

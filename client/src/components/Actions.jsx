@@ -12,13 +12,13 @@ const Actions = ({ liked, setLiked }) => {
     }
   return (
     <Flex
-      gap={3}
+      gap={4}
       my={2}
       fontSize={"23px"}
       alignItems={"center"}
       onClick={(e) => e.preventDefault()}
     >
-      {liked ? <FaHeart color="#F30B74" onClick={toggleLike}/> : <FaRegHeart onClick={toggleLike}/>}
+      {liked ? <FaHeart color="rgb(237, 73, 86)" onClick={toggleLike}/> : <FaRegHeart onClick={toggleLike}/>}
       <IoChatbubbleOutline />
       <BiRepost fontSize={"30px"} />
       <TbSend />
