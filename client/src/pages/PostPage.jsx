@@ -11,6 +11,7 @@ import {
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Actions";
+import Comment from "../components/Comment";
 
 const PostPage = () => {
   const [liked, setLiked] = useState();
@@ -70,6 +71,10 @@ const PostPage = () => {
         <Button>Get</Button>
       </Flex>
       <Divider my={4} />
+      <Comment/>
+      <Comment/>
+      <Comment/>
+      <Comment/>
     </>
   );
 };

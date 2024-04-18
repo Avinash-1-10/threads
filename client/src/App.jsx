@@ -11,7 +11,7 @@ const App = () => {
   return (
     <Center flexDirection={"column"}>
       <Header />
-      <Container maxWidth="620px" mt={showFullHeader ? "90px" : "75px"}>
+      <Container maxWidth="620px" mt={showFullHeader ? "90px" : "80px"}>
         <Routes>
           <Route path="/:username" element={<UserPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />

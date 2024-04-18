@@ -8,7 +8,7 @@ import Actions from "./Actions";
 const UserPost = ({likes, replies, postImg, postTitle}) => {
   const [liked, setLiked] = useState(false);
   return (
-    <Link to={"elon/post/1"}>
+    <Link to={"/username/post/pid"}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar

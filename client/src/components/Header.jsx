@@ -21,7 +21,7 @@ const Header = () => {
       position={"fixed"}
       top={0}
       zIndex={60}
-      bg={"#101010"}
+      bg={colorMode === "dark" ?"#101010":"#EDF2F6"}
     >
       <FaThreads
         style={{
