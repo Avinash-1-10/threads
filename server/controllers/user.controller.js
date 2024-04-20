@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookies from "../utils/helpers/generateTokenandSetCookies.js";
+import mongoose from "mongoose";
 
 const signup = async (req, res) => {
   try {
@@ -70,4 +71,69 @@ const logout = async (req, res) => {
   }
 };
 
-export { signup, login, logout };
+const getUserProfile = async (req, res) => {
+  const { query } = req.params;
+
+  try {
+    let user;
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      user = await User.findOne({ _id: query })
+        .select("-password")
+        .select("-updatedAt");
+    } else {
+      user = await User.findOne({ username: query })
+        .select("-password")
+        .select("-updatedAt");
+    }
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+    console.log("Error in getUserProfile: ", err.message);
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { name, email, username, password, bio } = req.body;
+  let { profilePic } = req.body;
+
+  const userId = req.user._id;
+  try {
+    let user = await User.findById(userId);
+    if (!user) return res.status(400).json({ error: "User not found" });
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+    }
+
+    // if (profilePic) {
+    //   if (user.profilePic) {
+    //     await cloudinary.uploader.destroy(
+    //       user.profilePic.split("/").pop().split(".")[0]
+    //     );
+    //   }
+
+    //   const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+    //   profilePic = uploadedResponse.secure_url;
+    // }
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.username = username || user.username;
+    user.profilePic = profilePic || user.profilePic;
+    user.bio = bio || user.bio;
+
+    user = await user.save();
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+    console.log("Error in updateUser: ", err.message);
+  }
+};
+
+export { signup, login, logout, updateUser, getUserProfile };
