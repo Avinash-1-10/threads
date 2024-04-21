@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const likeSchema = new mongoose.Schema(
+const postLikeSchema = new mongoose.Schema(
   {
-    user: {
+    likedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -16,6 +16,6 @@ const likeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Like = mongoose.model("Like", likeSchema);
+const PostLike = mongoose.model("PostLike", postLikeSchema);
 
-export default Like;
+export default PostLike;
