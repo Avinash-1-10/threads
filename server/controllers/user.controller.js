@@ -2,72 +2,124 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookies from "../utils/helpers/generateTokenandSetCookies.js";
 import mongoose from "mongoose";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const signup = async (req, res) => {
   try {
+    // Extract relevant data from the request body
     const { name, email, username, password } = req.body;
-    const user = await User.findOne({ $or: [{ email }, { username }] });
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
+    // Check for existing user by email or username
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res
+        .status(409)
+        .json(
+          new ApiError(
+            409,
+            "An account with this email or username already exists."
+          )
+        );
     }
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
+    // Create and save the new user
     const newUser = new User({
       name,
       email,
       username,
       password: hashedPassword,
     });
-
     await newUser.save();
-    if (newUser) {
-      const user = await User.findById(newUser._id).select(
-        "-password -avatar -bio -createdAt -updatedAt -__v"
-      );
-      const threadsToken = generateTokenAndSetCookies(user._id, res);
-      return res.status(201).json({ user, threadsToken });
-    } else {
-      return res.status(400).json({ message: "Invalid user data" });
-    }
+    // Retrieve the newly created user's data excluding sensitive fields
+    const user = await User.findById(newUser._id).select(
+      "-password -avatar -bio -createdAt -updatedAt -__v"
+    );
+    const threadsToken = generateTokenAndSetCookies(user._id, res);
+    // Respond with success and user data
+    return res.status(201).json(
+      new ApiResponse(201, "Registration successful.", {
+        user,
+        threadsToken,
+      })
+    );
   } catch (error) {
-    console.log("Error in signup: ", error.message);
-    return res.status(500).json({ message: error.message });
+    // Log the server error and respond appropriately
+    console.error("Error during signup: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An Error Occurred while registering."
+        )
+      );
   }
 };
 
 const login = async (req, res) => {
   try {
+    // Extract username and password from request body
     const { username, password } = req.body;
+    // Attempt to find the user by username
     const existingUser = await User.findOne({ username });
     if (!existingUser) {
-      return res.status(400).json({ message: "username is Invalid" });
+      return res.status(404).json(new ApiError(404, "User not found."));
     }
+    // Check if the provided password matches the stored hash
     const isPasswordCorrect = await bcrypt.compare(
       password,
       existingUser.password
     );
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "password is incorrect" });
+      return res.status(401).json(new ApiError(401, "Invalid password."));
     }
-    const user = await User.findById(existingUser._id).select(
+    // Fetch user data excluding sensitive details
+    const userData = await User.findById(existingUser._id).select(
       "-password -avatar -bio -createdAt -updatedAt -__v"
     );
-    const threadsToken = generateTokenAndSetCookies(user._id, res);
-    return res.status(201).json({ user, threadsToken });
+    const authToken = generateTokenAndSetCookies(existingUser._id, res);
+    // Successful login response
+    return res.status(200).json(
+      new ApiResponse(200, "Logged in successfully.", {
+        user: userData,
+        authToken,
+      })
+    );
   } catch (error) {
-    console.log("Error in login: ", error.message);
-    return res.status(500).json({ message: error.message });
+    // Log the error and return a generic server error response
+    console.error("Error in login: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An Error Occurred while logging in."
+        )
+      );
   }
 };
 
 const logout = async (req, res) => {
   try {
+    // Clear the authentication token cookie
     res.cookie("threadsToken", "", { maxAge: 1 });
-    res.status(200).json({ message: "User logged out successfully" });
+    // Respond with success message
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Logged out successfully."));
   } catch (error) {
-    console.log("Error in logout: ", error.message);
-    return res.status(500).json({ message: error.message });
+    // Log and handle any errors
+    console.error("Error during logout: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An Error Occurred while logging out."
+        )
+      );
   }
 };
 
@@ -86,53 +138,69 @@ const getUserProfile = async (req, res) => {
         .select("-updatedAt");
     }
 
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(404).json(new ApiError(404, "User not found"));
 
-    res.status(200).json(user);
+    res
+      .status(200)
+      .json(new ApiResponse(200, "User fetched successfully.", user));
   } catch (err) {
-    res.status(500).json({ error: err.message });
     console.log("Error in getUserProfile: ", err.message);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          err.message || "An error occurred while getting the user profile."
+        )
+      );
   }
 };
 
 const updateUser = async (req, res) => {
   const { name, email, username, password, bio } = req.body;
-  let { profilePic } = req.body;
-
+  const { profilePic } = req.body;
   const userId = req.user._id;
-  try {
-    let user = await User.findById(userId);
-    if (!user) return res.status(400).json({ error: "User not found" });
 
+  try {
+    // * Attempt to find the user by ID
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found."));
+    }
+
+    // Update password if provided
     if (password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       user.password = hashedPassword;
     }
 
-    // if (profilePic) {
-    //   if (user.profilePic) {
-    //     await cloudinary.uploader.destroy(
-    //       user.profilePic.split("/").pop().split(".")[0]
-    //     );
-    //   }
-
-    //   const uploadedResponse = await cloudinary.uploader.upload(profilePic);
-    //   profilePic = uploadedResponse.secure_url;
-    // }
-
+    // Update other fields only if they have been provided
     user.name = name || user.name;
     user.email = email || user.email;
     user.username = username || user.username;
     user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
 
-    user = await user.save();
+    // Save the updated user information
+    await user.save();
 
-    res.status(200).json({ message: "User updated successfully", user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-    console.log("Error in updateUser: ", err.message);
+    // Return successful response with updated user data (excluding sensitive fields)
+    user = await User.findById(userId).select("-password -__v");
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "User profile updated successfully.", user));
+  } catch (error) {
+    // Log and respond to any system errors
+    console.error("Error updating user profile: ", err);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while updating the user profile."
+        )
+      );
   }
 };
 
