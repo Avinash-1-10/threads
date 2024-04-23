@@ -20,9 +20,15 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import authScreenAtom from "../atoms/authAtom";
 import { useSetRecoilState } from "recoil";
 import axios from "axios";
+import useShowToast from "../hooks/useShowToast";
+import { useNavigate } from "react-router-dom";
+import userAtom from "../atoms/userAtom";
 
 const SignupCard = () => {
+  const navigate = useNavigate();
+  const showToast = useShowToast();
   const setAuthScreen = useSetRecoilState(authScreenAtom);
+  const setUser = useSetRecoilState(userAtom);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -31,21 +37,17 @@ const SignupCard = () => {
     password: "",
   });
 
-  const toast = useToast();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { data } = await axios.post("/api/v1/user/signup", formData);
-      console.log(data);
+      // console.log(data.data);
+      localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
+      localStorage.setItem("threadsToken", data.data.threadsToken);
+      setUser(data?.data?.user);
+      showToast("Success", data.message, "success");
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.response.data.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Error", error.response.data.message, "error");
     }
   };
 

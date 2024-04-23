@@ -79,12 +79,12 @@ const login = async (req, res) => {
     const userData = await User.findById(existingUser._id).select(
       "-password -avatar -bio -createdAt -updatedAt -__v"
     );
-    const authToken = generateTokenAndSetCookies(existingUser._id, res);
+    const threadsToken = generateTokenAndSetCookies(existingUser._id, res);
     // Successful login response
     return res.status(200).json(
       new ApiResponse(200, "Logged in successfully.", {
         user: userData,
-        authToken,
+        threadsToken,
       })
     );
   } catch (error) {
