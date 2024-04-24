@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Flex,
   Menu,
@@ -7,8 +8,9 @@ import {
   Portal,
   useBreakpointValue,
   useColorMode,
+  IconButton,
+  Box,
 } from "@chakra-ui/react";
-import React from "react";
 import { FaThreads } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
@@ -24,33 +26,30 @@ const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const showFullHeader = useBreakpointValue({ base: false, md: true });
   const user = useRecoilValue(userAtom);
+
   return (
     <Flex
-      w={"full"}
-      justifyContent={"space-between"}
+      w="full"
+      justifyContent="space-between"
       pt={6}
       pb={4}
       px={showFullHeader ? 120 : 2}
-      position={"fixed"}
+      position="fixed"
       top={0}
       zIndex={40}
       bg={colorMode === "dark" ? "#101010" : "#EDF2F6"}
     >
-      <FaThreads
-        style={{
-          color: colorMode === "dark" ? "white" : "black",
-          fontSize: showFullHeader ? "35px" : "28px",
-          cursor: "pointer",
-        }}
+      <IconButton
+        aria-label="Toggle Theme"
+        icon={<FaThreads />}
         onClick={toggleColorMode}
+        color={colorMode === "dark" ? "white" : "black"}
+        fontSize={showFullHeader ? "35px" : "28px"}
+        variant="ghost"
+        cursor="pointer"
       />
       {showFullHeader && (
-        <Flex
-          fontSize={"28px"}
-          gap={20}
-          alignItems={"center"}
-          color={"gray.light"}
-        >
+        <Flex fontSize="28px" gap={20} alignItems="center" color="gray.500">
           <GoHomeFill />
           <FiSearch />
           <IoCreateOutline />
@@ -58,17 +57,19 @@ const Header = () => {
           <FaUser color="white" />
         </Flex>
       )}
-
       <Menu>
-        <MenuButton>
-          <HiOutlineMenuAlt3
-            fontSize={showFullHeader ? "28px" : "23px"}
-            color={"gray"}
-          />
-        </MenuButton>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HiOutlineMenuAlt3 fontSize="24px" color="white" />}
+        />
         <Portal>
-          <MenuList bg={"gray.dark"} zIndex={60}>
-            <MenuItem bg={"gray.dark"}>{user && <LogoutButton />}</MenuItem>
+          <MenuList bg="gray.700" zIndex={60}>
+            {user && (
+              <MenuItem>
+                <LogoutButton />
+              </MenuItem>
+            )}
           </MenuList>
         </Portal>
       </Menu>

@@ -34,7 +34,7 @@ const signup = async (req, res) => {
     await newUser.save();
     // Retrieve the newly created user's data excluding sensitive fields
     const user = await User.findById(newUser._id).select(
-      "-password -avatar -bio -createdAt -updatedAt -__v"
+      "-password -createdAt -updatedAt -__v"
     );
     const threadsToken = generateTokenAndSetCookies(user._id, res);
     // Respond with success and user data
@@ -77,7 +77,7 @@ const login = async (req, res) => {
     }
     // Fetch user data excluding sensitive details
     const userData = await User.findById(existingUser._id).select(
-      "-password -avatar -bio -createdAt -updatedAt -__v"
+      "-password -createdAt -updatedAt -__v"
     );
     const threadsToken = generateTokenAndSetCookies(existingUser._id, res);
     // Successful login response

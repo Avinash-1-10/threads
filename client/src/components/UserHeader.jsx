@@ -14,22 +14,23 @@ import {
   Toast,
   useToast,
   Button,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
 } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
+import useShowToast from "../hooks/useShowToast";
+import UpdateProfileCard from "./UpdateProfileCard";
 
 const UserHeader = () => {
-  const toast = useToast();
+  const showToast = useShowToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const copyURL = () => {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL).then(() => {
-      toast({
-        title: "Success.",
-        status: "success",
-        description: "Profile link copied.",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Success", "Profile link copied.", "success");
     });
   };
   return (
@@ -57,12 +58,10 @@ const UserHeader = () => {
             <Avatar
               name="Mark Zukerberg"
               src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-              size={
-                {
-                  base:"lg",
-                  md:"xl"
-                }
-              }
+              size={{
+                base: "lg",
+                md: "xl",
+              }}
             />
           </Box>
         </Flex>
@@ -101,10 +100,17 @@ const UserHeader = () => {
           h={"35px"}
           bg={"inherit"}
           style={{ fontSize: "14px", padding: "1" }}
-          _hover={{ bg: "inherit"}}
+          _hover={{ bg: "inherit" }}
+          onClick={onOpen}
         >
           Edit Profile
         </Button>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <UpdateProfileCard />
+          </ModalContent>
+        </Modal>
         <Flex w={"full"}>
           <Flex
             flex={1}
