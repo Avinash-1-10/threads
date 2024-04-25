@@ -1,9 +1,11 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import generateTokenAndSetCookies from "../utils/helpers/generateTokenandSetCookies.js";
+import generateTokenAndSetCookies from "../utils/helpers/generateTokenAndSetCookies.js";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import uploadOnCloudinary from "../utils/Cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const signup = async (req, res) => {
   try {
@@ -158,7 +160,8 @@ const getUserProfile = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { name, email, username, password, bio } = req.body;
-  const { profilePic } = req.body;
+  const avatarPath = req.file?.path;
+  console.log(avatarPath)
   const userId = req.user._id;
 
   try {
@@ -166,6 +169,17 @@ const updateUser = async (req, res) => {
     let user = await User.findById(userId);
     if (!user) {
       return res.status(404).json(new ApiError(404, "User not found."));
+    }
+
+    if (avatarPath) {
+      if (user.avatar) {
+        await cloudinary.uploader.destroy(
+          user.avatar.split("/").pop().split(".")[0]
+        );
+        // await cloudinary.uploader.destroy(user.avatar.split("/").pop());
+      }
+      const image = await uploadOnCloudinary(avatarPath);
+      user.avatar = image.secure_url;
     }
 
     // Update password if provided
@@ -179,7 +193,6 @@ const updateUser = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
     user.username = username || user.username;
-    user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
 
     // Save the updated user information
