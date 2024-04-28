@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   VStack,
   Box,
@@ -11,13 +11,12 @@ import {
   MenuList,
   Portal,
   MenuItem,
-  Toast,
-  useToast,
   Button,
   useDisclosure,
   Modal,
   ModalOverlay,
   ModalContent,
+  Spinner,
 } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
@@ -25,18 +24,84 @@ import useShowToast from "../hooks/useShowToast";
 import UpdateProfileCard from "./UpdateProfileCard";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
+import axios from "axios";
 
-const UserHeader = () => {
+const UserHeader = ({ user }) => {
   const showToast = useShowToast();
+  const owner = useRecoilValue(userAtom);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const user = useRecoilValue(userAtom)
-  // console.log(user)
+  const [followersCount, setFollowersCount] = useState("...");
+  const [isFollowing, setIsFollowing] = useState("...");
+  const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
   const copyURL = () => {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL).then(() => {
       showToast("Success", "Profile link copied.", "success");
     });
   };
+
+  const getFollowers = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/v1/follow/follwers/${user._id}`);
+      setFollowersCount(data.data.totalCount);
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        showToast(
+          "Error",
+          error?.response?.data?.message || error.message,
+          "error"
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const followUser = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`/api/v1/follow/${user._id}`);
+      showToast("Success", data.message, "success");
+      setReload(prev=>!prev)
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        showToast(
+          "Error",
+          error?.response?.data?.message || error.message,
+          "error"
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkFollowing = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `/api/v1/follow/check/following/${user._id}`
+      );
+      setIsFollowing(data.data);
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        showToast(
+          "Error",
+          error?.response?.data?.message || error.message,
+          "error"
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getFollowers();
+    checkFollowing();
+  }, [reload]);
   return (
     <div>
       <VStack gap={4} alignItems="start">
@@ -72,7 +137,7 @@ const UserHeader = () => {
         <Text>{user?.bio}</Text>
         <Flex w={"full"} justifyContent={"space-between"}>
           <Flex gap={2} alignItems={"center"}>
-            <Text color={"gray.light"}>3.2K Followers</Text>
+            <Text color={"gray.light"}>{followersCount} Followers</Text>
             <Box w={1} h={1} bg={"gray"} borderRadius={"full"}></Box>
             <Link color={"gray.light"}>instagram.com</Link>
           </Flex>
@@ -96,19 +161,42 @@ const UserHeader = () => {
             </Box>
           </Flex>
         </Flex>
-        <Button
-          w={"full"}
-          p={1}
-          border={"0.5px solid"}
-          borderColor={"gray.light"}
-          h={"35px"}
-          bg={"inherit"}
-          style={{ fontSize: "14px", padding: "1" }}
-          _hover={{ bg: "inherit" }}
-          onClick={onOpen}
-        >
-          Edit Profile
-        </Button>
+        {owner?._id === user?._id ? (
+          <Button
+            w={"full"}
+            p={1}
+            border={"0.5px solid"}
+            borderColor={"gray.light"}
+            h={"35px"}
+            bg={"inherit"}
+            style={{ fontSize: "14px", padding: "1" }}
+            _hover={{ bg: "inherit" }}
+            onClick={onOpen}
+          >
+            Edit Profile
+          </Button>
+        ) : (
+          <Button
+            w={"full"}
+            p={1}
+            border={"0.5px solid"}
+            borderColor={"gray.light"}
+            h={"35px"}
+            bg={"white"}
+            color={"black"}
+            style={{ fontSize: "14px", padding: "1" }}
+            _hover={{ bg: "white" }}
+            onClick={followUser}
+          >
+            {loading ? (
+              <Spinner />
+            ) : isFollowing === true ? (
+              "Unfollow"
+            ) : (
+              "Follow"
+            )}
+          </Button>
+        )}
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -147,6 +235,11 @@ const UserHeader = () => {
           </Flex>
         </Flex>
       </VStack>
+      {!user && (
+        <Text fontSize={"3xl"} fontWeight={"bold"} textAlign={"center"} mt={4}>
+          This account doesn’t exist
+        </Text>
+      )}
     </div>
   );
 };
