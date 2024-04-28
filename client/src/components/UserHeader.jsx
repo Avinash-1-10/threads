@@ -23,10 +23,14 @@ import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import useShowToast from "../hooks/useShowToast";
 import UpdateProfileCard from "./UpdateProfileCard";
+import { useRecoilState, useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const UserHeader = () => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = useRecoilValue(userAtom)
+  // console.log(user)
   const copyURL = () => {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL).then(() => {
@@ -39,10 +43,10 @@ const UserHeader = () => {
         <Flex justifyContent={"space-between"} w={"full"}>
           <Box>
             <Text fontSize={"2xl"} fontWeight={"bold"}>
-              Elon Musk
+              {user?.name}
             </Text>
             <Flex gap={2} alignItems={"center"}>
-              <Text fontSize={"sm"}>elonmusk</Text>
+              <Text fontSize={"sm"}>{user?.username}</Text>
               <Text
                 fontSize={"xs"}
                 bg={"gray.dark"}
@@ -57,7 +61,7 @@ const UserHeader = () => {
           <Box>
             <Avatar
               name="Mark Zukerberg"
-              src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
+              src={user?.avatar}
               size={{
                 base: "lg",
                 md: "xl",
@@ -65,7 +69,7 @@ const UserHeader = () => {
             />
           </Box>
         </Flex>
-        <Text>Co-founder and CEO of Tesla</Text>
+        <Text>{user?.bio}</Text>
         <Flex w={"full"} justifyContent={"space-between"}>
           <Flex gap={2} alignItems={"center"}>
             <Text color={"gray.light"}>3.2K Followers</Text>
@@ -108,7 +112,7 @@ const UserHeader = () => {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <UpdateProfileCard />
+            <UpdateProfileCard onClose={onClose} />
           </ModalContent>
         </Modal>
         <Flex w={"full"}>

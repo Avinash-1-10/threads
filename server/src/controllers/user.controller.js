@@ -7,6 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import uploadOnCloudinary from "../utils/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 
+
 const signup = async (req, res) => {
   try {
     // Extract relevant data from the request body
@@ -161,7 +162,7 @@ const getUserProfile = async (req, res) => {
 const updateUser = async (req, res) => {
   const { name, email, username, password, bio } = req.body;
   const avatarPath = req.file?.path;
-  console.log(avatarPath)
+  // console.log(avatarPath);
   const userId = req.user._id;
 
   try {
@@ -173,9 +174,9 @@ const updateUser = async (req, res) => {
 
     if (avatarPath) {
       if (user.avatar) {
-        await cloudinary.uploader.destroy(
-          user.avatar.split("/").pop().split(".")[0]
-        );
+          await cloudinary.uploader.destroy(
+            user.avatar.split("/").pop().split(".")[0]
+          );
         // await cloudinary.uploader.destroy(user.avatar.split("/").pop());
       }
       const image = await uploadOnCloudinary(avatarPath);
