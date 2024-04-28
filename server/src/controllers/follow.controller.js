@@ -1,11 +1,13 @@
 import Follow from "../models/follow.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const follow = async (req, res) => {
   try {
     const following = req.params.id;
     const follower = req.user._id;
-    if(following === follower){
-        return res.status(400).json({message:"You cant follow yourself"});
+    if (following === follower) {
+      return res.status(400).json({ message: "You cant follow yourself" });
     }
     const followedAcc = await Follow.findOne({ follower, following });
     if (followedAcc) {
@@ -27,18 +29,31 @@ const follow = async (req, res) => {
 const getFollowers = async (req, res) => {
   try {
     const { userId } = req.params;
-    // Find all follows where the following field matches the userId
-    const followers = await Follow.find({ following: userId }).populate(
-      "follower"
-    );
-    if (!followers) {
-      return res.status(404).json({ message: "Followers not found" });
-    }
 
-    return res.status(200).json(followers);
+    // Get the total count of followers for pagination or information
+    const totalCount = await Follow.countDocuments({ following: userId });
+
+    // Find the followers, limited to 10 for this query, and populate the follower details
+    const followers = await Follow.find({ following: userId })
+      .populate("follower")
+      .limit(10);
+    // Return the total count and the followers in the response
+    return res.status(200).json(
+      new ApiResponse(200, "Followers fetched successfully.", {
+        totalCount,
+        followers,
+      })
+    );
   } catch (error) {
     console.error("Error in getFollowers controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while getting the user profile."
+        )
+      );
   }
 };
 
@@ -59,4 +74,22 @@ const getFollowing = async (req, res) => {
   }
 };
 
-export { follow, getFollowers, getFollowing };
+const checkFollowing = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = req.user;
+    const following = await Follow.findOne({
+      follower: user._id,
+      following: userId,
+    });
+    if (!following) {
+      return res.status(200).json(new ApiResponse(200, "Not following", false));
+    }
+    return res.status(200).json(new ApiResponse(200, "Following", true));
+  } catch (error) {
+    console.error("Error in checkFollowing controller:", error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export { follow, getFollowers, getFollowing, checkFollowing };
