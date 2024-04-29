@@ -45,6 +45,7 @@ const UpdateProfileCard = ({ onClose }) => {
       localStorage.setItem("threads-user", JSON.stringify(data?.data));
       showToast("Success", data.message, "success");
       onClose();
+      window.location.reload();
     } catch (error) {
       console.log(error);
       showToast("Error", error.response.data.message, "error");

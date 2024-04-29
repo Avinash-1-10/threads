@@ -64,7 +64,7 @@ const UserHeader = ({ user }) => {
     try {
       const { data } = await axios.post(`/api/v1/follow/${user._id}`);
       showToast("Success", data.message, "success");
-      setReload(prev=>!prev)
+      setReload((prev) => !prev);
     } catch (error) {
       if (error?.response?.data?.message) {
         showToast(
