@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -61,6 +62,68 @@ const getPost = async (req, res) => {
   }
 };
 
+const getPostsByUser = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+    const userId = user.id;
+    // Aggregation pipeline to fetch posts along with their like and comment counts
+    const posts = await Post.aggregate([
+      // Match posts by the specified user
+      { $match: { postBy: new mongoose.Types.ObjectId(userId) } },
+      // Join with PostLike collection to count likes
+      {
+        $lookup: {
+          from: "postlikes",
+          localField: "_id",
+          foreignField: "post",
+          as: "likes",
+        },
+      },
+      // Join with Comment collection to count comments
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "post",
+          as: "comments",
+        },
+      },
+      // Add fields to calculate the counts
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" },
+          commentCount: { $size: "$comments" },
+        },
+      },
+      // Optionally: Exclude the likes and comments array if not needed
+      {
+        $project: {
+          likes: 0,
+          comments: 0,
+        },
+      },
+    ]);
+
+    // Check if we found any posts
+    if (posts.length === 0) {
+      return res.status(404).json(new ApiError(404, "No posts found"));
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Posts fetched successfully", posts));
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching posts", error: error.message });
+  }
+};
+
 const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
@@ -108,4 +171,4 @@ const getPostFeed = async (req, res) => {
   }
 };
 
-export { createPost, getPost, deletePost, getPostFeed };
+export { createPost, getPost, deletePost, getPostFeed, getPostsByUser };

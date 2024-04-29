@@ -12,6 +12,7 @@ const UserPage = () => {
   const [loading, setLoading] = useState(false);
   const { username } = useParams();
   const showToast = useShowToast();
+  const [posts, setPosts] = useState([]);
   const geUser = async () => {
     setLoading(true);
     try {
@@ -19,13 +20,27 @@ const UserPage = () => {
       setUser(data.data);
     } catch (error) {
       showToast("Error", error.response.data.message, "error");
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPosts = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/v1/post/user/${username}`);
+      setPosts(data.data);
+    } catch (error) {
+      showToast("Error", error.response.data.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     geUser();
+    getPosts();
   }, [username]);
+
   return (
     <>
       {loading ? (
@@ -36,13 +51,7 @@ const UserPage = () => {
         <>
           <UserHeader user={user} />
           {posts.map((post, index) => (
-            <UserPost
-              key={index}
-              likes={post.likes}
-              replies={post.replies}
-              postImg={post.postImg}
-              postTitle={post.postTitle}
-            />
+            <UserPost key={index} post={post} user={user}/>
           ))}
         </>
       )}

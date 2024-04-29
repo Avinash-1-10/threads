@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Flex,
   FormControl,
@@ -55,7 +56,7 @@ const CreatePost = ({onClose}) => {
       rounded={"md"}
     >
       <Stack>
-        <Image src={user.avatar} h={12} w={12} borderRadius={"full"} />
+        <Avatar src={user.avatar}/>
       </Stack>
       <Stack flex={1}>
         <Text fontWeight={"bold"}>{user.username}</Text>

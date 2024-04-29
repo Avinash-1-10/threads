@@ -5,17 +5,13 @@ import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 
-const UserPost = ({likes, replies, postImg, postTitle}) => {
+const UserPost = ({ post, user }) => {
   const [liked, setLiked] = useState(false);
   return (
     <Link to={"/username/post/pid"}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar
-            size={"md"}
-            name="Elon Musk"
-            src="https://pbs.twimg.com/profile_images/1780044485541699584/p78MCn3B_400x400.jpg"
-          />
+          <Avatar size={"md"} name={user.name} src={user.avatar} />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box position={"relative"} w={"full"}>
             <Avatar
@@ -49,10 +45,10 @@ const UserPost = ({likes, replies, postImg, postTitle}) => {
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"}>
-              <Text fontSize={"sm"} fontWeight={"bold"}>
-                elonmusk
+              <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
+                {user.name}
               </Text>
-              <MdVerified color="#2B96E9" style={{ marginLeft: 1 }} />
+              <MdVerified color="#2B96E9"/>
             </Flex>
             <Flex gap={4} alignItems={"center"}>
               <Text fontStyle={"sm"} color={"gray.light"}>
@@ -61,25 +57,24 @@ const UserPost = ({likes, replies, postImg, postTitle}) => {
               <BsThreeDots onClick={(e) => e.preventDefault()} />
             </Flex>
           </Flex>
-          <Text fontSize={"sm"}>{postTitle}</Text>
-          <Box
-            borderRadius={6}
-            overflow={"hidden"}
-            border={"1px solid "}
-            borderColor={"gray.light"}
-          >
-            <Image
-              src={postImg}
-              w={"full"}
-            />
-          </Box>
+          <Text fontSize={"sm"}>{post.text}</Text>
+          {post.image && (
+            <Box
+              borderRadius={6}
+              overflow={"hidden"}
+              border={"1px solid "}
+              borderColor={"gray.light"}
+            >
+              <Image src={post.image} w={"full"} />
+            </Box>
+          )}
           <Flex gap={3} my={1}>
             <Actions liked={liked} setLiked={setLiked} />
           </Flex>
           <Flex gap={2} alignItems={"center"} color={"gray.light"}>
-            <Text fontSize={"small"}>{replies} replies</Text>
+            <Text fontSize={"small"}>{post.commentCount} replies</Text>
             <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
-            <Text fontSize={"small"}>{likes} likes</Text>
+            <Text fontSize={"small"}>{post.likeCount} likes</Text>
           </Flex>
         </Flex>
       </Flex>
