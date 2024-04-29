@@ -10,6 +10,10 @@ import {
   useColorMode,
   IconButton,
   Box,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
 } from "@chakra-ui/react";
 import { FaThreads } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
@@ -21,11 +25,13 @@ import { IoCreateOutline } from "react-icons/io5";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import LogoutButton from "./LogoutButton";
+import CreatePost from "./CreatePost";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const showFullHeader = useBreakpointValue({ base: false, md: true });
   const user = useRecoilValue(userAtom);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex
@@ -52,11 +58,17 @@ const Header = () => {
         <Flex fontSize="28px" gap={20} alignItems="center" color="gray.500">
           <GoHomeFill />
           <FiSearch />
-          <IoCreateOutline />
+          <IoCreateOutline cursor={"pointer"} onClick={onOpen}/>
           <IoMdHeart />
           <FaUser color="white" />
         </Flex>
       )}
+      <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <CreatePost onClose={onClose} />
+          </ModalContent>
+        </Modal>
       <Menu>
         <MenuButton
           as={IconButton}
