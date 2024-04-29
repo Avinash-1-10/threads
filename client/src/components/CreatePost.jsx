@@ -1,16 +1,49 @@
-import { Button, Flex, Image, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  FormControl,
+  Image,
+  Input,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { MdOutlineGifBox } from "react-icons/md";
 import usePreviewImg from "../hooks/usePreviewImg";
+import useShowToast from "../hooks/useShowToast";
+import axios from "axios";
 
-const CreatePost = () => {
+const CreatePost = ({onClose}) => {
   const user = useRecoilValue(userAtom);
+  const showToast = useShowToast();
   const fileRef = useRef(null);
-  const { handleImageChange, imgUrl, imgFile } = usePreviewImg();
+  const { handleImageChange, imgUrl, setImgUrl, imgFile } = usePreviewImg();
   const [text, setText] = useState("");
+  const [loading, seLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    seLoading(true);
+    const formData = new FormData();
+    formData.append("text", text);
+    formData.append("image", imgFile);
+    try {
+      const { data } = await axios.post("/api/v1/post/create", formData);
+      setText("");
+      setImgUrl(null);
+      showToast("Success", data.message, "success");
+      onClose()
+    } catch (error) {
+      console.log(error);
+      showToast("Error", error.response?.data?.message || error.message, "error");
+    }finally{
+      seLoading(false);
+    }
+  };
 
   return (
     <Flex
@@ -35,6 +68,8 @@ const CreatePost = () => {
             border: "none",
             padding: 0,
           }}
+          required
+          value={text}
           onChange={(e) => setText(e.target.value)}
         />
         {imgUrl && (
@@ -61,8 +96,10 @@ const CreatePost = () => {
           bg={"white"}
           color={"gray.dark"}
           sx={{ ":hover": { bg: "gray.100" } }}
+          onClick={handleSubmit}
+          disabled={loading}
         >
-          Post
+          {loading ? <Spinner /> : "Post"}
         </Button>
       </Stack>
     </Flex>

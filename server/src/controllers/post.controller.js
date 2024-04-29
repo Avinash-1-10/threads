@@ -1,36 +1,48 @@
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import uploadOnCloudinary from "../utils/Cloudinary.js";
 
 const createPost = async (req, res) => {
   try {
-    const { text, img } = req.body;
+    const { text } = req.body;
+    const imgPath = req.file?.path;
     const postedBy = req.user._id;
     if (!postedBy || !text) {
       return res
         .status(400)
-        .json({ message: "Postedby and text fields are required" });
+        .json(new ApiError(400, "Posted by and text are required"));
     }
     const user = await User.findById(postedBy);
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json(new ApiError(400, "User not found"));
     }
 
     if (text.length > 500) {
       return res
         .status(400)
-        .json({ message: "Text length should be less than 500" });
+        .json(new ApiError(400, "Text should be less than 500 characters"));
     }
+
     const newPost = new Post({
       postBy: postedBy,
       text,
     });
+
+    if (imgPath) {
+      const result = await uploadOnCloudinary(imgPath);
+      const image = result.secure_url;
+      newPost.image = image;
+    }
+
     await newPost.save();
     return res
       .status(201)
-      .json({ message: "Post created successfully", newPost });
+      .json(new ApiResponse(201, "Post created successfully", newPost));
   } catch (error) {
     console.log("Error in create post");
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json(new ApiError(500, error.message));
   }
 };
 
@@ -69,25 +81,30 @@ const getPostFeed = async (req, res) => {
 
   try {
     // Get the list of user IDs that this user is following
-    const followingList = await Follow.find({ follower: userId }).select('following -_id');
+    const followingList = await Follow.find({ follower: userId }).select(
+      "following -_id"
+    );
 
     // Extract the user IDs into an array
-    const followingUserIds = followingList.map(follow => follow.following);
+    const followingUserIds = followingList.map((follow) => follow.following);
 
     // Query for posts where the postBy is in the followingUserIds
     const posts = await Post.find({
-      postBy: { $in: followingUserIds }
-    }).populate('postBy', 'username avatar') // Populate the postBy field with the username and avatar from the User model
-    .sort({ createdAt: -1 }) // Sort by creation time, newest first
-    .limit(20); // Limit the number of posts for performance reasons
+      postBy: { $in: followingUserIds },
+    })
+      .populate("postBy", "username avatar") // Populate the postBy field with the username and avatar from the User model
+      .sort({ createdAt: -1 }) // Sort by creation time, newest first
+      .limit(20); // Limit the number of posts for performance reasons
 
     return res.status(200).json({
       message: "Feed fetched successfully",
-      posts
+      posts,
     });
   } catch (error) {
     console.error("Error fetching post feed:", error);
-    return res.status(500).json({ message: "Failed to fetch post feed due to an internal error" });
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch post feed due to an internal error" });
   }
 };
 
