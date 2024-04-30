@@ -26,8 +26,8 @@ app.use(cookieParser());
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/follow", followRoutes);
 app.use("/api/v1/post", postRoutes);
-app.use("api/v1/like", likeRoutes);
-app.use("api/v1/comment", commentRoutes);
+app.use("/api/v1/like", likeRoutes);
+app.use("/api/v1/comment", commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

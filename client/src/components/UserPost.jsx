@@ -1,12 +1,31 @@
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
+import axios from "axios";
+import useShowToast from "../hooks/useShowToast";
 
 const UserPost = ({ post, user }) => {
-  const [liked, setLiked] = useState(false);
+  const showToast = useShowToast();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [reload, setReload] = useState(false);
+  const getLikeCount = async () => {
+    try {
+      const { data } = await axios.get(`/api/v1/like/count/post/${post._id}`);
+      setLikeCount(data.data.likeCount);
+      setIsLiked(data.data.isLiked);
+    } catch (error) {
+      showToast("Error", error.response.data.message || error.message, "error");
+    }
+  };
+
+
+  useEffect(() => {
+    getLikeCount();
+  }, [reload]);
   return (
     <Link to={"/username/post/pid"}>
       <Flex gap={3} mb={4} py={5}>
@@ -48,7 +67,7 @@ const UserPost = ({ post, user }) => {
               <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
                 {user.name}
               </Text>
-              <MdVerified color="#2B96E9"/>
+              <MdVerified color="#2B96E9" />
             </Flex>
             <Flex gap={4} alignItems={"center"}>
               <Text fontStyle={"sm"} color={"gray.light"}>
@@ -69,12 +88,12 @@ const UserPost = ({ post, user }) => {
             </Box>
           )}
           <Flex gap={3} my={1}>
-            <Actions liked={liked} setLiked={setLiked} />
+            <Actions isLiked={isLiked} postId={post._id} setReload={setReload}/>
           </Flex>
           <Flex gap={2} alignItems={"center"} color={"gray.light"}>
             <Text fontSize={"small"}>{post.commentCount} replies</Text>
             <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
-            <Text fontSize={"small"}>{post.likeCount} likes</Text>
+            <Text fontSize={"small"}>{likeCount} likes</Text>
           </Flex>
         </Flex>
       </Flex>

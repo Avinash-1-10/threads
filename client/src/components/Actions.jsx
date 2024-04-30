@@ -5,11 +5,20 @@ import { BiRepost } from "react-icons/bi";
 import { TbSend } from "react-icons/tb";
 import { Flex } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
+import axios from "axios";
+import useShowToast from "../hooks/useShowToast";
 
-const Actions = ({ liked, setLiked }) => {
-    const toggleLike = ()=>{
-        setLiked(prev=>!prev)
+const Actions = ({ isLiked, postId, setReload }) => {
+  const showToast = useShowToast();
+  const likeUnlike = async () => {
+    try {
+      const { data } = await axios.post(`/api/v1/like/post/${postId}`);
+      showToast("Success", data.message, "success");
+      setReload((prev) => !prev);
+    } catch (error) {
+      showToast("Error", error?.response?.data?.message || error.message, "error");
     }
+  }
   return (
     <Flex
       gap={4}
@@ -18,10 +27,14 @@ const Actions = ({ liked, setLiked }) => {
       alignItems={"center"}
       onClick={(e) => e.preventDefault()}
     >
-      {liked ? <FaHeart color="rgb(237, 73, 86)" onClick={toggleLike} cursor={"pointer"}/> : <FaRegHeart onClick={toggleLike} cursor={"pointer"}/>}
-      <IoChatbubbleOutline cursor={"pointer"}/>
-      <BiRepost fontSize={"30px"} cursor={"pointer"}/>
-      <TbSend cursor={"pointer"}/>
+      {isLiked ? (
+        <FaHeart color="rgb(237, 73, 86)" cursor={"pointer"} onClick={likeUnlike}/>
+      ) : (
+        <FaRegHeart cursor={"pointer"} onClick={likeUnlike}/>
+      )}
+      <IoChatbubbleOutline cursor={"pointer"} />
+      <BiRepost fontSize={"30px"} cursor={"pointer"} />
+      <TbSend cursor={"pointer"} />
     </Flex>
   );
 };
