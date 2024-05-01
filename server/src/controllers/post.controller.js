@@ -64,65 +64,73 @@ const getPost = async (req, res) => {
 
 const getPostsByUser = async (req, res) => {
   try {
-    const { username } = req.params;
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(404).json(new ApiError(404, "User not found"));
-    }
-    const userId = user.id;
-    // Aggregation pipeline to fetch posts along with their like and comment counts
-    const posts = await Post.aggregate([
-      // Match posts by the specified user
-      { $match: { postBy: new mongoose.Types.ObjectId(userId) } },
-      // Join with PostLike collection to count likes
-      {
-        $lookup: {
-          from: "postlikes",
-          localField: "_id",
-          foreignField: "post",
-          as: "likes",
-        },
-      },
-      // Join with Comment collection to count comments
-      {
-        $lookup: {
-          from: "comments",
-          localField: "_id",
-          foreignField: "post",
-          as: "comments",
-        },
-      },
-      // Add fields to calculate the counts
-      {
-        $addFields: {
-          likeCount: { $size: "$likes" },
-          commentCount: { $size: "$comments" },
-        },
-      },
-      // Optionally: Exclude the likes and comments array if not needed
-      {
-        $project: {
-          likes: 0,
-          comments: 0,
-        },
-      },
-    ]);
+      const { username } = req.params;
+      const user = await User.findOne({ username });
+      if (!user) {
+          return res.status(404).json({ error: "User not found", statusCode: 404 });
+      }
+      const userId = user._id;
 
-    // Check if we found any posts
-    if (posts.length === 0) {
-      return res.status(404).json(new ApiError(404, "No posts found"));
-    }
+      const posts = await Post.aggregate([
+          { $match: { postBy: new mongoose.Types.ObjectId(userId) } },
+          {
+              $lookup: {
+                  from: "postlikes",
+                  localField: "_id",
+                  foreignField: "post",
+                  as: "likes",
+              },
+          },
+          {
+              $lookup: {
+                  from: "comments",
+                  localField: "_id",
+                  foreignField: "post",
+                  as: "comments",
+              },
+          },
+          {
+              $addFields: {
+                  likeCount: { $size: "$likes" },
+                  commentCount: { $size: "$comments" },
+              },
+          },
+          {
+              $lookup: {
+                  from: "users",
+                  localField: "postBy",
+                  foreignField: "_id",
+                  as: "postByDetails"
+              }
+          },
+          {
+              $unwind: "$postByDetails"
+          },
+          {
+              $project: {
+                  text: 1,
+                  image: 1,
+                  createdAt: 1,
+                  updatedAt: 1,
+                  'postByDetails.name': 1,
+                  'postByDetails.username': 1,
+                  'postByDetails.avatar': 1
+              }
+          }
+      ]);
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, "Posts fetched successfully", posts));
+      if (posts.length === 0) {
+          return res.status(404).json({ error: "No posts found", statusCode: 404 });
+      }
+
+      res.status(200).json({ message: "Posts fetched successfully", data: posts, statusCode: 200 });
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching posts", error: error.message });
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ message: "Error fetching posts", error: error.message, statusCode: 500 });
   }
 };
+
+
 
 const deletePost = async (req, res) => {
   try {

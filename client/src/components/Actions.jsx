@@ -52,7 +52,7 @@ const Actions = ({ isLiked, post, setReload }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <CommentModal onClose={onClose} post={post}/>
+          <CommentModal onClose={onClose} post={post} setReload={setReload}/>
         </ModalContent>
       </Modal>
       <BiRepost fontSize={"30px"} cursor={"pointer"} />

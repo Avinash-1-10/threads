@@ -12,6 +12,8 @@ const UserPost = ({ post, user }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [reload, setReload] = useState(false);
+  const [topComments, setTopComments] = useState([]);
+  const [commentCount, setCommentCount] = useState(0);
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(`/api/v1/like/count/post/${post._id}`);
@@ -21,9 +23,26 @@ const UserPost = ({ post, user }) => {
       showToast("Error", error.response.data.message || error.message, "error");
     }
   };
+  const getCommentCount = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/v1/comment/count/post/${post._id}`
+      );
+      // console.log(data);
+      setCommentCount(data.data.commentCount);
+      setTopComments(data.data.topComments);
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    }
+  };
 
   useEffect(() => {
     getLikeCount();
+    getCommentCount();
   }, [reload]);
   return (
     <Link to={"/username/post/pid"}>
@@ -32,32 +51,46 @@ const UserPost = ({ post, user }) => {
           <Avatar size={"md"} name={user.name} src={user.avatar} />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box position={"relative"} w={"full"}>
-            <Avatar
-              size={"xs"}
-              name="John Doe"
-              src="https://bit.ly/dan-abramov"
-              position={"absolute"}
-              top={"0px"}
-              left="15px"
-              padding={"2px"}
-            />
-            <Avatar
-              size={"xs"}
-              name="John Doe"
-              src="https://bit.ly/kent-c-dodds"
-              position={"absolute"}
-              bottom={"0px"}
-              right="-5px"
-              padding={"2px"}
-            />
-            <Avatar
-              size={"xs"}
-              name="John Doe"
-              src="https://bit.ly/prosper-baba"
-              position={"absolute"}
-              bottom={"0px"}
-              left="4px"
-            />
+            {topComments.length > 0 ? (
+              <>
+                {topComments.length >= 1 && (
+                  <Avatar
+                    size={"xs"}
+                    name={topComments[0].commentBy.name}
+                    src={topComments[0].commentBy.avatar}
+                    position={"absolute"}
+                    top={"0px"}
+                    left="15px"
+                    padding={"2px"}
+                  />
+                )}
+                {topComments.length >= 2 && (
+                  <Avatar
+                    size={"xs"}
+                    name={topComments[1].commentBy.name}
+                    src={topComments[1].commentBy.avatar}
+                    position={"absolute"}
+                    bottom={"0px"}
+                    right="-5px"
+                    padding={"2px"}
+                  />
+                )}
+                {topComments.length >= 3 && (
+                  <Avatar
+                    size={"xs"}
+                    name={topComments[2].commentBy.name}
+                    src={topComments[2].commentBy.avatar}
+                    position={"absolute"}
+                    bottom={"0px"}
+                    left="4px"
+                  />
+                )}
+              </>
+            ) : (
+              <Text fontSize={"25px"} textAlign={"center"}>
+                😞
+              </Text>
+            )}
           </Box>
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
@@ -87,14 +120,10 @@ const UserPost = ({ post, user }) => {
             </Box>
           )}
           <Flex gap={3} my={1}>
-            <Actions
-              isLiked={isLiked}
-              post={post}
-              setReload={setReload}
-            />
+            <Actions isLiked={isLiked} post={post} setReload={setReload}/>
           </Flex>
           <Flex gap={2} alignItems={"center"} color={"gray.light"}>
-            <Text fontSize={"small"}>{post.commentCount} replies</Text>
+            <Text fontSize={"small"}>{commentCount} replies</Text>
             <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
             <Text fontSize={"small"}>{likeCount} likes</Text>
           </Flex>

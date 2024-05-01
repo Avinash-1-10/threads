@@ -6,27 +6,47 @@ import {
   Image,
   Stack,
   Button,
+  Spinner,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
+import useShowToast from "../hooks/useShowToast";
+import axios from "axios";
 
-const CommentModal = ({ onClose, post }) => {
+const CommentModal = ({ onClose, post, setReload }) => {
+  const showToast = useShowToast();
   const user = useRecoilValue(userAtom);
-  console.log(post);
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const addComment = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`/api/v1/comment/${post._id}`, {
+        text,
+      });
+      showToast("Success", data.message, "success");
+      setReload((prev) => !prev);
+      onClose();
+    } catch (error) {
+      showToast("Error", error?.response?.data?.message || error.message, "error");
+    }finally{
+      setLoading(false);
+    }
+  };
   return (
     <Box p={5} bgColor={"gray.dark"}>
       <Flex gap={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar size={"md"} name={user.name} src={user.avatar} />
+          <Avatar size={"md"} name={post.postByDetails.avatar} src={post.postByDetails.avatar} />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box w={"full"}>
             <Avatar
               size={"md"}
-              name="John Doe"
-              src="https://bit.ly/dan-abramov"
+              name={user.name}
+              src={user.avatar}
             />
           </Box>
         </Flex>
@@ -34,7 +54,7 @@ const CommentModal = ({ onClose, post }) => {
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"}>
               <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
-                {user.name}
+                {post.postByDetails.name}
               </Text>
               <MdVerified color="#2B96E9" />
             </Flex>
@@ -59,7 +79,7 @@ const CommentModal = ({ onClose, post }) => {
           <Stack gap={1} color={"gray.light"}>
             <Text color={"white"}>{user.username}</Text>
             <input
-              placeholder="Add a comment"
+              placeholder={`Reply to ${post.postByDetails.username}...`}
               style={{
                 width: "100%",
                 background: "inherit",
@@ -69,6 +89,8 @@ const CommentModal = ({ onClose, post }) => {
                 color: "white",
               }}
               required
+              value={text}
+              onChange={(e) => setText(e.target.value)}
             />
           </Stack>
         </Flex>
@@ -81,8 +103,10 @@ const CommentModal = ({ onClose, post }) => {
           bg={"white"}
           color={"gray.dark"}
           sx={{ ":hover": { bg: "gray.100" } }}
+          onClick={addComment}
+          disabled={loading}
         >
-          Post
+          {loading ? <Spinner/> : "Post"}
         </Button>
       </Flex>
     </Box>
