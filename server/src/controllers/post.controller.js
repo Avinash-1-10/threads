@@ -114,7 +114,8 @@ const getPostsByUser = async (req, res) => {
                   updatedAt: 1,
                   'postByDetails.name': 1,
                   'postByDetails.username': 1,
-                  'postByDetails.avatar': 1
+                  'postByDetails.avatar': 1,
+                  'postByDetails._id': 1,
               }
           }
       ]);

@@ -26,6 +26,7 @@ import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import LogoutButton from "./LogoutButton";
 import CreatePost from "./CreatePost";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -56,11 +57,15 @@ const Header = () => {
       />
       {showFullHeader && (
         <Flex fontSize="28px" gap={20} alignItems="center" color="gray.500">
-          <GoHomeFill />
+          <Link to={`/`}>
+            <GoHomeFill />
+          </Link>
           <FiSearch />
           <IoCreateOutline cursor={"pointer"} onClick={onOpen} />
           <IoMdHeart />
-          <FaUser color="white" />
+          <Link to={`/${user?.username}`}>
+            <FaUser color="white" />
+          </Link>
         </Flex>
       )}
       <Modal isOpen={isOpen} onClose={onClose}>

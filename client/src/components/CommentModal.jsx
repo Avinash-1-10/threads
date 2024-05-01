@@ -31,8 +31,12 @@ const CommentModal = ({ onClose, post, setReload }) => {
       setReload((prev) => !prev);
       onClose();
     } catch (error) {
-      showToast("Error", error?.response?.data?.message || error.message, "error");
-    }finally{
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -40,14 +44,14 @@ const CommentModal = ({ onClose, post, setReload }) => {
     <Box p={5} bgColor={"gray.dark"}>
       <Flex gap={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar size={"md"} name={post.postByDetails.avatar} src={post.postByDetails.avatar} />
+          <Avatar
+            size={"md"}
+            name={post.postByDetails.avatar}
+            src={post.postByDetails.avatar}
+          />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box w={"full"}>
-            <Avatar
-              size={"md"}
-              name={user.name}
-              src={user.avatar}
-            />
+            <Avatar size={"md"} name={user.name} src={user.avatar} />
           </Box>
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
@@ -62,7 +66,6 @@ const CommentModal = ({ onClose, post, setReload }) => {
               <Text fontStyle={"sm"} color={"gray.light"}>
                 1d
               </Text>
-              <BsThreeDots onClick={(e) => e.preventDefault()} />
             </Flex>
           </Flex>
           <Text fontSize={"sm"}>{post.text}</Text>
@@ -77,7 +80,9 @@ const CommentModal = ({ onClose, post, setReload }) => {
             </Box>
           )}
           <Stack gap={1} color={"gray.light"}>
-            <Text color={"white"}>{user.username}</Text>
+            <Text color={"white"} fontWeight={"bold"}>
+              {user.username}
+            </Text>
             <input
               placeholder={`Reply to ${post.postByDetails.username}...`}
               style={{
@@ -106,7 +111,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
           onClick={addComment}
           disabled={loading}
         >
-          {loading ? <Spinner/> : "Post"}
+          {loading ? <Spinner /> : "Post"}
         </Button>
       </Flex>
     </Box>

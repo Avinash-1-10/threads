@@ -1,4 +1,15 @@
-import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Text,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
@@ -6,6 +17,9 @@ import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import useTimeAgo from "../hooks/useTimeAgo";
 
 const UserPost = ({ post, user }) => {
   const showToast = useShowToast();
@@ -14,6 +28,10 @@ const UserPost = ({ post, user }) => {
   const [reload, setReload] = useState(false);
   const [topComments, setTopComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
+  const owner = useRecoilValue(userAtom);
+  const timeAgo = useTimeAgo(post.createdAt);
+
+
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(`/api/v1/like/count/post/${post._id}`);
@@ -95,17 +113,36 @@ const UserPost = ({ post, user }) => {
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
-            <Flex w={"full"} alignItems={"center"}>
-              <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
+            <Flex w={"full"} alignItems={"center"} gap={2}>
+              <Text fontSize={"md"} fontWeight={"bold"}>
                 {user.name}
               </Text>
               <MdVerified color="#2B96E9" />
+              <Text fontStyle={"sm"} color={"gray.light"}>
+              {timeAgo}
+              </Text>
             </Flex>
             <Flex gap={4} alignItems={"center"}>
-              <Text fontStyle={"sm"} color={"gray.light"}>
-                1d
-              </Text>
-              <BsThreeDots onClick={(e) => e.preventDefault()} />
+              <Box
+                className="icon-container"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Menu>
+                  <MenuButton>
+                    <BsThreeDots onClick={(e) => e.preventDefault()} />
+                  </MenuButton>
+                  <Portal>
+                    <MenuList bg={"gray.dark"}>
+                      {owner?._id === post?.postByDetails?._id && (
+                        <MenuItem bg={"gray.dark"}>Delete</MenuItem>
+                      )}
+                      <MenuItem bg={"gray.dark"}>View</MenuItem>
+                      <MenuItem bg={"gray.dark"}>Report</MenuItem>
+                      <MenuItem bg={"gray.dark"}>Share</MenuItem>
+                    </MenuList>
+                  </Portal>
+                </Menu>
+              </Box>
             </Flex>
           </Flex>
           <Text fontSize={"sm"}>{post.text}</Text>
@@ -120,7 +157,7 @@ const UserPost = ({ post, user }) => {
             </Box>
           )}
           <Flex gap={3} my={1}>
-            <Actions isLiked={isLiked} post={post} setReload={setReload}/>
+            <Actions isLiked={isLiked} post={post} setReload={setReload} />
           </Flex>
           <Flex gap={2} alignItems={"center"} color={"gray.light"}>
             <Text fontSize={"small"}>{commentCount} replies</Text>
