@@ -58,17 +58,17 @@ const Header = () => {
         <Flex fontSize="28px" gap={20} alignItems="center" color="gray.500">
           <GoHomeFill />
           <FiSearch />
-          <IoCreateOutline cursor={"pointer"} onClick={onOpen}/>
+          <IoCreateOutline cursor={"pointer"} onClick={onOpen} />
           <IoMdHeart />
           <FaUser color="white" />
         </Flex>
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <CreatePost onClose={onClose} />
-          </ModalContent>
-        </Modal>
+        <ModalOverlay />
+        <ModalContent>
+          <CreatePost onClose={onClose} />
+        </ModalContent>
+      </Modal>
       <Menu>
         <MenuButton
           as={IconButton}

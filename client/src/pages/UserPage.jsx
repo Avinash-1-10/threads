@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
 import UserPost from "../components/UserPost";
-import posts from "../data/posts";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";

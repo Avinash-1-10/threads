@@ -22,7 +22,6 @@ const UserPost = ({ post, user }) => {
     }
   };
 
-
   useEffect(() => {
     getLikeCount();
   }, [reload]);
@@ -88,7 +87,11 @@ const UserPost = ({ post, user }) => {
             </Box>
           )}
           <Flex gap={3} my={1}>
-            <Actions isLiked={isLiked} postId={post._id} setReload={setReload}/>
+            <Actions
+              isLiked={isLiked}
+              post={post}
+              setReload={setReload}
+            />
           </Flex>
           <Flex gap={2} alignItems={"center"} color={"gray.light"}>
             <Text fontSize={"small"}>{post.commentCount} replies</Text>
