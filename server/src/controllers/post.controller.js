@@ -97,7 +97,7 @@ const getPosts = async (req, res) => {
       },
       {
         $sort: { createdAt: -1 },
-      }
+      },
     ]);
     return res
       .status(200)
@@ -111,7 +111,10 @@ const getPosts = async (req, res) => {
 const getPostById = async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate({
+      path: "postBy",
+      select: "name username avatar",
+    });
     if (!post) {
       return res.status(400).json({ message: "Post not found" });
     }
@@ -185,22 +188,18 @@ const getPostsByUser = async (req, res) => {
       return res.status(404).json({ error: "No posts found", statusCode: 404 });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Posts fetched successfully",
-        data: posts,
-        statusCode: 200,
-      });
+    res.status(200).json({
+      message: "Posts fetched successfully",
+      data: posts,
+      statusCode: 200,
+    });
   } catch (error) {
     console.error("Error fetching posts:", error);
-    res
-      .status(500)
-      .json({
-        message: "Error fetching posts",
-        error: error.message,
-        statusCode: 500,
-      });
+    res.status(500).json({
+      message: "Error fetching posts",
+      error: error.message,
+      statusCode: 500,
+    });
   }
 };
 

@@ -79,6 +79,7 @@ const commentLike = async (req, res) => {
 const getPostLikes = async (req, res) => {
   const postId = req.params.id;
   const userId = req.user._id;
+  console.log(postId, userId)
   try {
     const likes = await PostLike.find({ post: postId }).limit(10);
     const likeCount = await PostLike.countDocuments({ post: postId });
