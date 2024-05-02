@@ -47,7 +47,68 @@ const createPost = async (req, res) => {
   }
 };
 
-const getPost = async (req, res) => {
+const getPosts = async (req, res) => {
+  try {
+    const posts = await Post.aggregate([
+      {
+        $lookup: {
+          from: "postlikes",
+          localField: "_id",
+          foreignField: "post",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "post",
+          as: "comments",
+        },
+      },
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" },
+          commentCount: { $size: "$comments" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "postBy",
+          foreignField: "_id",
+          as: "postByDetails",
+        },
+      },
+      {
+        $unwind: "$postByDetails",
+      },
+      {
+        $project: {
+          text: 1,
+          image: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "postByDetails.name": 1,
+          "postByDetails.username": 1,
+          "postByDetails.avatar": 1,
+          "postByDetails._id": 1,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      }
+    ]);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Posts fetched successfully", posts));
+  } catch (error) {
+    console.log("Error in get posts");
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
+const getPostById = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await Post.findById(postId);
@@ -64,74 +125,84 @@ const getPost = async (req, res) => {
 
 const getPostsByUser = async (req, res) => {
   try {
-      const { username } = req.params;
-      const user = await User.findOne({ username });
-      if (!user) {
-          return res.status(404).json({ error: "User not found", statusCode: 404 });
-      }
-      const userId = user._id;
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ error: "User not found", statusCode: 404 });
+    }
+    const userId = user._id;
 
-      const posts = await Post.aggregate([
-          { $match: { postBy: new mongoose.Types.ObjectId(userId) } },
-          {
-              $lookup: {
-                  from: "postlikes",
-                  localField: "_id",
-                  foreignField: "post",
-                  as: "likes",
-              },
-          },
-          {
-              $lookup: {
-                  from: "comments",
-                  localField: "_id",
-                  foreignField: "post",
-                  as: "comments",
-              },
-          },
-          {
-              $addFields: {
-                  likeCount: { $size: "$likes" },
-                  commentCount: { $size: "$comments" },
-              },
-          },
-          {
-              $lookup: {
-                  from: "users",
-                  localField: "postBy",
-                  foreignField: "_id",
-                  as: "postByDetails"
-              }
-          },
-          {
-              $unwind: "$postByDetails"
-          },
-          {
-              $project: {
-                  text: 1,
-                  image: 1,
-                  createdAt: 1,
-                  updatedAt: 1,
-                  'postByDetails.name': 1,
-                  'postByDetails.username': 1,
-                  'postByDetails.avatar': 1,
-                  'postByDetails._id': 1,
-              }
-          }
-      ]);
+    const posts = await Post.aggregate([
+      { $match: { postBy: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "postlikes",
+          localField: "_id",
+          foreignField: "post",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "post",
+          as: "comments",
+        },
+      },
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" },
+          commentCount: { $size: "$comments" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "postBy",
+          foreignField: "_id",
+          as: "postByDetails",
+        },
+      },
+      {
+        $unwind: "$postByDetails",
+      },
+      {
+        $project: {
+          text: 1,
+          image: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "postByDetails.name": 1,
+          "postByDetails.username": 1,
+          "postByDetails.avatar": 1,
+          "postByDetails._id": 1,
+        },
+      },
+    ]);
 
-      if (posts.length === 0) {
-          return res.status(404).json({ error: "No posts found", statusCode: 404 });
-      }
+    if (posts.length === 0) {
+      return res.status(404).json({ error: "No posts found", statusCode: 404 });
+    }
 
-      res.status(200).json({ message: "Posts fetched successfully", data: posts, statusCode: 200 });
+    res
+      .status(200)
+      .json({
+        message: "Posts fetched successfully",
+        data: posts,
+        statusCode: 200,
+      });
   } catch (error) {
-      console.error("Error fetching posts:", error);
-      res.status(500).json({ message: "Error fetching posts", error: error.message, statusCode: 500 });
+    console.error("Error fetching posts:", error);
+    res
+      .status(500)
+      .json({
+        message: "Error fetching posts",
+        error: error.message,
+        statusCode: 500,
+      });
   }
 };
-
-
 
 const deletePost = async (req, res) => {
   try {
@@ -180,4 +251,11 @@ const getPostFeed = async (req, res) => {
   }
 };
 
-export { createPost, getPost, deletePost, getPostFeed, getPostsByUser };
+export {
+  createPost,
+  getPosts,
+  getPostById,
+  deletePost,
+  getPostFeed,
+  getPostsByUser,
+};

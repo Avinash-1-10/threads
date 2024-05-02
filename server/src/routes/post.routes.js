@@ -4,15 +4,17 @@ import upload from "../middlewares/multer.middleware.js";
 import {
   createPost,
   deletePost,
-  getPost,
+  getPostById,
   getPostFeed,
+  getPosts,
   getPostsByUser,
 } from "../controllers/post.controller.js";
 
 const router = Router();
 
 router.post("/create", verifyJwt, upload.single("image"), createPost);
-router.get("/:id", getPost);
+router.get("/", getPosts)
+router.get("/:id", getPostById);
 router.get("/user/:username", getPostsByUser);
 router.delete("/:id", deletePost);
 router.get("/feed", verifyJwt, getPostFeed);
