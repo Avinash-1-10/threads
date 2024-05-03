@@ -3,20 +3,16 @@ import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 import { useState } from "react";
 
-const Comment = () => {
+const Comment = (comment) => {
   const [liked, setLiked] = useState();
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
-        <Avatar src={"hi"} size={"sm"} />
+        <Avatar src={comment.comment.commentBy.avatar} size={"sm"} />
         <Flex gap={1} w={"full"} flexDirection={"column"}>
           <Flex flexDirection={"column"}>
-            <Text fontSize="sm" fontWeight="bold">
-              {"elonmusk"}
-            </Text>
-            <Text>{"This is reply"}</Text>
-            <Actions liked={liked} setLiked={setLiked} />
-            <Text color={"gray.light"}>1 Like</Text>
+            <Text>{comment.comment.commentBy.username}</Text>
+            <Text color={"gray.light"}>{comment.comment.text}</Text>
           </Flex>
         </Flex>
         <Flex gap={4} alignItems={"center"} ml={"auto"} mb={"auto"}>

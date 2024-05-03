@@ -22,57 +22,63 @@ const PostPage = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState([]);
   const [reload, setReload] = useState(false);
   const showToast = useShowToast();
 
-
-  const getPost = async () => {
-    try {
-      const { data } = await axios.get(`/api/v1/post/${pid}`);
-      setPost(data.post)
-    } catch (error) {
-      showToast("Error", error.response.data.message || error.message, "error");
-    }
-  };
-
-  const getLikeCount = async () => {
-    try {
-      const { data } = await axios.get(`/api/v1/like/count/post/${post._id}`);
-      console.log(data)
-      setLikeCount(data.data.likeCount);
-      setIsLiked(data.data.isLiked);
-    } catch (error) {
-      console.log(error.response.data.message)
-      showToast("Error", error.response.data.message || error.message, "error");
-    }
-  };
   useEffect(() => {
-    getPost();
-    getLikeCount()
-  }, [reload]);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data: postData } = await axios.get(`/api/v1/post/${pid}`);
+        setPost(postData.post);
+        if (postData.post?._id) {
+          const { data: likeData } = await axios.get(
+            `/api/v1/like/count/post/${postData.post._id}`
+          );
+          const { data: comments } = await axios.get(
+            `/api/v1/comment/post/${postData.post._id}`
+          );
+          setComments(comments.data);
+          setLikeCount(likeData.data.likeCount);
+          setIsLiked(likeData.data.isLiked);
+        }
+      } catch (error) {
+        showToast(
+          "Error",
+          error.response?.data.message || error.message,
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [pid, reload]);
+
   return (
     <>
-      <Flex>
-        <Flex w={"full"} alignItems={"center"} gap={3}>
-          <Avatar
-            src={post?.postBy?.avatar}
-            size={"md"}
-            name="Elon"
-          />
-          <Flex alignItems={"center"} gap={2}>
-            <Text fontSize={"sm"} fontWeight={"bold"}>
-              {post?.postBy?.username}
-            </Text>
-            <MdVerified color="#2B96E9" />
-          </Flex>
-          <Flex gap={4} alignItems={"center"} ml={"auto"}>
-            <Text fontSize={"sm"} color={"gray.light"}>
-              1d
-            </Text>
-            <BsThreeDots />
-          </Flex>
+      <Flex alignItems={"center"} gap={3}>
+        <Avatar
+          src={post?.postBy?.avatar}
+          size={"md"}
+          name={post?.postBy?.username || "User"}
+        />
+        <Flex alignItems={"center"} gap={2}>
+          <Text fontSize={"sm"} fontWeight={"bold"}>
+            {post?.postBy?.username}
+          </Text>
+          <MdVerified color="#2B96E9" />
+        </Flex>
+        <Flex gap={4} alignItems={"center"} ml={"auto"}>
+          <Text fontSize={"sm"} color={"gray.light"}>
+            1d
+          </Text>
+          <BsThreeDots />
         </Flex>
       </Flex>
+
       <Text my={3}>{post.text}</Text>
       <Box
         borderRadius={6}
@@ -80,11 +86,9 @@ const PostPage = () => {
         border={"1px solid"}
         borderColor={"gray.light"}
       >
-        <Image
-          src={post.image}
-          w={"full"}
-        />
+        <Image src={post.image} w={"full"} />
       </Box>
+
       <Flex gap={3} my={3}>
         <Actions isLiked={isLiked} post={post} setReload={setReload} />
       </Flex>
@@ -94,9 +98,10 @@ const PostPage = () => {
         </Text>
         <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
         <Text color={"gray.light"} fontSize={"sm"}>
-          {0} likes
+          {likeCount} likes
         </Text>
       </Flex>
+
       <Divider my={4} />
       <Flex justifyContent={"space-between"}>
         <Flex gap={2} alignItems={"center"}>
@@ -105,11 +110,11 @@ const PostPage = () => {
         </Flex>
         <Button>Get</Button>
       </Flex>
+
       <Divider my={4} />
-      <Comment />
-      <Comment />
-      <Comment />
-      <Comment />
+      {comments.map((comment, i) => (
+        <Comment comment={comment}  key={i}/>
+      ))}
     </>
   );
 };

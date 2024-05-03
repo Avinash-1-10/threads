@@ -58,4 +58,26 @@ const getCommentCount = async (req, res) => {
   }
 };
 
-export { addComment, getCommentCount };
+const getCommentsByPostId = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(400).json(new ApiError(400, "Post not found"));
+    }
+    const comments = await Comment.find({ post: postId })
+      .populate({
+        path: "commentBy",
+        select: "username avatar",
+      })
+      .sort({ createdAt: -1 });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Comments fetched successfully", comments));
+  } catch (error) {
+    console.error("Error in getCommentsByPostId: ", error);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+export { addComment, getCommentCount, getCommentsByPostId };
