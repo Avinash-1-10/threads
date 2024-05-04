@@ -65,6 +65,7 @@ const getCommentsByPostId = async (req, res) => {
     if (!post) {
       return res.status(400).json(new ApiError(400, "Post not found"));
     }
+    const commentCount = await Comment.countDocuments({ post: postId });
     const comments = await Comment.find({ post: postId })
       .populate({
         path: "commentBy",
@@ -73,7 +74,7 @@ const getCommentsByPostId = async (req, res) => {
       .sort({ createdAt: -1 });
     return res
       .status(200)
-      .json(new ApiResponse(200, "Comments fetched successfully", comments));
+      .json(new ApiResponse(200, "Comments fetched successfully", {comments, commentCount}));
   } catch (error) {
     console.error("Error in getCommentsByPostId: ", error);
     return res.status(500).json(new ApiError(500, error.message));

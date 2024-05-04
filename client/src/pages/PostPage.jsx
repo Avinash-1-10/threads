@@ -20,12 +20,13 @@ import useTimeAgo from "../hooks/useTimeAgo";
 const PostPage = () => {
   const { pid } = useParams();
   const [post, setPost] = useState({});
+  const showToast = useShowToast();
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState([]);
   const [reload, setReload] = useState(false);
-  const showToast = useShowToast();
+  const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const PostPage = () => {
       try {
         const { data: postData } = await axios.get(`/api/v1/post/${pid}`);
         setPost(postData.post);
-       let  date = new Date(postData.post.createdAt);
+        let date = new Date(postData.post.createdAt);
         let d = date.getDate();
         let m = date.getMonth() + 1;
         let y = date.getFullYear();
@@ -46,7 +47,8 @@ const PostPage = () => {
           const { data: comments } = await axios.get(
             `/api/v1/comment/post/${postData.post._id}`
           );
-          setComments(comments.data);
+          setComments(comments.data.comments);
+          setCommentCount(comments.data.commentCount);
           setLikeCount(likeData.data.likeCount);
           setIsLiked(likeData.data.isLiked);
         }
@@ -87,21 +89,23 @@ const PostPage = () => {
       </Flex>
 
       <Text my={3}>{post.text}</Text>
-      <Box
-        borderRadius={6}
-        overflow={"hidden"}
-        border={"1px solid"}
-        borderColor={"gray.light"}
-      >
-        <Image src={post.image} w={"full"} />
-      </Box>
+      {post?.image && (
+        <Box
+          borderRadius={6}
+          overflow={"hidden"}
+          border={"1px solid"}
+          borderColor={"gray.light"}
+        >
+          <Image src={post.image} w={"full"} />
+        </Box>
+      )}
 
       <Flex gap={3} my={3}>
         <Actions isLiked={isLiked} post={post} setReload={setReload} />
       </Flex>
       <Flex gap={2} alignItems={"center"}>
         <Text color={"gray.light"} fontSize={"sm"}>
-          123 replies
+          {commentCount} replies
         </Text>
         <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
         <Text color={"gray.light"} fontSize={"sm"}>
@@ -120,7 +124,7 @@ const PostPage = () => {
 
       <Divider my={4} />
       {comments.map((comment, i) => (
-        <Comment comment={comment}  key={i}/>
+        <Comment comment={comment} key={i} />
       ))}
     </>
   );
