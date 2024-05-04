@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { parseISO, format } from 'date-fns';
 
-const useFormattedDate = (timestamp) => {
+const useTimeAgo = (timestamp) => {
+  if(!timestamp) return '';
   const [formattedDate, setFormattedDate] = useState('');
 
   useEffect(() => {
@@ -18,4 +19,4 @@ const useFormattedDate = (timestamp) => {
   return formattedDate;
 };
 
-export default useFormattedDate;
+export default useTimeAgo;

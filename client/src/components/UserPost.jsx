@@ -134,7 +134,7 @@ const UserPost = ({ post, user }) => {
                   <Portal>
                     <MenuList bg={"gray.dark"}>
                       {owner?._id === post?.postByDetails?._id && (
-                        <MenuItem bg={"gray.dark"}>Delete</MenuItem>
+                        <MenuItem bg={"gray.dark"} color={"red"}>Delete</MenuItem>
                       )}
                       <MenuItem bg={"gray.dark"}>View</MenuItem>
                       <MenuItem bg={"gray.dark"}>Report</MenuItem>

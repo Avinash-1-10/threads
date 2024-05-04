@@ -2,9 +2,10 @@ import { Avatar, Divider, Flex, Text } from "@chakra-ui/react";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 import { useState } from "react";
+import useTimeAgo from "../hooks/useTimeAgo";
 
 const Comment = (comment) => {
-  const [liked, setLiked] = useState();
+  const timeAgo = useTimeAgo(comment.comment.createdAt);
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
@@ -17,7 +18,7 @@ const Comment = (comment) => {
         </Flex>
         <Flex gap={4} alignItems={"center"} ml={"auto"} mb={"auto"}>
           <Text fontSize={"sm"} color={"gray.light"}>
-            1d
+            {timeAgo}
           </Text>
           <BsThreeDots />
         </Flex>

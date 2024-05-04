@@ -15,6 +15,7 @@ import Comment from "../components/Comment";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
+import useTimeAgo from "../hooks/useTimeAgo";
 
 const PostPage = () => {
   const { pid } = useParams();
@@ -25,6 +26,7 @@ const PostPage = () => {
   const [comments, setComments] = useState([]);
   const [reload, setReload] = useState(false);
   const showToast = useShowToast();
+  const [timeAgo, setTimeAgo] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +34,11 @@ const PostPage = () => {
       try {
         const { data: postData } = await axios.get(`/api/v1/post/${pid}`);
         setPost(postData.post);
+       let  date = new Date(postData.post.createdAt);
+        let d = date.getDate();
+        let m = date.getMonth() + 1;
+        let y = date.getFullYear();
+        setTimeAgo(`${d}/${m}/${y}`);
         if (postData.post?._id) {
           const { data: likeData } = await axios.get(
             `/api/v1/like/count/post/${postData.post._id}`
@@ -73,7 +80,7 @@ const PostPage = () => {
         </Flex>
         <Flex gap={4} alignItems={"center"} ml={"auto"}>
           <Text fontSize={"sm"} color={"gray.light"}>
-            1d
+            {timeAgo}
           </Text>
           <BsThreeDots />
         </Flex>

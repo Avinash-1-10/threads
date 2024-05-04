@@ -46,8 +46,8 @@ const CommentModal = ({ onClose, post, setReload }) => {
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size={"md"}
-            name={post.postByDetails.avatar}
-            src={post.postByDetails.avatar}
+            name={post?.postByDetails?.avatar || post.postBy.avatar}
+            src={post?.postByDetails?.avatar || post.postBy.avatar}
           />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box w={"full"}>
@@ -58,7 +58,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"}>
               <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
-                {post.postByDetails.name}
+                {post?.postByDetails?.name || post?.postBy?.name}
               </Text>
               <MdVerified color="#2B96E9" />
             </Flex>
@@ -84,7 +84,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
               {user.username}
             </Text>
             <input
-              placeholder={`Reply to ${post.postByDetails.username}...`}
+              placeholder={`Reply to ${post?.postByDetails?.username || post?.postBy?.username}...`}
               style={{
                 width: "100%",
                 background: "inherit",
