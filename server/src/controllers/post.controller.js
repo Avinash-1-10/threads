@@ -207,9 +207,12 @@ const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await Post.findById(postId);
+
     if (!post) {
       return res.status(400).json({ message: "Post not found" });
     }
+    // delet all the comments for the post
+    await Comment.deleteMany({ post: postId });
     await Post.findByIdAndDelete(postId);
     return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
