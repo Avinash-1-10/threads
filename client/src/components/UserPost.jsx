@@ -31,7 +31,6 @@ const UserPost = ({ post, user }) => {
   const owner = useRecoilValue(userAtom);
   const timeAgo = useTimeAgo(post.createdAt);
 
-
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(`/api/v1/like/count/post/${post._id}`);
@@ -49,6 +48,21 @@ const UserPost = ({ post, user }) => {
       // console.log(data);
       setCommentCount(data.data.commentCount);
       setTopComments(data.data.topComments);
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    }
+  };
+
+  const deletePost = async () => {
+    try {
+      const { data } = await axios.delete(`/api/v1/post/${post._id}`);
+      showToast("Success", data.message, "success");
+      setReload((prev) => !prev);
+      window.location.reload()
     } catch (error) {
       showToast(
         "Error",
@@ -119,14 +133,11 @@ const UserPost = ({ post, user }) => {
               </Text>
               <MdVerified color="#2B96E9" />
               <Text fontStyle={"sm"} color={"gray.light"}>
-              {timeAgo}
+                {timeAgo}
               </Text>
             </Flex>
             <Flex gap={4} alignItems={"center"}>
-              <Box
-                className="icon-container"
-                onClick={(e) => e.preventDefault()}
-              >
+              <Box onClick={(e) => e.preventDefault()}>
                 <Menu>
                   <MenuButton>
                     <BsThreeDots onClick={(e) => e.preventDefault()} />
@@ -134,7 +145,13 @@ const UserPost = ({ post, user }) => {
                   <Portal>
                     <MenuList bg={"gray.dark"}>
                       {owner?._id === post?.postByDetails?._id && (
-                        <MenuItem bg={"gray.dark"} color={"red"}>Delete</MenuItem>
+                        <MenuItem
+                          bg={"gray.dark"}
+                          color={"red"}
+                          onClick={deletePost}
+                        >
+                          Delete
+                        </MenuItem>
                       )}
                       <MenuItem bg={"gray.dark"}>View</MenuItem>
                       <MenuItem bg={"gray.dark"}>Report</MenuItem>

@@ -81,4 +81,20 @@ const getCommentsByPostId = async (req, res) => {
   }
 }
 
-export { addComment, getCommentCount, getCommentsByPostId };
+
+const deleteComment = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(400).json(new ApiError(400, "Comment not found"));
+    }
+    await Comment.findByIdAndDelete(commentId);
+    return res.status(200).json(new ApiResponse(200, "Comment deleted successfully"));
+  } catch (error) {
+    console.log("Error in deleteComment");
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+export { addComment, getCommentCount, getCommentsByPostId, deleteComment };
