@@ -19,20 +19,25 @@ import { FaThreads } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
 import { IoMdHeart } from "react-icons/io";
-import { FaUser } from "react-icons/fa";
+import { FaUser } from "react-icons/fa6";
+import { FaRegUser } from "react-icons/fa6";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { AiOutlineHeart } from "react-icons/ai";
 import { IoCreateOutline } from "react-icons/io5";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import LogoutButton from "./LogoutButton";
 import CreatePost from "./CreatePost";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { GoHome } from "react-icons/go";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const showFullHeader = useBreakpointValue({ base: false, md: true });
   const user = useRecoilValue(userAtom);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const location = useLocation();
+  const path = location.pathname;
 
   return (
     <Flex
@@ -56,15 +61,18 @@ const Header = () => {
         cursor="pointer"
       />
       {showFullHeader && (
-        <Flex fontSize="28px" gap={20} alignItems="center" color="gray.500">
-          <Link to={`/`}>
-            <GoHomeFill />
-          </Link>
+        <Flex
+          fontSize="28px"
+          gap={20}
+          alignItems="center"
+          color={colorMode === "dark" ? "white" : "gray.dark"}
+        >
+          <Link to={`/`}>{path === "/" ? <GoHomeFill /> : <GoHome />}</Link>
           <FiSearch />
           <IoCreateOutline cursor={"pointer"} onClick={onOpen} />
-          <IoMdHeart />
+          <AiOutlineHeart />
           <Link to={`/${user?.username}`}>
-            <FaUser color="white" />
+            {path === `/${user?.username}` ? <FaUser /> : <FaRegUser />}
           </Link>
         </Flex>
       )}
