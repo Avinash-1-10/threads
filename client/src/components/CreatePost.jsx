@@ -8,6 +8,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -18,8 +19,9 @@ import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 
-const CreatePost = ({onClose}) => {
+const CreatePost = ({ onClose }) => {
   const user = useRecoilValue(userAtom);
+  const { colorMode } = useColorMode();
   const showToast = useShowToast();
   const fileRef = useRef(null);
   const { handleImageChange, imgUrl, setImgUrl, imgFile } = usePreviewImg();
@@ -37,11 +39,15 @@ const CreatePost = ({onClose}) => {
       setText("");
       setImgUrl(null);
       showToast("Success", data.message, "success");
-      onClose()
+      onClose();
     } catch (error) {
       console.log(error);
-      showToast("Error", error.response?.data?.message || error.message, "error");
-    }finally{
+      showToast(
+        "Error",
+        error.response?.data?.message || error.message,
+        "error"
+      );
+    } finally {
       seLoading(false);
     }
   };
@@ -50,13 +56,13 @@ const CreatePost = ({onClose}) => {
     <Flex
       p={4}
       border={"1px solid"}
-      borderColor={"gray.700"}
-      bgColor={"gray.dark"}
+      borderColor={"gray.800"}
+      bgColor={colorMode === "dark" ? "gray.dark" : "#EDF2F6"}
       gap={2}
       rounded={"md"}
     >
       <Stack>
-        <Avatar src={user.avatar}/>
+        <Avatar src={user.avatar} />
       </Stack>
       <Stack flex={1}>
         <Text fontWeight={"bold"}>{user.username}</Text>
@@ -94,9 +100,9 @@ const CreatePost = ({onClose}) => {
         <Button
           ml={"auto"}
           rounded={"full"}
-          bg={"white"}
-          color={"gray.dark"}
-          sx={{ ":hover": { bg: "gray.100" } }}
+          bg={colorMode === "dark" ? "white" : "gray.dark"}
+          color={colorMode === "dark" ? "gray.dark" : "white"}
+          sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
           onClick={handleSubmit}
           disabled={loading}
         >

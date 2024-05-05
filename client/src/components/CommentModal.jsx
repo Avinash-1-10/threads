@@ -7,20 +7,24 @@ import {
   Stack,
   Button,
   Spinner,
+  useColorMode,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import { MdVerified } from "react-icons/md";
-import { BsThreeDots } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
+import useTimeAgo from "../hooks/useTimeAgo";
+
 
 const CommentModal = ({ onClose, post, setReload }) => {
   const showToast = useShowToast();
+  const { colorMode } = useColorMode();
   const user = useRecoilValue(userAtom);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
+  const timeAgo = useTimeAgo(post?.createdAt);
   const addComment = async () => {
     setLoading(true);
     try {
@@ -41,7 +45,11 @@ const CommentModal = ({ onClose, post, setReload }) => {
     }
   };
   return (
-    <Box p={5} bgColor={"gray.dark"}>
+    <Box
+      p={5}
+      bgColor={colorMode === "dark" ? "#101010" : "#EDF2F6"}
+      rounded={5}
+    >
       <Flex gap={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
@@ -64,7 +72,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
             </Flex>
             <Flex gap={4} alignItems={"center"}>
               <Text fontStyle={"sm"} color={"gray.light"}>
-                1d
+                {timeAgo}
               </Text>
             </Flex>
           </Flex>
@@ -79,20 +87,22 @@ const CommentModal = ({ onClose, post, setReload }) => {
               <Image src={post.image} w={"full"} />
             </Box>
           )}
-          <Stack gap={1} color={"gray.light"}>
-            <Text color={"white"} fontWeight={"bold"}>
-              {user.username}
-            </Text>
+          <Stack gap={1}>
+            <Text fontWeight={"bold"}>{user.username}</Text>
             <input
-              placeholder={`Reply to ${post?.postByDetails?.username || post?.postBy?.username}...`}
+              placeholder={`Reply to ${
+                post?.postByDetails?.username || post?.postBy?.username
+              }...`}
               style={{
                 width: "100%",
                 background: "inherit",
                 outline: "none",
                 border: "none",
                 padding: 0,
-                color: "white",
+                color: colorMode == "dark" ? "white" : "black",
               }}
+              type="text"
+              autoFocus
               required
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -105,9 +115,9 @@ const CommentModal = ({ onClose, post, setReload }) => {
           mt={2}
           ml={"auto"}
           rounded={"full"}
-          bg={"white"}
-          color={"gray.dark"}
-          sx={{ ":hover": { bg: "gray.100" } }}
+          bg={colorMode === "dark" ? "white" : "gray.dark"}
+          color={colorMode === "dark" ? "gray.dark" : "white"}
+          sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
           onClick={addComment}
           disabled={loading}
         >

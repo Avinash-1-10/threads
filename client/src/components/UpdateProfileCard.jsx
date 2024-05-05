@@ -8,6 +8,7 @@ import {
   Stack,
   Avatar,
   Center,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
@@ -20,6 +21,7 @@ import { Spinner } from "@chakra-ui/react";
 const UpdateProfileCard = ({ onClose }) => {
   const [user, setUser] = useRecoilState(userAtom);
   const showToast = useShowToast();
+  const { colorMode } = useColorMode();
   const { handleImageChange, imgUrl, imgFile } = usePreviewImg();
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
@@ -32,7 +34,7 @@ const UpdateProfileCard = ({ onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const formData = new FormData();
     formData.append("name", userData.name);
     formData.append("bio", userData.bio);
@@ -49,12 +51,17 @@ const UpdateProfileCard = ({ onClose }) => {
     } catch (error) {
       console.log(error);
       showToast("Error", error.response.data.message, "error");
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
   return (
-    <Flex align={"center"} justify={"center"} bg={"gray.dark"}>
+    <Flex
+      align={"center"}
+      justify={"center"}
+      bg={colorMode === "dark" ? "gray.dark" : "#EDF2F6"}
+      borderRadius={"lg"}
+    >
       <Stack
         spacing={4}
         w={"full"}
@@ -76,7 +83,11 @@ const UpdateProfileCard = ({ onClose }) => {
               <Avatar size="xl" boxShadow={"md"} src={imgUrl || user?.avatar} />
             </Center>
             <Center w="full">
-              <Button w="full" onClick={() => fileRef.current.click()}>
+              <Button
+                w="full"
+                onClick={() => fileRef.current.click()}
+                variant={"outline"}
+              >
                 Change Avatar
               </Button>
               <input

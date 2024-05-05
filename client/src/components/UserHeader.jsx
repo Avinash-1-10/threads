@@ -17,6 +17,7 @@ import {
   ModalOverlay,
   ModalContent,
   Spinner,
+  useColorMode,
 } from "@chakra-ui/react";
 import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
@@ -29,6 +30,7 @@ import axios from "axios";
 const UserHeader = ({ user }) => {
   const showToast = useShowToast();
   const owner = useRecoilValue(userAtom);
+  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [followersCount, setFollowersCount] = useState("...");
   const [isFollowing, setIsFollowing] = useState("...");
@@ -114,9 +116,10 @@ const UserHeader = ({ user }) => {
               <Text fontSize={"sm"}>{user?.username}</Text>
               <Text
                 fontSize={"xs"}
-                bg={"gray.dark"}
-                color={"gray.light"}
+                bg={colorMode === "dark" ? "gray.dark" : "#e0e0e0"}
+                color={colorMode === "dark" ? "gray.light" : "black"}
                 p={1}
+                px={2}
                 borderRadius={"full"}
               >
                 threads.net

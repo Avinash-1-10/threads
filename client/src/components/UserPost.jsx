@@ -9,6 +9,7 @@ import {
   MenuList,
   Portal,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ import useTimeAgo from "../hooks/useTimeAgo";
 
 const UserPost = ({ post, user }) => {
   const showToast = useShowToast();
+  const { colorMode } = useColorMode();
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [reload, setReload] = useState(false);
@@ -77,6 +79,7 @@ const UserPost = ({ post, user }) => {
     getLikeCount();
     getCommentCount();
   }, [reload]);
+
   return (
     <Link to={`/${post.postByDetails.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
@@ -151,19 +154,31 @@ const UserPost = ({ post, user }) => {
                     <BsThreeDots onClick={(e) => e.preventDefault()} />
                   </MenuButton>
                   <Portal>
-                    <MenuList bg={"gray.dark"}>
+                    <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
                       {owner?._id === post?.postByDetails?._id && (
                         <MenuItem
-                          bg={"gray.dark"}
                           color={"red"}
                           onClick={deletePost}
+                          bg={colorMode === "dark" ? "gray.dark" : "white"}
                         >
                           Delete
                         </MenuItem>
                       )}
-                      <MenuItem bg={"gray.dark"}>View</MenuItem>
-                      <MenuItem bg={"gray.dark"}>Report</MenuItem>
-                      <MenuItem bg={"gray.dark"}>Share</MenuItem>
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        View
+                      </MenuItem>
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        Report
+                      </MenuItem>
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        Share
+                      </MenuItem>
                     </MenuList>
                   </Portal>
                 </Menu>
