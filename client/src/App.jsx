@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
 import LogoutButton from "./components/LogoutButton";
+import SearchPage from "./pages/SearchPage";
 
 const App = () => {
   const location = useLocation();
@@ -31,6 +32,7 @@ const App = () => {
             element={!user ? <AuthPage /> : <Navigate to={"/"} />}
           />
           <Route path="/:username" element={<UserPage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />
         </Routes>
       </Container>

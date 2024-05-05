@@ -39,7 +39,6 @@ const Header = () => {
   const location = useLocation();
   const path = location.pathname;
 
-  
   return (
     <Flex
       w="full"
@@ -64,12 +63,14 @@ const Header = () => {
       {showFullHeader && (
         <Flex
           fontSize="28px"
-          gap={20}
+          gap={28}
           alignItems="center"
           color={colorMode === "dark" ? "white" : "gray.dark"}
         >
           <Link to={`/`}>{path === "/" ? <GoHomeFill /> : <GoHome />}</Link>
-          <FiSearch />
+          <Link to={`/search`}>
+            <FiSearch />
+          </Link>
           <IoCreateOutline cursor={"pointer"} onClick={onOpen} />
           <AiOutlineHeart />
           <Link to={`/${user?.username}`}>
