@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
@@ -30,6 +30,7 @@ const UserPost = ({ post, user }) => {
   const [commentCount, setCommentCount] = useState(0);
   const owner = useRecoilValue(userAtom);
   const timeAgo = useTimeAgo(post.createdAt);
+  const navigate = useNavigate();
 
   const getLikeCount = async () => {
     try {
@@ -62,7 +63,7 @@ const UserPost = ({ post, user }) => {
       const { data } = await axios.delete(`/api/v1/post/${post._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       showToast(
         "Error",
@@ -128,7 +129,14 @@ const UserPost = ({ post, user }) => {
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"} gap={2}>
-              <Text fontSize={"md"} fontWeight={"bold"}>
+              <Text
+                fontSize={"md"}
+                fontWeight={"bold"}
+                onClick={(e) => (
+                  e.preventDefault(), navigate(`/${user.username}`)
+                )}
+                _hover={{ cursor: "pointer", textDecoration: "underline" }}
+              >
                 {user.name}
               </Text>
               <MdVerified color="#2B96E9" />
