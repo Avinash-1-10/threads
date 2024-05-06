@@ -1,24 +1,58 @@
-import { Box, Button, Flex, Input, Stack, useColorMode } from "@chakra-ui/react";
-import React from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Stack,
+  useColorMode,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import SearchCard from "../components/SearchCard";
+import useShowToast from "../hooks/useShowToast";
+import axios from "axios";
 
 const SearchPage = () => {
-    const { colorMode } = useColorMode();
+  const { colorMode } = useColorMode();
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const showToast = useShowToast();
+
+  const getUsers = async () => {
+    try {
+      const { data } = await axios.get(`/api/v1/user/search?query=${search}`);
+      setUsers(data.data);
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    }
+  };
+
   return (
     <Stack>
-      <Flex gap={2}>
-        <Input placeholder={"Search"} type={"text"} autoFocus />
+      <Flex gap={5}>
+        <Input
+          placeholder={"Search"}
+          type={"text"}
+          autoFocus
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <Button
+          size={"sm"}
+          my={"auto"}
           bg={colorMode === "dark" ? "white" : "gray.dark"}
           color={colorMode === "dark" ? "gray.dark" : "white"}
           sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
+          onClick={getUsers}
         >
           Search
         </Button>
       </Flex>
       <Stack mt={5} gap={5}>
-        {[1, 2, 3].map((_, i) => (
-          <SearchCard key={i} />
+        {users.map((user, i) => (
+          <SearchCard key={i} user={user} />
         ))}
       </Stack>
     </Stack>

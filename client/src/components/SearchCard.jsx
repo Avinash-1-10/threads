@@ -7,9 +7,9 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import React from "react";
-import { BsSend } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
-const SearchCard = () => {
+const SearchCard = ({ user }) => {
   const { colorMode } = useColorMode();
   return (
     <Flex
@@ -20,20 +20,22 @@ const SearchCard = () => {
       rounded={"md"}
       p={3}
     >
-      <Avatar size={"md"} />
+      <Avatar size={"md"} src={user.avatar} />
       <Box mr={"auto"}>
-        <Text fontWeight={"bold"}>John Doe</Text>
-        <Text>@johndoe</Text>
+        <Text fontWeight={"bold"}>{user.name}</Text>
+        <Text>@{user.username}</Text>
       </Box>
+      <Link to={`/${user.username}`}>
       <Button
-      my={"auto"}
-      size={"sm"}
+        my={"auto"}
+        size={"sm"}
         bg={colorMode === "dark" ? "white" : "gray.dark"}
         color={colorMode === "dark" ? "gray.dark" : "white"}
         sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
       >
         View
       </Button>
+      </Link>
     </Flex>
   );
 };

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getUserProfile,
+  getUsers,
   login,
   logout,
   signup,
@@ -16,5 +17,6 @@ router.post("/login", login);
 router.post("/logout", logout);
 router.get("/profile/:query", getUserProfile);
 router.put("/update", verifyJwt, upload.single("avatar"), updateUser);
+router.get("/search", getUsers);
 
 export default router;

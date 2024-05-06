@@ -7,7 +7,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import uploadOnCloudinary from "../utils/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 
-
 const signup = async (req, res) => {
   try {
     // Extract relevant data from the request body
@@ -174,9 +173,9 @@ const updateUser = async (req, res) => {
 
     if (avatarPath) {
       if (user.avatar) {
-          await cloudinary.uploader.destroy(
-            user.avatar.split("/").pop().split(".")[0]
-          );
+        await cloudinary.uploader.destroy(
+          user.avatar.split("/").pop().split(".")[0]
+        );
         // await cloudinary.uploader.destroy(user.avatar.split("/").pop());
       }
       const image = await uploadOnCloudinary(avatarPath);
@@ -218,4 +217,35 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { signup, login, logout, updateUser, getUserProfile };
+// get users by username/name by query search
+const getUsers = async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const users = await User.find({
+      $or: [
+        { username: { $regex: query, $options: "i" } },
+        { name: { $regex: query, $options: "i" } },
+      ],
+    })
+      .select("-password")
+      .select("-createdAt")
+      .select("-updatedAt")
+      .select("-__v");
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Users fetched successfully", users));
+  } catch (error) {
+    console.error("Error in getUsers: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while fetching users."
+        )
+      );
+  }
+};
+
+export { signup, login, logout, updateUser, getUserProfile, getUsers };
