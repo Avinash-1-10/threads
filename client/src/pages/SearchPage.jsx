@@ -17,7 +17,8 @@ const SearchPage = () => {
   const [search, setSearch] = useState("");
   const showToast = useShowToast();
 
-  const getUsers = async () => {
+  const getUsers = async (e) => {
+    e.preventDefault()
     try {
       const { data } = await axios.get(`/api/v1/user/search?query=${search}`);
       setUsers(data.data);
@@ -32,7 +33,7 @@ const SearchPage = () => {
 
   return (
     <Stack>
-      <Flex gap={5}>
+      <form style={{ display: "flex", gap:5 }} onSubmit={getUsers}>
         <Input
           placeholder={"Search"}
           type={"text"}
@@ -45,11 +46,11 @@ const SearchPage = () => {
           bg={colorMode === "dark" ? "white" : "gray.dark"}
           color={colorMode === "dark" ? "gray.dark" : "white"}
           sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
-          onClick={getUsers}
+          type="submit"
         >
           Search
         </Button>
-      </Flex>
+      </form>
       <Stack mt={5} gap={5}>
         {users.map((user, i) => (
           <SearchCard key={i} user={user} />

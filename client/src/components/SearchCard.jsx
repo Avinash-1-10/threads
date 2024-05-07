@@ -25,9 +25,8 @@ const SearchCard = ({ user }) => {
         <Text fontWeight={"bold"}>{user.name}</Text>
         <Text>@{user.username}</Text>
       </Box>
-      <Link to={`/${user.username}`}>
+      <Link to={`/${user.username}`} style={{display: 'flex', alignItems:"center"}}>
       <Button
-        my={"auto"}
         size={"sm"}
         bg={colorMode === "dark" ? "white" : "gray.dark"}
         color={colorMode === "dark" ? "gray.dark" : "white"}
