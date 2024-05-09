@@ -84,7 +84,7 @@ const UserPost = ({ post, user }) => {
     <Link to={`/${post.postByDetails.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar size={"md"} name={user.name} src={user.avatar} />
+          <Avatar size={"md"} name={user?.name} src={user?.avatar} />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box position={"relative"} w={"full"}>
             {topComments.length > 0 ? (
@@ -140,7 +140,7 @@ const UserPost = ({ post, user }) => {
                 )}
                 _hover={{ cursor: "pointer", textDecoration: "underline" }}
               >
-                {user.name}
+                {user?.name}
               </Text>
               <MdVerified color="#2B96E9" />
               <Text fontStyle={"sm"} color={"gray.light"}>
