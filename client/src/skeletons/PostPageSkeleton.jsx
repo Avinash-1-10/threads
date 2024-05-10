@@ -7,13 +7,17 @@ const PostPageSkeleton = () => {
     <Stack>
       <UserPostSkeleton />
       <Skeleton height="30px" width="100%" />
-      <Flex alignItems="center" mt={5}>
-        <SkeletonCircle size="10" />
-        <Flex ml="4" flex="1" justifyContent={"space-between"}>
-          <Skeleton height="15px" width="50%" />
-          <Skeleton height="15px" width="10%" />
-        </Flex>
-      </Flex>
+      {
+        [1,2,3].map((i) => (
+            <Flex alignItems="center" mt={5} key={i}>
+            <SkeletonCircle size="10" />
+            <Flex ml="4" flex="1" justifyContent={"space-between"}>
+              <Skeleton height="15px" width="50%" />
+              <Skeleton height="15px" width="10%" />
+            </Flex>
+          </Flex>
+        ))
+      }
     </Stack>
   );
 };

@@ -10,7 +10,7 @@ import {
 
 const UserPostSkeleton = () => {
   return (
-    <Box padding="6" boxShadow="lg" borderRadius="md">
+    <Box padding="6" borderRadius="md">
       <Stack spacing="6">
         <Flex alignItems="center">
           <SkeletonCircle size="16" />
