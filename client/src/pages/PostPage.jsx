@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import useTimeAgo from "../hooks/useTimeAgo";
+import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 
 const PostPage = () => {
   const { pid } = useParams();
@@ -65,6 +66,10 @@ const PostPage = () => {
 
     fetchData();
   }, [pid, reload]);
+
+  if(loading){
+    return <PostPageSkeleton/>
+  }
 
   return (
     <>

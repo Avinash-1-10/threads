@@ -44,11 +44,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-{
-  /* <div>
-      {posts.map((post) => (
-        <UserPost key={post._id} post={post} user={post.postByDetails}/>
-      ))}
-    </div> */
-}
