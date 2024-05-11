@@ -10,50 +10,64 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 
-const Comment = (comment) => {
-  const timeAgo = useTimeAgo(comment.comment.createdAt);
+const Comment = ({ comment, handleReload }) => {
+  const timeAgo = useTimeAgo(comment.createdAt);
   const user = useRecoilValue(userAtom);
-  const owner = user._id === comment.comment.commentBy._id;
+  const owner = user._id === comment.commentBy._id;
   const [isCommentLiked, setCommentLiked] = useState(false);
   const [commentLikeCount, setCommentLikeCount] = useState(0);
-  const [reload, setReload] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const showToast = useShowToast();
 
   const getCommentLikes = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/comment/count/likes/${comment.comment._id}`
+        `/api/v1/comment/count/likes/${comment._id}`
       );
       setCommentLikeCount(data.data.likeCount);
       setCommentLiked(data.data.liked);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleLike = async () => {
     try {
-      const { data } = await axios.post(
-        `/api/v1/comment/like/${comment.comment._id}`
-      );
+      const { data } = await axios.post(`/api/v1/comment/like/${comment._id}`);
       showToast("Success", data.message, "success");
     } catch (error) {
       console.log(error);
       showToast("Error", error.response.data.message, "error");
     } finally {
-      setReload(!reload);
+      setRefresh(!refresh);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const { data } = await axios.delete(`/api/v1/comment/${comment._id}`);
+      showToast("Success", data.message, "success");
+      handleReload();
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
     }
   };
 
   useEffect(() => {
     getCommentLikes();
-  }, [reload]);
+  }, [refresh]);
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
-        <Avatar src={comment.comment.commentBy.avatar} size={"sm"} />
+        <Avatar src={comment.commentBy.avatar} size={"sm"} />
         <Flex gap={1} w={"full"} flexDirection={"column"}>
           <Flex flexDirection={"column"}>
-            <Text>{comment.comment.commentBy.username}</Text>
-            <Text color={"gray.light"}>{comment.comment.text}</Text>
+            <Text>{comment.commentBy.username}</Text>
+            <Text color={"gray.light"}>{comment.text}</Text>
           </Flex>
         </Flex>
         <Flex
@@ -67,7 +81,11 @@ const Comment = (comment) => {
             {timeAgo}
           </Text>
           {owner ? (
-            <RiDeleteBin5Line color="red" cursor={"pointer"} />
+            <RiDeleteBin5Line
+              color="red"
+              cursor={"pointer"}
+              onClick={handleDelete}
+            />
           ) : (
             <Stack alignItems={"center"}>
               {isCommentLiked ? (

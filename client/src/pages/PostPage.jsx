@@ -155,7 +155,11 @@ const PostPage = () => {
 
       <Divider my={4} />
       {comments.map((comment, i) => (
-        <Comment comment={comment} key={i} />
+        <Comment
+          comment={comment}
+          key={i}
+          handleReload={() => setReload((prev) => !prev)}
+        />
       ))}
     </>
   );
