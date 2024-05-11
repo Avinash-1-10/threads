@@ -145,7 +145,7 @@ const getCommentLikesByCommentId = async (req, res) => {
     if (!comment) {
       return res.status(400).json(new ApiError(400, "Comment not found"));
     }
-    const likes = await CommentLike.countDocuments({ comment: commentId });
+    const likeCount = await CommentLike.countDocuments({ comment: commentId });
     // check if user has liked the comment or not
     const likedComment = await CommentLike.findOne({
       likedBy: userId,
@@ -153,7 +153,7 @@ const getCommentLikesByCommentId = async (req, res) => {
     });
     return res.status(200).json(
       new ApiResponse(200, "Likes fetched successfully", {
-        likes,
+        likeCount,
         liked: !!likedComment,
       })
     );

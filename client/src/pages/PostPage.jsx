@@ -37,7 +37,7 @@ const PostPage = () => {
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
     } catch (error) {
-      console.log("error")
+      console.log("error");
     }
   };
 
@@ -49,9 +49,9 @@ const PostPage = () => {
       setComments(data.data.comments);
       setCommentCount(data.data.commentCount);
     } catch (error) {
-      console.log("error")
+      console.log("error");
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,7 +93,7 @@ const PostPage = () => {
   useEffect(() => {
     getLikeData();
     getCommentData();
-  },[reload])
+  }, [reload]);
 
   if (loading) {
     return <PostPageSkeleton />;
@@ -108,9 +108,7 @@ const PostPage = () => {
           name={post?.postBy?.username || "User"}
         />
         <Flex alignItems={"center"} gap={2}>
-          <Text fontSize={"sm"} fontWeight={"bold"}>
-            {post?.postBy?.username}
-          </Text>
+          <Text fontWeight={"bold"}>{post?.postBy?.name}</Text>
           <MdVerified color="#2B96E9" />
         </Flex>
         <Flex gap={4} alignItems={"center"} ml={"auto"}>
