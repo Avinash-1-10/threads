@@ -4,7 +4,9 @@ import {
   addComment,
   deleteComment,
   getCommentCount,
+  getCommentLikesByCommentId,
   getCommentsByPostId,
+  likeComment,
 } from "../controllers/comment.controller.js";
 
 const router = Router();
@@ -13,5 +15,7 @@ router.post("/:id", verifyJwt, addComment);
 router.get("/count/post/:postId", getCommentCount);
 router.get("/post/:postId", getCommentsByPostId);
 router.delete("/:id", verifyJwt, deleteComment);
+router.post("/like/:id", verifyJwt, likeComment);
+router.get("/count/likes/:id", verifyJwt, getCommentLikesByCommentId);
 
 export default router;
