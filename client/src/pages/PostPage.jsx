@@ -15,7 +15,6 @@ import Comment from "../components/Comment";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
-import useTimeAgo from "../hooks/useTimeAgo";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 
 const PostPage = () => {
@@ -29,6 +28,30 @@ const PostPage = () => {
   const [reload, setReload] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
+
+  const getLikeData = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/v1/like/count/post/${post._id || pid}`
+      );
+      setLikeCount(data.data.likeCount);
+      setIsLiked(data.data.isLiked);
+    } catch (error) {
+      console.log("error")
+    }
+  };
+
+  const getCommentData = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/v1/comment/post/${post._id || pid}`
+      );
+      setComments(data.data.comments);
+      setCommentCount(data.data.commentCount);
+    } catch (error) {
+      console.log("error")
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,10 +88,15 @@ const PostPage = () => {
     };
 
     fetchData();
-  }, [pid, reload]);
+  }, [pid]);
 
-  if(loading){
-    return <PostPageSkeleton/>
+  useEffect(() => {
+    getLikeData();
+    getCommentData();
+  },[reload])
+
+  if (loading) {
+    return <PostPageSkeleton />;
   }
 
   return (
