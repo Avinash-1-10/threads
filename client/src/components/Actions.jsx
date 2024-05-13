@@ -14,6 +14,8 @@ import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import CommentModal from "./CommentModal";
+import RepostModal from "./RepostModal";
+import RepostButton from "./RepostButton";
 
 const Actions = ({ isLiked, post, setReload }) => {
   const showToast = useShowToast();
@@ -52,10 +54,10 @@ const Actions = ({ isLiked, post, setReload }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <CommentModal onClose={onClose} post={post} setReload={setReload}/>
+          <CommentModal onClose={onClose} post={post} setReload={setReload} />
         </ModalContent>
       </Modal>
-      <BiRepost fontSize={"30px"} cursor={"pointer"} />
+      <RepostButton post={post} setReload={setReload}/>
       <TbSend cursor={"pointer"} />
     </Flex>
   );
