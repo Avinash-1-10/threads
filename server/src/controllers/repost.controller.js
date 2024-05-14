@@ -25,4 +25,22 @@ const createRepost = async (req, res) => {
   }
 };
 
-export { createRepost };
+
+const deleteRepost = async (req, res) => {
+  try {
+    const repostId = req.params.id;
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(400).json(new ApiError(400, "Repost not found"));
+    }
+    await Repost.findByIdAndDelete(repostId);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Repost deleted successfully"));
+  } catch (error) {
+    console.log("Error in deleteRepost controller:", error.message);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+export { createRepost, deleteRepost };
