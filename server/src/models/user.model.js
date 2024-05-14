@@ -37,6 +37,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["user", "admin", "owner"],
       default: "user",
+    },
+    membershipStatus:{
+      type: String,
+      enum: ["basic", "premium", "pro"],
+      default: "basic",
     }
   },
   { timestamps: true }

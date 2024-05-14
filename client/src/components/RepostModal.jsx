@@ -25,23 +25,6 @@ const RepostModal = ({ onClose, post, setReload }) => {
   const [text, setText] = useState("");
   const timeAgo = useTimeAgo(post?.createdAt);
   const addComment = async () => {
-    // setLoading(true);
-    // try {
-    //   const { data } = await axios.post(`/api/v1/comment/${post._id}`, {
-    //     text,
-    //   });
-    //   showToast("Success", data.message, "success");
-    //   setReload((prev) => !prev);
-    //   onClose();
-    // } catch (error) {
-    //   showToast(
-    //     "Error",
-    //     error?.response?.data?.message || error.message,
-    //     "error"
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
   };
   return (
     <Box
