@@ -1,6 +1,30 @@
 import Repost from "../models/repost.model.js";
 import { ApiError } from "../utils/ApiError.js";
 
+const getAllReposts = async (req, res) => {
+  try {
+    const reposts = await Repost.find();
+    return res.status(200).json(reposts);
+  } catch (error) {
+    console.log("Error in getAllReposts controller:", error.message);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
+const getRepostById = async (req, res) => {
+  try {
+    const repostId = req.params.id;
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(400).json(new ApiError(400, "Repost not found"));
+    }
+    return res.status(200).json(repost);
+  } catch (error) {
+    console.log("Error in getRepostById controller:", error.message);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
 const createRepost = async (req, res) => {
   try {
     const { postId, text } = req.body;
@@ -25,7 +49,6 @@ const createRepost = async (req, res) => {
   }
 };
 
-
 const deleteRepost = async (req, res) => {
   try {
     const repostId = req.params.id;
@@ -41,6 +64,6 @@ const deleteRepost = async (req, res) => {
     console.log("Error in deleteRepost controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
   }
-}
+};
 
-export { createRepost, deleteRepost };
+export { createRepost, deleteRepost, getAllReposts, getRepostById };
