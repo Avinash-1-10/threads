@@ -7,6 +7,7 @@ import followRoutes from "./routes/follow.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import likeRoutes from "./routes/like.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
+import repostRoutes from "./routes/repost.routes.js"
 import cors from "cors";
 configDotenv();
 
@@ -28,6 +29,7 @@ app.use("/api/v1/follow", followRoutes);
 app.use("/api/v1/post", postRoutes);
 app.use("/api/v1/like", likeRoutes);
 app.use("/api/v1/comment", commentRoutes);
+app.use("/api/v1/repost", repostRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
