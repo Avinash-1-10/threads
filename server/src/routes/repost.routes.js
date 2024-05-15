@@ -9,7 +9,7 @@ import verifyJwt from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", verifyJwt, createRepost);
+router.post("/:id", verifyJwt, createRepost);
 router.get("/", getAllReposts);
 router.get("/:id", getRepostById);
 router.delete("/:id", verifyJwt, deleteRepost);

@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      default: "post",
+    },
     postBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

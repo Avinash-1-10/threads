@@ -20,11 +20,25 @@ import useTimeAgo from "../hooks/useTimeAgo";
 const RepostModal = ({ onClose, post, setReload }) => {
   const showToast = useShowToast();
   const { colorMode } = useColorMode();
-  const user = useRecoilValue(userAtom);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const timeAgo = useTimeAgo(post?.createdAt);
-  const addComment = async () => {
+  const createRepost = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`/api/v1/repost/${post._id}`, {
+        text,
+      });
+      showToast("Success", data.message, "success");
+      setReload((prev) => !prev);
+      onClose();
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+      }
   };
   return (
     <Box
@@ -92,8 +106,11 @@ const RepostModal = ({ onClose, post, setReload }) => {
           bg={colorMode === "dark" ? "white" : "gray.dark"}
           color={colorMode === "dark" ? "gray.dark" : "white"}
           sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
-          onClick={addComment}
           disabled={loading}
+          onClick={createRepost}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") createRepost();
+          }}
         >
           {loading ? <Spinner /> : "Repost"}
         </Button>

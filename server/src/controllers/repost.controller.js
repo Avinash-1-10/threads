@@ -1,10 +1,11 @@
 import Repost from "../models/repost.model.js";
 import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getAllReposts = async (req, res) => {
   try {
     const reposts = await Repost.find();
-    return res.status(200).json(reposts);
+    return res.status(200).json(new ApiResponse(200, "Reposts fetched successfully", reposts));
   } catch (error) {
     console.log("Error in getAllReposts controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
@@ -27,7 +28,8 @@ const getRepostById = async (req, res) => {
 
 const createRepost = async (req, res) => {
   try {
-    const { postId, text } = req.body;
+    const {text } = req.body;
+    const postId = req.params.id;
     const userId = req.user._id;
     if (!postId || !text) {
       return res

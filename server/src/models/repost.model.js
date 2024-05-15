@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const repostSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      default: "post",
+    },
     repostBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
