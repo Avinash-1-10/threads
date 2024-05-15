@@ -81,7 +81,7 @@ const UserPost = ({ post, user }) => {
   }, [reload]);
 
   return (
-    <Link to={`/${post.postByDetails.username}/post/${post._id}`}>
+    <Link to={`/${post.postByDetails?.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar size={"md"} name={user?.name} src={user?.avatar} />

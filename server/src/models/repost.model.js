@@ -4,7 +4,7 @@ const repostSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      default: "post",
+      default: "repost",
     },
     repostBy: {
       type: mongoose.Schema.Types.ObjectId,

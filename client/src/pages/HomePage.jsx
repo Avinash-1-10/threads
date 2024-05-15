@@ -4,6 +4,7 @@ import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import { Stack } from "@chakra-ui/react";
 import UserPostSkeleton from "../skeletons/UserPostSkeleton";
+import Repost from "../components/Repost";
 
 const HomePage = () => {
   const showToast = useShowToast();
@@ -12,7 +13,7 @@ const HomePage = () => {
   const getPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("/api/v1/post");
+      const { data } = await axios.get("/api/v1/feed");
       setPosts(data.data);
     } catch (error) {
       showToast("Error", error.response.data.message || error.message);
@@ -34,9 +35,17 @@ const HomePage = () => {
         </Stack>
       ) : (
         <div>
-          {posts.map((post) => (
-            <UserPost key={post._id} post={post} user={post.postByDetails} />
-          ))}
+          {posts.map((post) =>
+            post.type === "post" ? (
+              <UserPost key={post._id} post={post} user={post.postByDetails} />
+            ) : (
+              <Repost
+                key={post._id}
+                repost={post}
+                user={post.repostByDetails}
+              />
+            )
+          )}
         </div>
       )}
     </>
