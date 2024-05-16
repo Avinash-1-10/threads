@@ -5,7 +5,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getFeed = async (req, res) => {
   try {
-    // Fetch posts and reposts separately
     const posts = await Post.aggregate([
       {
         $lookup: {
@@ -54,6 +53,7 @@ const getFeed = async (req, res) => {
         },
       },
     ]);
+
     const reposts = await Repost.aggregate([
       {
         $lookup: {
@@ -67,12 +67,39 @@ const getFeed = async (req, res) => {
         $unwind: "$repostByDetails",
       },
       {
+        $lookup: {
+          from: "posts",
+          localField: "post",
+          foreignField: "_id",
+          as: "postDetails",
+        },
+      },
+      {
+        $unwind: "$postDetails",
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "postDetails.postBy",
+          foreignField: "_id",
+          as: "postByDetails",
+        },
+      },
+      {
+        $unwind: "$postByDetails",
+      },
+      {
         $project: {
           text: 1,
           image: 1,
           createdAt: 1,
           updatedAt: 1,
           type: 1,
+          postDetails: 1,
+          "postByDetails.name": 1,
+          "postByDetails.username": 1,
+          "postByDetails.avatar": 1,
+          "postByDetails._id": 1,
           "repostByDetails.name": 1,
           "repostByDetails.username": 1,
           "repostByDetails.avatar": 1,
@@ -86,12 +113,13 @@ const getFeed = async (req, res) => {
 
     // Sort the feed by createdAt timestamp in descending order
     feed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     return res
       .status(200)
       .json(new ApiResponse(200, "Feed fetched successfully", feed));
   } catch (error) {
     console.error("Error fetching feed:", error);
-    res.status(500).json(new ApiError(500, "Failed to fetch feed"));
+    return res.status(500).json(new ApiError(500, "Failed to fetch feed"));
   }
 };
 
