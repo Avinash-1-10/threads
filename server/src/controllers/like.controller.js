@@ -2,6 +2,7 @@ import Comment from "../models/comment.model.js";
 import CommentLike from "../models/commentLike.model.js";
 import Post from "../models/post.model.js";
 import PostLike from "../models/postLike.model.js";
+import Repost from "../models/repost.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -97,4 +98,67 @@ const getPostLikes = async (req, res) => {
   }
 };
 
-export { postLike, commentLike, getPostLikes };
+const repostLike = async (req, res) => {
+  const userId = req.user._id;
+  const repostId = req.params.id;
+
+  try {
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(404).json(new ApiError(404, "Repost not found"));
+    }
+
+    const likedRepost = await PostLike.findOne({
+      likedBy: userId,
+      post: repostId,
+    });
+    if (likedRepost) {
+      await PostLike.findByIdAndDelete(likedRepost._id);
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Repost dislike successful"));
+    } else {
+      const newLike = new PostLike({
+        likedBy: userId,
+        post: repostId,
+      });
+      await newLike.save();
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Repost liked successfully"));
+    }
+  } catch (error) {
+    console.error("Error in RepostLike: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while processing your request"
+        )
+      );
+  }
+};
+
+const getRepostLikes = async (req, res) => {
+  const repostId = req.params.id;
+  const userId = req.user._id;
+  try {
+    const likes = await PostLike.find({ post: repostId }).limit(10);
+    const likeCount = await PostLike.countDocuments({ post: repostId });
+    const userLike = await PostLike.findOne({ post: repostId, likedBy: userId });
+    const isLiked = !!userLike;
+    return res.status(200).json(
+      new ApiResponse(200, "Likes fetched successfully", {
+        likes,
+        likeCount,
+        isLiked,
+      })
+    );
+  } catch (error) {
+    console.error("Error in getRepostLikes: ", error);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
+export { postLike, commentLike, getPostLikes, repostLike, getRepostLikes };
