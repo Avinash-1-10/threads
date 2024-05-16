@@ -16,22 +16,23 @@ import useShowToast from "../hooks/useShowToast";
 import CommentModal from "./CommentModal";
 import RepostModal from "./RepostModal";
 import RepostButton from "./RepostButton";
+import RepostCommentModal from "./RepostCommentModal";
 
-const RepostActions = ({ isLiked, post, setReload }) => {
+const RepostActions = ({ isLiked, repost, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const likeUnlike = async () => {
-    try {
-      const { data } = await axios.post(`/api/v1/like/post/${post._id}`);
-      showToast("Success", data.message, "success");
-      setReload((prev) => !prev);
-    } catch (error) {
-      showToast(
-        "Error",
-        error?.response?.data?.message || error.message,
-        "error"
-      );
-    }
+    // try {
+    //   const { data } = await axios.post(`/api/v1/like/post/${post._id}`);
+    //   showToast("Success", data.message, "success");
+    //   setReload((prev) => !prev);
+    // } catch (error) {
+    //   showToast(
+    //     "Error",
+    //     error?.response?.data?.message || error.message,
+    //     "error"
+    //   );
+    // }
   };
   return (
     <Flex
@@ -54,7 +55,11 @@ const RepostActions = ({ isLiked, post, setReload }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <CommentModal onClose={onClose} post={post} setReload={setReload} />
+          <RepostCommentModal
+            onClose={onClose}
+            repost={repost}
+            setReload={setReload}
+          />
         </ModalContent>
       </Modal>
       <TbSend cursor={"pointer"} />
