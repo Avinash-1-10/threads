@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import UserPost from "../components/UserPost";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
-import { Avatar, Box, Flex, Menu, MenuButton, MenuItem, MenuList, Portal, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Image, Menu, MenuButton, MenuItem, MenuList, Portal, Stack, Text, useColorMode } from "@chakra-ui/react";
 import UserPostSkeleton from "../skeletons/UserPostSkeleton";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
@@ -12,7 +12,7 @@ import RepostActions from "./RepostActions";
 const Repost = ({ repost, user }) => {
   const topComments = [];
   const timeAgo = 12;
-  const colorMode = "dark";
+  const { colorMode } = useColorMode();
   const owner = "Avinash";
   const commentCount = 10;
   const likeCount = 12;
@@ -125,17 +125,25 @@ const Repost = ({ repost, user }) => {
               </Box>
             </Flex>
           </Flex>
-          <Text fontSize={"sm"}>{repost?.text}</Text>
-          {repost.image && (
+          <Text >{repost?.text}</Text>
+          <Stack p={5} border={"1px solid"} borderColor={"gray.light"} rounded={"md"}>
+            <Flex alignItems={"center"} gap={2}>
+              <Avatar size={"sm"}  name={repost.postByDetails.avatar} src={repost.postByDetails?.avatar}/>
+              <Text size={"sm"} fontWeight={"bold"}>{repost?.postByDetails.name}</Text>
+              <MdVerified size={"15px"} color="#2B96E9" />
+            </Flex>
+          <Text fontSize={"sm"}>{repost?.postDetails.text}</Text>
+          {repost.postDetails.image && (
             <Box
               borderRadius={6}
               overflow={"hidden"}
               border={"1px solid "}
               borderColor={"gray.light"}
             >
-              <Image src={post.image} w={"full"} />
+              <Image src={repost.postDetails.image} w={"full"}/>
             </Box>
           )}
+          </Stack>
           <Flex gap={3} my={1}>
             <RepostActions isLiked={isLiked} repost={repost} setReload={setReload} />
           </Flex>
