@@ -53,6 +53,7 @@ This project is a social media platform that serves as a clone of a popular soci
 
 ## Upcoming Features
 - Video upload
+- Buy Sponsored Product
 - Live chat
 - Live video calls
 - Live streaming

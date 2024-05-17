@@ -22,17 +22,18 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const likeUnlike = async () => {
-    // try {
-    //   const { data } = await axios.post(`/api/v1/like/post/${post._id}`);
-    //   showToast("Success", data.message, "success");
-    //   setReload((prev) => !prev);
-    // } catch (error) {
-    //   showToast(
-    //     "Error",
-    //     error?.response?.data?.message || error.message,
-    //     "error"
-    //   );
-    // }
+    console.log("Clicked")
+    try {
+      const { data } = await axios.post(`/api/v1/like/repost/${repost._id}`);
+      showToast("Success", data.message, "success");
+      setReload((prev) => !prev);
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
+    }
   };
   return (
     <Flex

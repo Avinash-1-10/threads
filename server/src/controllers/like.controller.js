@@ -146,7 +146,10 @@ const getRepostLikes = async (req, res) => {
   try {
     const likes = await PostLike.find({ post: repostId }).limit(10);
     const likeCount = await PostLike.countDocuments({ post: repostId });
-    const userLike = await PostLike.findOne({ post: repostId, likedBy: userId });
+    const userLike = await PostLike.findOne({
+      post: repostId,
+      likedBy: userId,
+    });
     const isLiked = !!userLike;
     return res.status(200).json(
       new ApiResponse(200, "Likes fetched successfully", {
