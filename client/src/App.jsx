@@ -11,6 +11,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
 import LogoutButton from "./components/LogoutButton";
 import SearchPage from "./pages/SearchPage";
+import RepostPage from "./pages/RepostPage";
 
 const App = () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="/:username" element={<UserPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />
+          <Route path="/:username/repost/:pid" element={<RepostPage />} />
         </Routes>
       </Container>
 
