@@ -21,6 +21,6 @@ router.post("/like/:id", verifyJwt, likeComment);
 router.get("/count/likes/:id", verifyJwt, getCommentLikesByCommentId);
 
 router.get("/count/repost/:id", getRepostCommentCount);
-router.post("/repost/:id", verifyJwt, addRepostComment)
+router.post("/repost/:id", verifyJwt, addRepostComment);
 
 export default router;

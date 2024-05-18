@@ -15,11 +15,14 @@ const getAllReposts = async (req, res) => {
 const getRepostById = async (req, res) => {
   try {
     const repostId = req.params.id;
-    const repost = await Repost.findById(repostId);
+    const repost = await Repost.findById(repostId).populate({
+      path: "repostBy",
+      select: "name username avatar",
+    });
     if (!repost) {
       return res.status(400).json(new ApiError(400, "Repost not found"));
     }
-    return res.status(200).json(repost);
+    return res.status(200).json(new ApiResponse(200, "Repost fetched successfully", repost));
   } catch (error) {
     console.log("Error in getRepostById controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
@@ -54,7 +57,7 @@ const createRepost = async (req, res) => {
 const deleteRepost = async (req, res) => {
   try {
     const repostId = req.params.id;
-    const repost = await Repost.findById(repostId);
+    const repost = await Repost.findById(repostId)
     if (!repost) {
       return res.status(400).json(new ApiError(400, "Repost not found"));
     }
