@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import useShowToast from '../hooks/useShowToast';
-import { Avatar, Box, Flex, useColorMode } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Image, Stack, Text, useColorMode } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import useTimeAgo from '../hooks/useTimeAgo';
+import {MdVerified} from 'react-icons/md';
 
 const RepostCommentModal = ({repost, onClose, setReload}) => {
-  
+
     const showToast = useShowToast();
     const { colorMode } = useColorMode();
     const user = useRecoilValue(userAtom);
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("");
     const timeAgo = useTimeAgo(repost?.createdAt);
+    console.log(repost)
     const addComment = async () => {
     //   setLoading(true);
     //   try {
@@ -42,8 +44,8 @@ const RepostCommentModal = ({repost, onClose, setReload}) => {
           <Flex flexDirection={"column"} alignItems={"center"}>
             <Avatar
               size={"md"}
-              name={post?.postByDetails?.avatar || post.postBy.avatar}
-              src={post?.postByDetails?.avatar || post.postBy.avatar}
+              name={repost?.postByDetails?.avatar || repost.postByDetails.avatar}
+              src={repost?.postByDetails?.avatar || repost.postByDetails.avatar}
             />
             <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
             <Box w={"full"}>
@@ -54,7 +56,7 @@ const RepostCommentModal = ({repost, onClose, setReload}) => {
             <Flex justifyContent={"space-between"} w={"full"}>
               <Flex w={"full"} alignItems={"center"}>
                 <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
-                  {post?.postByDetails?.name || post?.postBy?.name}
+                  {repost?.postByDetails?.name || repost?.postByDetails?.name}
                 </Text>
                 <MdVerified color="#2B96E9" />
               </Flex>
@@ -64,22 +66,41 @@ const RepostCommentModal = ({repost, onClose, setReload}) => {
                 </Text>
               </Flex>
             </Flex>
-            <Text fontSize={"sm"}>{post.text}</Text>
-            {post.image && (
+            <Text fontSize={"sm"}>{repost.text}</Text>
+            <Stack
+            p={5}
+            border={"1px solid"}
+            borderColor={"gray.light"}
+            rounded={"md"}
+          >
+            <Flex alignItems={"center"} gap={2}>
+              <Avatar
+                size={"sm"}
+                name={repost.postByDetails.avatar}
+                src={repost.postByDetails?.avatar}
+              />
+              <Text size={"sm"} fontWeight={"bold"}>
+                {repost?.postByDetails.name}
+              </Text>
+              <MdVerified size={"15px"} color="#2B96E9" />
+            </Flex>
+            <Text fontSize={"sm"}>{repost?.postDetails.text}</Text>
+            {repost.postDetails.image && (
               <Box
                 borderRadius={6}
                 overflow={"hidden"}
                 border={"1px solid "}
                 borderColor={"gray.light"}
               >
-                <Image src={post.image} w={"full"} />
+                <Image src={repost.postDetails.image} w={"full"} />
               </Box>
             )}
+          </Stack>
             <Stack gap={1}>
               <Text fontWeight={"bold"}>{user.username}</Text>
               <input
                 placeholder={`Reply to ${
-                  post?.postByDetails?.username || post?.postBy?.username
+                  repost?.postByDetails?.username || repost?.postBy?.username
                 }...`}
                 style={{
                   width: "100%",
