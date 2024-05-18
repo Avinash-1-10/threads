@@ -1,6 +1,7 @@
 import Comment from "../models/comment.model.js";
 import CommentLike from "../models/commentLike.model.js";
 import Post from "../models/post.model.js";
+import Repost from "../models/repost.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -163,11 +164,38 @@ const getCommentLikesByCommentId = async (req, res) => {
   }
 };
 
+const getRepostCommentCount = async (req, res) => {
+  try {
+    const repostId = req.params.id;
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(400).json(new ApiError(400, "Repost not found"));
+    }
+    const commentCount = await Comment.countDocuments({ post: repostId });
+    const topComments = await Comment.find({ post: repostId })
+      .populate({
+        path: "commentBy",
+        select: "username avatar",
+      })
+      .limit(3);
+    return res.status(200).json(
+      new ApiResponse(200, "Comment count fetched successfully", {
+        commentCount,
+        topComments,
+      })
+    );
+  } catch (error) {
+    console.error("Error in getCommentCount: ", error);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
 export {
   addComment,
   getCommentCount,
   getCommentsByPostId,
   deleteComment,
   likeComment,
-  getCommentLikesByCommentId
+  getCommentLikesByCommentId,
+  getRepostCommentCount
 };

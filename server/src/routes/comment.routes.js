@@ -6,6 +6,7 @@ import {
   getCommentCount,
   getCommentLikesByCommentId,
   getCommentsByPostId,
+  getRepostCommentCount,
   likeComment,
 } from "../controllers/comment.controller.js";
 
@@ -17,5 +18,7 @@ router.get("/post/:postId", getCommentsByPostId);
 router.delete("/:id", verifyJwt, deleteComment);
 router.post("/like/:id", verifyJwt, likeComment);
 router.get("/count/likes/:id", verifyJwt, getCommentLikesByCommentId);
+
+router.get("/count/repost/:id", getRepostCommentCount);
 
 export default router;
