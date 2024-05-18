@@ -36,14 +36,12 @@ const Repost = ({ repost, user }) => {
   const [commentCount, setCommentCount] = useState(0);
   const [reload, setReload] = useState(false);
 
-  console.log(repost);
 
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(
         `/api/v1/like/count/repost/${repost._id}`
       );
-      console.log(data)
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
     } catch (error) {

@@ -1,38 +1,38 @@
 import React, { useState } from 'react'
 import useShowToast from '../hooks/useShowToast';
-import { Avatar, Box, Button, Flex, Image, Stack, Text, useColorMode } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, Image, Spinner, Stack, Text, useColorMode } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import useTimeAgo from '../hooks/useTimeAgo';
 import {MdVerified} from 'react-icons/md';
+import axios from 'axios';
 
 const RepostCommentModal = ({repost, onClose, setReload}) => {
-
     const showToast = useShowToast();
     const { colorMode } = useColorMode();
     const user = useRecoilValue(userAtom);
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("");
     const timeAgo = useTimeAgo(repost?.createdAt);
-    console.log(repost)
+
     const addComment = async () => {
-    //   setLoading(true);
-    //   try {
-    //     const { data } = await axios.post(`/api/v1/comment/${post._id}`, {
-    //       text,
-    //     });
-    //     showToast("Success", data.message, "success");
-    //     setReload((prev) => !prev);
-    //     onClose();
-    //   } catch (error) {
-    //     showToast(
-    //       "Error",
-    //       error?.response?.data?.message || error.message,
-    //       "error"
-    //     );
-    //   } finally {
-    //     setLoading(false);
-    //   }
+      setLoading(true);
+      try {
+        const { data } = await axios.post(`/api/v1/comment/repost/${repost._id}`, {
+          text,
+        });
+        showToast("Success", data.message, "success");
+        setReload((prev) => !prev);
+        onClose();
+      } catch (error) {
+        showToast(
+          "Error",
+          error?.response?.data?.message || error.message,
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
     };
     return (
       <Box

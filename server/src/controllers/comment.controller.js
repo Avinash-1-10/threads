@@ -190,6 +190,34 @@ const getRepostCommentCount = async (req, res) => {
   }
 }
 
+
+const addRepostComment = async (req, res) => {
+  try {
+    const repostId = req.params.id;
+    const userId = req.user._id;
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json(new ApiError(400, "Text is required"));
+    }
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(400).json(new ApiError(400, "Repost not found"));
+    }
+    const newComment = new Comment({
+      commentBy: userId,
+      post: repostId,
+      text,
+    });
+    await newComment.save();
+    return res
+      .status(201)
+      .json(new ApiResponse(201, "Comment created successfully", newComment));
+  } catch (error) {
+    console.error("Error in addComment: ", error);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
 export {
   addComment,
   getCommentCount,
@@ -197,5 +225,6 @@ export {
   deleteComment,
   likeComment,
   getCommentLikesByCommentId,
-  getRepostCommentCount
+  getRepostCommentCount,
+  addRepostComment
 };

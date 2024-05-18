@@ -2,6 +2,7 @@ import { Router } from "express";
 import verifyJwt from "../middlewares/auth.middleware.js";
 import {
   addComment,
+  addRepostComment,
   deleteComment,
   getCommentCount,
   getCommentLikesByCommentId,
@@ -20,5 +21,6 @@ router.post("/like/:id", verifyJwt, likeComment);
 router.get("/count/likes/:id", verifyJwt, getCommentLikesByCommentId);
 
 router.get("/count/repost/:id", getRepostCommentCount);
+router.post("/repost/:id", verifyJwt, addRepostComment)
 
 export default router;
