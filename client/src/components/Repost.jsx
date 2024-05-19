@@ -17,7 +17,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import UserPostSkeleton from "../skeletons/UserPostSkeleton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import RepostActions from "./RepostActions";
@@ -35,6 +35,9 @@ const Repost = ({ repost, user }) => {
   const [topComments, setTopComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
   const [reload, setReload] = useState(false);
+  const navigate = useNavigate()
+
+  // console.log(repost)
 
 
   const getLikeCount = async () => {

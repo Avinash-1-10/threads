@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   Image,
+  Stack,
   Text,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
@@ -16,6 +17,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
+import RepostActions from "../components/RepostActions";
 
 const RepostPage = () => {
   const { pid } = useParams();
@@ -28,13 +30,14 @@ const RepostPage = () => {
   const [reload, setReload] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
+  console.log(repost)
 
   const getLikeData = async () => {
     try {
       const { data } = await axios.get(
         `/api/v1/like/count/repost/${repost._id || pid}`
       );
-      console.log(data)
+      // console.log(data)
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
     } catch (error) {
@@ -60,7 +63,7 @@ const RepostPage = () => {
       try {
         const { data: postData } = await axios.get(`/api/v1/repost/${pid}`);
         setRepost(postData.data);
-        console.log(postData.data)
+        // console.log(postData.data)
         let date = new Date(postData.data.createdAt);
         let d = date.getDate();
         let m = date.getMonth() + 1;
@@ -105,12 +108,12 @@ const RepostPage = () => {
     <>
       <Flex alignItems={"center"} gap={3}>
         <Avatar
-          src={repost?.repostBy?.avatar}
+          src={repost?.repostByDetails?.avatar}
           size={"md"}
-          name={repost?.repostBy?.username || "User"}
+          name={repost?.repostByDetails?.username || "User"}
         />
         <Flex alignItems={"center"} gap={2}>
-          <Text fontWeight={"bold"}>{repost?.repostBy?.name}</Text>
+          <Text fontWeight={"bold"}>{repost?.repostByDetails?.name}</Text>
           <MdVerified color="#2B96E9" />
         </Flex>
         <Flex gap={4} alignItems={"center"} ml={"auto"}>
@@ -122,19 +125,42 @@ const RepostPage = () => {
       </Flex>
 
       <Text my={3}>{repost?.text}</Text>
-      {repost?.image && (
-        <Box
-          borderRadius={6}
-          overflow={"hidden"}
-          border={"1px solid"}
-          borderColor={"gray.light"}
-        >
-          <Image src={repost.image} w={"full"} />
-        </Box>
-      )}
+      <Stack
+            p={5}
+            border={"1px solid"}
+            borderColor={"gray.light"}
+            rounded={"md"}
+          >
+            <Flex alignItems={"center"} gap={2}>
+              <Avatar
+                size={"sm"}
+                name={repost?.postByDetails?.avatar}
+                src={repost?.postByDetails?.avatar}
+              />
+              <Text size={"sm"} fontWeight={"bold"}>
+                {repost?.postByDetails?.name}
+              </Text>
+              <MdVerified size={"15px"} color="#2B96E9" />
+            </Flex>
+            <Text fontSize={"sm"}>{repost?.postDetails?.text}</Text>
+            {repost?.postDetails?.image && (
+              <Box
+                borderRadius={6}
+                overflow={"hidden"}
+                border={"1px solid "}
+                borderColor={"gray.light"}
+              >
+                <Image src={repost?.postDetails?.image} w={"full"} />
+              </Box>
+            )}
+          </Stack>
 
       <Flex gap={3} my={3}>
-        {/* <Actions isLiked={isLiked} post={post} setReload={setReload} /> */}
+      <RepostActions
+              isLiked={isLiked}
+              repost={repost}
+              setReload={setReload}
+            />
       </Flex>
       <Flex gap={2} alignItems={"center"}>
         <Text color={"gray.light"} fontSize={"sm"}>

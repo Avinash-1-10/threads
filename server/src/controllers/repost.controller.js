@@ -1,11 +1,14 @@
 import Repost from "../models/repost.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
 const getAllReposts = async (req, res) => {
   try {
     const reposts = await Repost.find();
-    return res.status(200).json(new ApiResponse(200, "Reposts fetched successfully", reposts));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Reposts fetched successfully", reposts));
   } catch (error) {
     console.log("Error in getAllReposts controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
@@ -14,15 +17,69 @@ const getAllReposts = async (req, res) => {
 
 const getRepostById = async (req, res) => {
   try {
-    const repostId = req.params.id;
-    const repost = await Repost.findById(repostId).populate({
-      path: "repostBy",
-      select: "name username avatar",
-    });
+    const repostId = new mongoose.Types.ObjectId(req.params.id);
+    const repost = await Repost.aggregate([
+      {
+        $match: { _id: repostId },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "repostBy",
+          foreignField: "_id",
+          as: "repostByDetails",
+        },
+      },
+      {
+        $unwind: "$repostByDetails",
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "post",
+          foreignField: "_id",
+          as: "postDetails",
+        },
+      },
+      {
+        $unwind: "$postDetails",
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "postDetails.postBy",
+          foreignField: "_id",
+          as: "postByDetails",
+        },
+      },
+      {
+        $unwind: "$postByDetails",
+      },
+      {
+        $project: {
+          text: 1,
+          image: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          type: 1,
+          postDetails: 1,
+          "postByDetails.name": 1,
+          "postByDetails.username": 1,
+          "postByDetails.avatar": 1,
+          "postByDetails._id": 1,
+          "repostByDetails.name": 1,
+          "repostByDetails.username": 1,
+          "repostByDetails.avatar": 1,
+          "repostByDetails._id": 1,
+        },
+      },
+    ]);
     if (!repost) {
       return res.status(400).json(new ApiError(400, "Repost not found"));
     }
-    return res.status(200).json(new ApiResponse(200, "Repost fetched successfully", repost));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Repost fetched successfully", repost[0]));
   } catch (error) {
     console.log("Error in getRepostById controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
@@ -31,7 +88,7 @@ const getRepostById = async (req, res) => {
 
 const createRepost = async (req, res) => {
   try {
-    const {text } = req.body;
+    const { text } = req.body;
     const postId = req.params.id;
     const userId = req.user._id;
     if (!postId || !text) {
@@ -57,7 +114,7 @@ const createRepost = async (req, res) => {
 const deleteRepost = async (req, res) => {
   try {
     const repostId = req.params.id;
-    const repost = await Repost.findById(repostId)
+    const repost = await Repost.findById(repostId);
     if (!repost) {
       return res.status(400).json(new ApiError(400, "Repost not found"));
     }
