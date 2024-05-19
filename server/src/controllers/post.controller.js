@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import uploadOnCloudinary from "../utils/Cloudinary.js";
+import Comment from "../models/comment.model.js";
 
 const createPost = async (req, res) => {
   try {

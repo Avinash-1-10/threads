@@ -30,7 +30,7 @@ const RepostPage = () => {
   const [reload, setReload] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
-  console.log(repost)
+  // console.log(repost)
 
   const getLikeData = async () => {
     try {
@@ -74,7 +74,7 @@ const RepostPage = () => {
             `/api/v1/like/count/repost/${postData.data._id}`
           );
           const { data: comments } = await axios.get(
-            `/api/v1/comment/repost/${postData.data._id}`
+            `/api/v1/comment/post/${postData.data._id}`
           );
           setComments(comments.data.comments);
           setCommentCount(comments.data.commentCount);

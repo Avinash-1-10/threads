@@ -9,6 +9,7 @@ import {
   getCommentsByPostId,
   getRepostCommentCount,
   likeComment,
+  getRepostCommentById
 } from "../controllers/comment.controller.js";
 
 const router = Router();
@@ -21,6 +22,7 @@ router.post("/like/:id", verifyJwt, likeComment);
 router.get("/count/likes/:id", verifyJwt, getCommentLikesByCommentId);
 
 router.get("/count/repost/:id", getRepostCommentCount);
+router.get("/repost/:id", getRepostCommentById)
 router.post("/repost/:id", verifyJwt, addRepostComment);
 
 export default router;

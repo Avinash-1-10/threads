@@ -191,6 +191,33 @@ const getRepostCommentCount = async (req, res) => {
 }
 
 
+const getRepostCommentById = async(req, res)=>{
+  try {
+    const repostId = req.params.id;
+    const repost = await Repost.findById(repostId);
+    if (!repost) {
+      return res.status(400).json(new ApiError(400, "Repost not found"));
+    }
+    const commentCount = await Comment.countDocuments({ post: repostId });
+    const comments = await Comment.find({ post: repostId })
+      .populate({
+        path: "commentBy",
+        select: "username avatar",
+      })
+      .sort({ createdAt: -1 });
+    return res.status(200).json(
+      new ApiResponse(200, "Comments fetched successfully", {
+        comments,
+        commentCount,
+      })
+    );
+  } catch (error) {
+    console.error("Error in getRepostCommentById: ", error);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+
 const addRepostComment = async (req, res) => {
   try {
     const repostId = req.params.id;
@@ -226,5 +253,6 @@ export {
   likeComment,
   getCommentLikesByCommentId,
   getRepostCommentCount,
-  addRepostComment
+  addRepostComment,
+  getRepostCommentById
 };
