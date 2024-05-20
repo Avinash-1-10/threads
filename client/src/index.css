@@ -24,3 +24,11 @@
 ::-webkit-scrollbar-thumb {
 	background-color: #555;
 }
+
+
+.likebtn:hover{
+	color: rgb(60, 191, 247);
+	cursor: pointer;
+	transition: 0.2s;
+	transition-timing-function: ease-in-out;
+}

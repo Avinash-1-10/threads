@@ -2,8 +2,9 @@ import React from "react";
 import { FaRegHeart } from "react-icons/fa6";
 import { IoChatbubbleOutline } from "react-icons/io5";
 import { BiRepost } from "react-icons/bi";
-import { TbSend } from "react-icons/tb";
+import { FiShare } from "react-icons/fi";
 import {
+  Box,
   Flex,
   Modal,
   ModalContent,
@@ -37,22 +38,46 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
   };
   return (
     <Flex
-      gap={4}
+      gap={2}
       my={2}
       fontSize={"20px"}
       alignItems={"center"}
       onClick={(e) => e.preventDefault()}
     >
       {isLiked ? (
+        <Box
+        py={1}
+        px={3}
+        borderRadius={"full"}
+        _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
+        onClick={likeUnlike}
+      >
         <FaHeart
           color="rgb(237, 73, 86)"
           cursor={"pointer"}
           onClick={likeUnlike}
         />
+        </Box>
       ) : (
+        <Box
+        py={1}
+        px={3}
+        borderRadius={"full"}
+        _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
+        onClick={likeUnlike}
+      >
         <FaRegHeart cursor={"pointer"} onClick={likeUnlike} />
+        </Box>
       )}
+      <Box
+        py={1}
+        px={3}
+        borderRadius={"full"}
+        _hover={{ color: "rgb(76, 73, 237)", bgColor: "rgb(205, 205, 249)" }}
+        onClick={onOpen}
+      >
       <IoChatbubbleOutline cursor={"pointer"} onClick={onOpen} />
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -63,7 +88,15 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
           />
         </ModalContent>
       </Modal>
-      <TbSend cursor={"pointer"} />
+      <Box
+        py={1}
+        px={3}
+        borderRadius={"full"}
+        _hover={{ color: "rgb(60, 191, 247)", bgColor: "rgb(205, 236, 249)" }}
+        onClick={onOpen}
+      >
+      <FiShare cursor={"pointer"} />
+      </Box>
     </Flex>
   );
 };

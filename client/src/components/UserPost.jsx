@@ -188,7 +188,7 @@ const UserPost = ({ post, user }) => {
               </Box>
             </Flex>
           </Flex>
-          <Text fontSize={"sm"}>{post.text}</Text>
+          <Text fontSize={"md"}>{post.text}</Text>
           {post.image && (
             <Box
               borderRadius={6}

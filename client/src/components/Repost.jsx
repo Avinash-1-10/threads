@@ -36,12 +36,11 @@ const Repost = ({ repost, user }) => {
   const [topComments, setTopComments] = useState([]);
   const [commentCount, setCommentCount] = useState(0);
   const [reload, setReload] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const setRefresh = useSetRecoilState(refreshAtom);
   const refresh = useRecoilValue(refreshAtom);
 
   // console.log(repost)
-
 
   const getLikeCount = async () => {
     try {
