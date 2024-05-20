@@ -118,6 +118,7 @@ const UpdateProfileCard = ({ onClose }) => {
             _placeholder={{ color: "gray.500" }}
             defaultValue={userData?.username}
             type="text"
+            readOnly
             onChange={(e) =>
               setUserData({ ...userData, username: e.target.value })
             }

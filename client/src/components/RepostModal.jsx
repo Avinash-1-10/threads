@@ -11,11 +11,12 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import userAtom from "../atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MdVerified } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import useTimeAgo from "../hooks/useTimeAgo";
+import refreshAtom from "../atoms/refreshAtom";
 
 const RepostModal = ({ onClose, post, setReload }) => {
   const showToast = useShowToast();
@@ -24,6 +25,8 @@ const RepostModal = ({ onClose, post, setReload }) => {
   const [text, setText] = useState("");
   const timeAgo = useTimeAgo(post?.createdAt);
   const owner = useRecoilValue(userAtom);
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
   const createRepost = async () => {
     setLoading(true);
     try {
@@ -32,6 +35,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
       });
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
+      setRefresh(!refresh);
       onClose();
     } catch (error) {
       showToast(

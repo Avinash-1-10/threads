@@ -11,13 +11,14 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { MdOutlineGifBox } from "react-icons/md";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
+import refreshAtom from "../atoms/refreshAtom";
 
 const CreatePost = ({ onClose }) => {
   const user = useRecoilValue(userAtom);
@@ -27,6 +28,8 @@ const CreatePost = ({ onClose }) => {
   const { handleImageChange, imgUrl, setImgUrl, imgFile } = usePreviewImg();
   const [text, setText] = useState("");
   const [loading, seLoading] = useState(false);
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +41,7 @@ const CreatePost = ({ onClose }) => {
       const { data } = await axios.post("/api/v1/post/create", formData);
       setText("");
       setImgUrl(null);
+      setRefresh(!refresh)
       showToast("Success", data.message, "success");
       onClose();
     } catch (error) {

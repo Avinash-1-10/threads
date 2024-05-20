@@ -5,11 +5,14 @@ import axios from "axios";
 import { Stack } from "@chakra-ui/react";
 import UserPostSkeleton from "../skeletons/UserPostSkeleton";
 import Repost from "../components/Repost";
+import refreshAtom from "../atoms/refreshAtom";
+import { useRecoilValue } from "recoil";
 
 const HomePage = () => {
   const showToast = useShowToast();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const refresh = useRecoilValue(refreshAtom);
   const getPosts = async () => {
     setLoading(true);
     try {
@@ -24,7 +27,7 @@ const HomePage = () => {
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [refresh]);
   return (
     <>
       {loading ? (

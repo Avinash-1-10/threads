@@ -18,9 +18,10 @@ import { BsThreeDots } from "react-icons/bs";
 import Actions from "./Actions";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useTimeAgo from "../hooks/useTimeAgo";
+import refreshAtom from "../atoms/refreshAtom";
 
 const UserPost = ({ post, user }) => {
   const showToast = useShowToast();
@@ -33,6 +34,8 @@ const UserPost = ({ post, user }) => {
   const owner = useRecoilValue(userAtom);
   const timeAgo = useTimeAgo(post.createdAt);
   const navigate = useNavigate();
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
 
   const getLikeCount = async () => {
     try {
@@ -65,7 +68,7 @@ const UserPost = ({ post, user }) => {
       const { data } = await axios.delete(`/api/v1/post/${post._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
-      window.location.reload();
+      setRefresh(!refresh);
     } catch (error) {
       showToast(
         "Error",

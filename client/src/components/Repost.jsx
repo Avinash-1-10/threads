@@ -23,7 +23,8 @@ import { BsThreeDots } from "react-icons/bs";
 import RepostActions from "./RepostActions";
 import useTimeAgo from "../hooks/useTimeAgo";
 import userAtom from "../atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import refreshAtom from "../atoms/refreshAtom";
 
 const Repost = ({ repost, user }) => {
   const timeAgo = useTimeAgo(repost.createdAt);
@@ -36,6 +37,8 @@ const Repost = ({ repost, user }) => {
   const [commentCount, setCommentCount] = useState(0);
   const [reload, setReload] = useState(false);
   const navigate = useNavigate()
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
 
   // console.log(repost)
 
@@ -74,7 +77,7 @@ const Repost = ({ repost, user }) => {
       const { data } = await axios.delete(`/api/v1/repost/${repost._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
-      window.location.reload();
+      setRefresh(!refresh);
     } catch (error) {
       showToast(
         "Error",
