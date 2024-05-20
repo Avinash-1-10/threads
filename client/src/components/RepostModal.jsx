@@ -23,6 +23,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
   const timeAgo = useTimeAgo(post?.createdAt);
+  const owner = useRecoilValue(userAtom);
   const createRepost = async () => {
     setLoading(true);
     try {
@@ -50,8 +51,8 @@ const RepostModal = ({ onClose, post, setReload }) => {
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size={"md"}
-            name={post?.postByDetails?.avatar || post.postBy.avatar}
-            src={post?.postByDetails?.avatar || post.postBy.avatar}
+            name={owner?.avatar || owner?.avatar}
+            src={owner?.avatar || owner?.avatar}
           />
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
@@ -85,6 +86,17 @@ const RepostModal = ({ onClose, post, setReload }) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
+          <Stack m={0} border={"1px solid"} borderColor={"gray.light"} p={3} borderRadius={6}>
+          <Flex gap={3} alignItems={"center"}>
+          <Avatar
+            size={"sm"}
+            name={post?.postByDetails?.avatar || post.postBy.avatar}
+            src={post?.postByDetails?.avatar || post.postBy.avatar}
+          />
+          <Text fontSize={"sm"} fontWeight={"bold"} mr={1}>
+                {post?.postByDetails?.name || post?.postBy?.name}
+              </Text>
+        </Flex>
           <Text fontSize={"sm"}>{post.text}</Text>
           {post.image && (
             <Box
@@ -96,8 +108,10 @@ const RepostModal = ({ onClose, post, setReload }) => {
               <Image src={post.image} w={"full"} />
             </Box>
           )}
+          </Stack>
         </Flex>
       </Flex>
+      
       <Flex>
         <Button
           mt={2}
