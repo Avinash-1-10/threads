@@ -23,7 +23,7 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const likeUnlike = async () => {
-    console.log("Clicked")
+    console.log("Clicked");
     try {
       const { data } = await axios.post(`/api/v1/like/repost/${repost._id}`);
       showToast("Success", data.message, "success");
@@ -46,37 +46,52 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
     >
       {isLiked ? (
         <Box
-        py={1}
-        px={3}
-        borderRadius={"full"}
-        _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
-        onClick={likeUnlike}
-      >
-        <FaHeart
-          color="rgb(237, 73, 86)"
-          cursor={"pointer"}
+          py={1}
+          px={3}
+          borderRadius={"full"}
+          _hover={{
+            color: "rgb(237, 73, 86)",
+            bgColor: "rgb(249, 212, 215)",
+            transition:
+              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+          }}
           onClick={likeUnlike}
-        />
+        >
+          <FaHeart
+            color="rgb(237, 73, 86)"
+            cursor={"pointer"}
+            onClick={likeUnlike}
+          />
         </Box>
       ) : (
         <Box
-        py={1}
-        px={3}
-        borderRadius={"full"}
-        _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
-        onClick={likeUnlike}
-      >
-        <FaRegHeart cursor={"pointer"} onClick={likeUnlike} />
+          py={1}
+          px={3}
+          borderRadius={"full"}
+          _hover={{
+            color: "rgb(237, 73, 86)",
+            bgColor: "rgb(249, 212, 215)",
+            transition:
+              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+          }}
+          onClick={likeUnlike}
+        >
+          <FaRegHeart cursor={"pointer"} onClick={likeUnlike} />
         </Box>
       )}
       <Box
         py={1}
         px={3}
         borderRadius={"full"}
-        _hover={{ color: "rgb(76, 73, 237)", bgColor: "rgb(205, 205, 249)" }}
+        _hover={{
+          color: "rgb(76, 73, 237)",
+          bgColor: "rgb(205, 205, 249)",
+          transition:
+            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+        }}
         onClick={onOpen}
       >
-      <IoChatbubbleOutline cursor={"pointer"} onClick={onOpen} />
+        <IoChatbubbleOutline cursor={"pointer"} onClick={onOpen} />
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -92,10 +107,15 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
         py={1}
         px={3}
         borderRadius={"full"}
-        _hover={{ color: "rgb(60, 191, 247)", bgColor: "rgb(205, 236, 249)" }}
+        _hover={{
+          color: "rgb(6, 117, 165)",
+          bgColor: "rgb(205, 236, 249)",
+          transition:
+            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+        }}
         onClick={onOpen}
       >
-      <FiShare cursor={"pointer"} />
+        <FiShare cursor={"pointer"} />
       </Box>
     </Flex>
   );

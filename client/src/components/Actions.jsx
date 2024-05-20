@@ -43,36 +43,48 @@ const Actions = ({ isLiked, post, setReload }) => {
     >
       {isLiked ? (
         <Box
-        py={1}
-        px={3}
-        borderRadius={"full"}
-        _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
-        onClick={likeUnlike}
-      >
-        <FaHeart
-          color="rgb(237, 73, 86)"
-          cursor={"pointer"}
-        />
+          py={1}
+          px={3}
+          borderRadius={"full"}
+          _hover={{
+            color: "rgb(237, 73, 86)",
+            bgColor: "rgb(249, 212, 215)",
+            transition:
+              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+          }}
+          onClick={likeUnlike}
+        >
+          <FaHeart color="rgb(237, 73, 86)" cursor={"pointer"} />
         </Box>
       ) : (
         <Box
           py={1}
           px={3}
           borderRadius={"full"}
-          _hover={{ color: "rgb(237, 73, 86)", bgColor: "rgb(249, 212, 215)" }}
+          _hover={{
+            color: "rgb(237, 73, 86)",
+            bgColor: "rgb(249, 212, 215)",
+            transition:
+              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+          }}
           onClick={likeUnlike}
         >
-          <FaRegHeart cursor={"pointer"}  />
+          <FaRegHeart cursor={"pointer"} />
         </Box>
       )}
       <Box
         py={1}
         px={3}
         borderRadius={"full"}
-        _hover={{ color: "rgb(76, 73, 237)", bgColor: "rgb(205, 205, 249)" }}
+        _hover={{
+          color: "rgb(76, 73, 237)",
+          bgColor: "rgb(205, 205, 249)",
+          transition:
+            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+        }}
         onClick={onOpen}
       >
-      <IoChatbubbleOutline cursor={"pointer"}  />
+        <IoChatbubbleOutline cursor={"pointer"} />
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -80,15 +92,20 @@ const Actions = ({ isLiked, post, setReload }) => {
           <CommentModal onClose={onClose} post={post} setReload={setReload} />
         </ModalContent>
       </Modal>
-      <RepostButton post={post} setReload={setReload} onClick={onOpen}/>
+      <RepostButton post={post} setReload={setReload} onClick={onOpen} />
       <Box
         py={1}
         px={3}
         borderRadius={"full"}
-        _hover={{ color: "rgb(60, 191, 247)", bgColor: "rgb(205, 236, 249)" }}
+        _hover={{
+          color: "rgb(6, 117, 165)",
+          bgColor: "rgb(205, 236, 249)",
+          transition:
+            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+        }}
         onClick={onOpen}
       >
-      <FiShare cursor={"pointer"} />
+        <FiShare cursor={"pointer"} />
       </Box>
     </Flex>
   );
