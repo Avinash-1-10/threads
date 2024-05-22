@@ -5,10 +5,15 @@ import {
   FormControl,
   Image,
   Input,
+  Menu,
+  Modal,
+  ModalContent,
+  ModalOverlay,
   Spinner,
   Stack,
   Text,
   useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -19,8 +24,10 @@ import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import refreshAtom from "../atoms/refreshAtom";
+import { MdOutlinePoll } from "react-icons/md";
+import CreatePollForm from "./CreatePollForm";
 
-const CreatePost = ({ onClose }) => {
+const CreatePost = ({ onPostFormClose }) => {
   const user = useRecoilValue(userAtom);
   const { colorMode } = useColorMode();
   const showToast = useShowToast();
@@ -30,6 +37,7 @@ const CreatePost = ({ onClose }) => {
   const [loading, seLoading] = useState(false);
   const setRefresh = useSetRecoilState(refreshAtom);
   const refresh = useRecoilValue(refreshAtom);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,9 +49,9 @@ const CreatePost = ({ onClose }) => {
       const { data } = await axios.post("/api/v1/post/create", formData);
       setText("");
       setImgUrl(null);
-      setRefresh(!refresh)
+      setRefresh(!refresh);
       showToast("Success", data.message, "success");
-      onClose();
+      onPostFormClose();
     } catch (error) {
       console.log(error);
       showToast(
@@ -92,6 +100,13 @@ const CreatePost = ({ onClose }) => {
             onClick={() => fileRef.current.click()}
           />
           <MdOutlineGifBox cursor={"not-allowed"} />
+          <MdOutlinePoll cursor={"pointer"} onClick={onOpen} />
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <CreatePollForm onClose={onClose} />
+            </ModalContent>
+          </Modal>
           <input
             type="file"
             accept="image/*"

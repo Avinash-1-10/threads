@@ -81,7 +81,7 @@ const Header = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <CreatePost onClose={onClose} />
+          <CreatePost onPostFormClose={onClose} />
         </ModalContent>
       </Modal>
       <Menu>
