@@ -7,6 +7,7 @@ import UserPostSkeleton from "../skeletons/UserPostSkeleton";
 import Repost from "../components/Repost";
 import refreshAtom from "../atoms/refreshAtom";
 import { useRecoilValue } from "recoil";
+import Poll from "../components/poll";
 
 const HomePage = () => {
   const showToast = useShowToast();
@@ -38,6 +39,7 @@ const HomePage = () => {
         </Stack>
       ) : (
         <div>
+          <Poll/>
           {posts.map((post) =>
             post.type === "post" ? (
               <UserPost key={post._id} post={post} user={post.postByDetails} />
