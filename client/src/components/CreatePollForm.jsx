@@ -14,12 +14,14 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
+import useShowToast from "../hooks/useShowToast";
 
 const CreatePollForm = () => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const toast = useToast();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
+  const showToast = useShowToast();
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -42,43 +44,24 @@ const CreatePollForm = () => {
     e.preventDefault();
 
     if (options.length < 2 || options.length > 5) {
-      toast({
-        title: "Error",
-        description: "Poll must have between 2 and 5 options.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast("Error", "Poll must have between 2 and 5 options.", "error");
       return;
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/polls/create",
-        {
-          question,
-          options,
-        }
-      );
-
-      toast({
-        title: "Poll created.",
-        description: "Your poll has been created successfully.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
+      const { data } = await axios.post("/api/v1/poll", {
+        question,
+        options,
       });
-
+      showToast("Success", data.message, "success");
       setQuestion("");
       setOptions(["", ""]);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create poll.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
     }
   };
 

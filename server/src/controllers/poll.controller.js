@@ -1,15 +1,21 @@
 import Option from "../models/options.model.js";
 import Poll from "../models/poll.model.js";
 import Vote from "../models/vote.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 export const createPoll = async (req, res) => {
   try {
     const { question, options } = req.body;
 
+    if(!question) {
+      return res.status(400).json(new ApiError(400, "Question is required"));
+    }
+
     // Validate options count
     if (!options || options.length < 2 || options.length > 5) {
-      return res.status(400).json({ message: 'Poll must have between 2 and 5 options.' });
+      return res.status(400).json(new ApiError(400, "Options must be between 2 and 5"));
     }
 
     // Create option documents
@@ -19,15 +25,15 @@ export const createPoll = async (req, res) => {
     const poll = new Poll({
       question,
       options: optionDocs,
-      createdBy: req.user._id,  // Assuming req.user contains the authenticated user's data
+      createdBy: req.user._id,
     });
 
     // Save the poll
     await poll.save();
 
-    res.status(201).json(poll);
+    res.status(201).json(new ApiResponse(201, "Poll created successfully", poll));
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
+    res.status(500).json(new ApiError(500, error.message));
   }
 };
 
