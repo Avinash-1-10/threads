@@ -13,7 +13,7 @@ const pollSchema = new mongoose.Schema(
       required: true,
     },
     options: {
-      type: [Option.schema],  // Use the schema of the Option model
+      type: [Option.schema],
       required: true,
       validate: [arrayLimit, '{PATH} must have between 2 and 5 options'],
     },
