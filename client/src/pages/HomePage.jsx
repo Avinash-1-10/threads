@@ -14,6 +14,7 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const refresh = useRecoilValue(refreshAtom);
+
   const getPosts = async () => {
     setLoading(true);
     try {
@@ -29,6 +30,7 @@ const HomePage = () => {
   useEffect(() => {
     getPosts();
   }, [refresh]);
+
   return (
     <>
       {loading ? (
@@ -39,18 +41,20 @@ const HomePage = () => {
         </Stack>
       ) : (
         <div>
-          <Poll/>
-          {posts.map((post) =>
-            post.type === "post" ? (
-              <UserPost key={post._id} post={post} user={post.postByDetails} />
-            ) : (
-              <Repost
-                key={post._id}
-                repost={post}
-                user={post.repostByDetails}
-              />
-            )
-          )}
+          {posts.map((post) => {
+            if (post.type === "post") {
+              return <UserPost key={post._id} post={post} user={post.postByDetails} />;
+            } else if (post.type === "repost") {
+              return (
+                <Repost key={post._id} repost={post} user={post.repostByDetails} />
+              );
+            } else if (post.type === "poll") {
+              return <Poll key={post._id} poll={post} />; 
+            } else {
+              console.warn("Unknown post type:", post.type);
+              return null;
+            }
+          })}
         </div>
       )}
     </>

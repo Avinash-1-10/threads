@@ -1,4 +1,3 @@
-// src/components/PollDisplay.js
 import React, { useState } from "react";
 import {
   Box,
@@ -19,8 +18,11 @@ import {
 } from "@chakra-ui/react";
 import { MdHowToVote } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
+import useShowToast from "../hooks/useShowToast";
+import axios from "axios";
 
 const Poll = () => {
+  const showToast = useShowToast();
   const [poll, setPoll] = useState({
     question: "What is your favorite programming language?",
     options: [
@@ -40,6 +42,11 @@ const Poll = () => {
   const [hasVoted, setHasVoted] = useState(false);
   const { colorMode } = useColorMode();
   const toast = useToast();
+
+ 
+
+
+
   const deletePoll = () => {};
 
   const handleVote = (optionId) => {
@@ -138,23 +145,38 @@ const Poll = () => {
                       size={"sm"}
                       bg={colorMode === "dark" ? "white" : "black"}
                       color={colorMode === "dark" ? "black" : "white"}
-                      _hover={colorMode === "dark" ? { bg: "white", shadow: "md" } : { bg: "black",shadow: "md"  }}
+                      _hover={
+                        colorMode === "dark"
+                          ? { bg: "white", shadow: "md" }
+                          : { bg: "black", shadow: "md" }
+                      }
                       onClick={() => handleVote(option._id)}
                     >
                       Vote
                     </Button>
                   )}
                 </Flex>
-                {hasVoted && <Text fontSize={"sm"}>{votePercentage.toFixed(2)}%</Text>}
+                {hasVoted && (
+                  <Text fontSize={"sm"}>{votePercentage.toFixed(2)}%</Text>
+                )}
               </HStack>
               {hasVoted && (
-                <Progress value={votePercentage} size="sm" colorScheme="teal" bg={colorMode === "dark" ? "gray.dark" : "gray.200"}/>
+                <Progress
+                  value={votePercentage}
+                  size="sm"
+                  colorScheme="teal"
+                  bg={colorMode === "dark" ? "gray.dark" : "gray.200"}
+                />
               )}
             </Box>
           );
         })}
+        {hasVoted && (
+          <Text color={colorMode === "dark" ? "gray.400" : "gray.500"}>
+            Total Votes: {totalVotes}
+          </Text>
+        )}
       </VStack>
-      {hasVoted && <Text mt={4}>Total Votes: {totalVotes}</Text>}
     </Box>
   );
 };

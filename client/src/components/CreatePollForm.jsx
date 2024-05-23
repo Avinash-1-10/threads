@@ -53,6 +53,7 @@ const CreatePollForm = () => {
         question,
         options,
       });
+      console.log(data);
       showToast("Success", data.message, "success");
       setQuestion("");
       setOptions(["", ""]);
