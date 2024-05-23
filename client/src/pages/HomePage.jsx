@@ -20,6 +20,7 @@ const HomePage = () => {
     try {
       const { data } = await axios.get("/api/v1/feed");
       setPosts(data.data);
+      console.log(data.data)
     } catch (error) {
       showToast("Error", error.response.data.message || error.message);
     } finally {
@@ -49,7 +50,7 @@ const HomePage = () => {
                 <Repost key={post._id} repost={post} user={post.repostByDetails} />
               );
             } else if (post.type === "poll") {
-              return <Poll key={post._id} poll={post} />; 
+              return <Poll key={post._id} pollData={post} />; 
             } else {
               console.warn("Unknown post type:", post.type);
               return null;

@@ -13,68 +13,33 @@ import {
   MenuButton,
   Portal,
   MenuList,
-  useColorMode,
   MenuItem,
+  useColorMode,
 } from "@chakra-ui/react";
 import { MdHowToVote } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 
-const Poll = () => {
+const Poll = ({ pollData }) => {
   const showToast = useShowToast();
-  const [poll, setPoll] = useState({
-    question: "What is your favorite programming language?",
-    options: [
-      { _id: "1", text: "JavaScript" },
-      { _id: "2", text: "Python" },
-      { _id: "3", text: "Java" },
-      { _id: "4", text: "C++" },
-    ],
-    votes: [
-      { _id: "1", voteCount: 100 },
-      { _id: "2", voteCount: 15 },
-      { _id: "3", voteCount: 5 },
-      { _id: "4", voteCount: 3 },
-    ],
-  });
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [hasVoted, setHasVoted] = useState(false);
   const { colorMode } = useColorMode();
-  const toast = useToast();
+  const [hasVoted, setHasVoted] = useState(false);
+  const [totalVotes, setTotalVotes] = useState(pollData.totalVotes);
 
- 
-
-
-
-  const deletePoll = () => {};
+  const deletePoll = () => console.log("hi");
 
   const handleVote = (optionId) => {
     if (hasVoted) return;
 
-    setPoll((prevPoll) => {
-      const updatedVotes = prevPoll.votes.map((vote) =>
-        vote._id === optionId
-          ? { ...vote, voteCount: vote.voteCount + 1 }
-          : vote
-      );
-      return { ...prevPoll, votes: updatedVotes };
-    });
+    // Perform vote submission logic here
 
     setHasVoted(true);
-    toast({
-      title: "Vote cast.",
-      description: "Your vote has been recorded.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    showToast("success", "Vote cast.", "success");
   };
 
-  const totalVotes = poll.votes.reduce((acc, vote) => acc + vote.voteCount, 0);
-
   return (
-    <Box>
+    <Box mb={4}>
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
           <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
@@ -114,7 +79,7 @@ const Poll = () => {
         </Box>
       </Flex>
       <Text fontSize="lg" my={4}>
-        {poll.question}
+        {pollData.question}
       </Text>
       <VStack
         spacing={4}
@@ -124,9 +89,8 @@ const Poll = () => {
         p={4}
         borderRadius={"md"}
       >
-        {poll.options.map((option) => {
-          const voteCount =
-            poll.votes.find((v) => v._id === option._id)?.voteCount || 0;
+        {pollData.options.map((option) => {
+          const voteCount = option.voteCount || 0;
           const votePercentage =
             totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
 

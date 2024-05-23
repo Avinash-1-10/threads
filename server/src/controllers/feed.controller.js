@@ -1,6 +1,8 @@
+import Poll from "../models/poll.model.js";
 import Post from "../models/post.model.js";
 import Repost from "../models/repost.model.js";
 import User from "../models/user.model.js";
+import Vote from "../models/vote.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
@@ -110,8 +112,26 @@ const getFeed = async (req, res) => {
       },
     ]);
 
+    const polls = await Poll.find({}).populate("options").lean();
+
+    // Loop through each poll and populate votes with vote count
+    for (const poll of polls) {
+      const votes = await Vote.find({ poll: poll._id });
+
+      // Transform options with vote count
+      poll.options = poll.options.map((option) => ({
+        ...option,
+        voteCount: votes.filter(
+          (vote) => vote.option.toString() === option._id.toString()
+        ).length,
+      }));
+
+      // Calculate total votes for the poll
+      poll.totalVotes = votes.length;
+    }
+
     // Merge posts and reposts into one array
-    const feed = [...posts, ...reposts];
+    const feed = [...posts, ...reposts, ...polls];
 
     // Sort the feed by createdAt timestamp in descending order
     feed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -124,8 +144,6 @@ const getFeed = async (req, res) => {
     return res.status(500).json(new ApiError(500, "Failed to fetch feed"));
   }
 };
-
-
 
 const getUserFeed = async (req, res) => {
   try {
@@ -242,8 +260,26 @@ const getUserFeed = async (req, res) => {
       },
     ]);
 
+    const polls = await Poll.find({}).populate("options").lean();
+
+    // Loop through each poll and populate votes with vote count
+    for (const poll of polls) {
+      const votes = await Vote.find({ poll: poll._id });
+
+      // Transform options with vote count
+      poll.options = poll.options.map((option) => ({
+        ...option,
+        voteCount: votes.filter(
+          (vote) => vote.option.toString() === option._id.toString()
+        ).length,
+      }));
+
+      // Calculate total votes for the poll
+      poll.totalVotes = votes.length;
+    }
+    console.log(polls);
     // Merge posts and reposts into one array
-    const feed = [...posts, ...reposts];
+    const feed = [...posts, ...reposts, ...polls];
 
     // Sort the feed by createdAt timestamp in descending order
     feed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -256,6 +292,5 @@ const getUserFeed = async (req, res) => {
     return res.status(500).json(new ApiError(500, "Failed to fetch feed"));
   }
 };
-
 
 export { getFeed, getUserFeed };
