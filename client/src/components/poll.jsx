@@ -21,6 +21,8 @@ import { BsThreeDots } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import useTimeAgo from "../hooks/useTimeAgo";
+import userAtom from "../atoms/userAtom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const Poll = ({ pollData }) => {
   const [poll, setPoll] = useState(pollData);
@@ -29,8 +31,16 @@ const Poll = ({ pollData }) => {
   const [hasVoted, setHasVoted] = useState(false);
   const [totalVotes, setTotalVotes] = useState(poll.totalVotes);
   const timeAgo = useTimeAgo(poll.createdAt);
+  const owner = useRecoilValue(userAtom);
 
-  const deletePoll = () => console.log("hi");
+  const deletePoll = async() => {
+    try {
+      await axios.delete(`/api/v1/poll/${poll._id}`);
+      showToast("success", "Poll deleted.", "success");
+    } catch (error) {
+      showToast("error", "Poll not deleted.", "error");
+    }
+  };
 
   const checkVoted = async () => {
     try {
@@ -72,7 +82,7 @@ const Poll = ({ pollData }) => {
     <Box mb={4}>
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
-          <Avatar name={poll.createdBy.username} src={poll.createdBy.avatar} />
+          <Avatar name={poll.createdBy.name} src={poll.createdBy.avatar} />
           <Text fontSize={"md"} fontWeight={"bold"} mt={2}>
             {poll.createdBy.name}
           </Text>
@@ -85,7 +95,7 @@ const Poll = ({ pollData }) => {
             </MenuButton>
             <Portal>
               <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
-                {true && (
+                {owner._id === poll.createdBy._id && (
                   <MenuItem
                     color={"red"}
                     onClick={deletePoll}

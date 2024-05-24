@@ -20,7 +20,7 @@ const HomePage = () => {
     try {
       const { data } = await axios.get("/api/v1/feed");
       setPosts(data.data);
-      console.log(data.data)
+      // console.log(data.data)
     } catch (error) {
       showToast("Error", error.response.data.message || error.message);
     } finally {

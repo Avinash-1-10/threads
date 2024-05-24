@@ -1,5 +1,5 @@
 import express from "express";
-import { castVote, checkVoted, createPoll, getAllPolls } from "../controllers/poll.controller.js";
+import { castVote, checkVoted, createPoll, deletePoll, getAllPolls } from "../controllers/poll.controller.js";
 import verifyJwt from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
