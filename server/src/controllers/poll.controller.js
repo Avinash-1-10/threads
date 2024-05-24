@@ -126,4 +126,32 @@ const checkVoted = async (req, res, next) => {
   return res.status(200).json(new ApiResponse(200, "Not voted yet", false));
 };
 
-export { getAllPolls, createPoll, castVote, checkVoted };
+const deletePoll = async (req, res) => {
+  try {
+    const pollId = req.params.id;
+    const poll = await Poll.findById(pollId);
+    if (!poll) {
+      res.status(400).json(new ApiError(400, "Poll not found"));
+    }
+
+    // check poll created and userId is same
+    if (poll.createdBy.toString() !== req.user._id.toString()) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "You can only delete your own polls"));
+    }
+
+    // delete votes
+    await Vote.deleteMany({ poll: pollId });
+
+    // delete options
+    await Option.deleteMany({ _id: { $in: poll.options } });
+
+    // delete poll
+    await Poll.findByIdAndDelete(pollId);
+
+    return res.status(200).json({ message: "Poll deleted successfully" });
+  } catch (error) {}
+};
+
+export { getAllPolls, createPoll, castVote, checkVoted, deletePoll };

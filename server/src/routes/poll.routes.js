@@ -9,5 +9,6 @@ router.post("/", verifyJwt, createPoll);
 router.get("/", getAllPolls);
 router.post("/vote", verifyJwt, castVote);
 router.get("/check-vote/:pollId", verifyJwt, checkVoted);
+router.delete("/:id", verifyJwt, deletePoll);
 
 export default router;
