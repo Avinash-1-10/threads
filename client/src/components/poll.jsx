@@ -20,33 +20,52 @@ import { MdHowToVote } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
+import useTimeAgo from "../hooks/useTimeAgo";
 
 const Poll = ({ pollData }) => {
+  const [poll, setPoll] = useState(pollData);
   const showToast = useShowToast();
   const { colorMode } = useColorMode();
   const [hasVoted, setHasVoted] = useState(false);
-  const [totalVotes, setTotalVotes] = useState(pollData.totalVotes);
+  const [totalVotes, setTotalVotes] = useState(poll.totalVotes);
+  const timeAgo = useTimeAgo(poll.createdAt);
 
   const deletePoll = () => console.log("hi");
 
-  const handleVote = (optionId) => {
+  const handleVote = async(optionId) => {
     if (hasVoted) return;
-
+    console.log(optionId)
     // Perform vote submission logic here
-
+   await axios.post(`/api/v1/poll/vote`, {pollId:poll._id, optionId }).then((res) => {
+    console.log(res.data)
+    setTotalVotes(totalVotes + 1);
+    poll.options.map((option) => {
+      if (option._id === optionId) {
+        option.voteCount += 1;
+      }
+    })
+    console.log(poll)
     setHasVoted(true);
     showToast("success", "Vote cast.", "success");
+   }).catch((err) => {
+    showToast("error", err.response.data.message, "error");
+   })
+
+
   };
 
   return (
     <Box mb={4}>
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
-          <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+          <Avatar
+            name={poll.createdBy.username}
+            src={poll.createdBy.avatar}
+          />
           <Text fontSize={"md"} fontWeight={"bold"} mt={2}>
-            Dan Abramov
+            {poll.createdBy.name}
           </Text>
-          <Text mt={2}>20/12/24</Text>
+          <Text mt={2}>{timeAgo}</Text>
         </Flex>
         <Box mt={2} onClick={(e) => e.preventDefault()}>
           <Menu>
@@ -65,9 +84,6 @@ const Poll = ({ pollData }) => {
                   </MenuItem>
                 )}
                 <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
-                  View
-                </MenuItem>
-                <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
                   Report
                 </MenuItem>
                 <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
@@ -79,7 +95,7 @@ const Poll = ({ pollData }) => {
         </Box>
       </Flex>
       <Text fontSize="lg" my={4}>
-        {pollData.question}
+        {poll.question}
       </Text>
       <VStack
         spacing={4}
@@ -89,7 +105,7 @@ const Poll = ({ pollData }) => {
         p={4}
         borderRadius={"md"}
       >
-        {pollData.options.map((option) => {
+        {poll.options.map((option) => {
           const voteCount = option.voteCount || 0;
           const votePercentage =
             totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;

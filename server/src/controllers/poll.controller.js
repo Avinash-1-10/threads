@@ -49,13 +49,13 @@ export const castVote = async (req, res) => {
     // Check if the poll exists
     const poll = await Poll.findById(pollId);
     if (!poll) {
-      return res.status(404).json({ message: "Poll not found" });
+      return res.status(404).json(new ApiError(404, "Poll not found"));
     }
 
     // Check if the option belongs to the poll
     const option = await Option.findById(optionId);
     if (!option || !poll.options.some((opt) => opt.equals(option._id))) {
-      return res.status(400).json({ message: "Invalid option for this poll" });
+      return res.status(400).json(new ApiError(400, "Invalid option"));
     }
 
     // Check if the user has already voted on this poll
@@ -66,7 +66,7 @@ export const castVote = async (req, res) => {
     if (existingVote) {
       return res
         .status(400)
-        .json({ message: "You have already voted on this poll" });
+        .json(new ApiError(400, "You have already voted on this poll"));
     }
 
     // Create and save the vote
@@ -78,9 +78,9 @@ export const castVote = async (req, res) => {
 
     await vote.save();
 
-    res.status(201).json({ message: "Vote cast successfully", vote });
+    res.status(201).json(new ApiResponse(201, "Vote casted successfully"));
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json(new ApiError(500, error.message));
   }
 };
 

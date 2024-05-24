@@ -112,7 +112,18 @@ const getFeed = async (req, res) => {
       },
     ]);
 
-    const polls = await Poll.find({}).populate("options").lean();
+    const polls = await Poll.find({})
+  .populate({
+    path: "options",
+    model: "Option",
+  })
+  .populate({
+    path: "createdBy",
+    model: "User",
+    select: "name username avatar",
+  })
+  .lean();
+
 
     // Loop through each poll and populate votes with vote count
     for (const poll of polls) {
