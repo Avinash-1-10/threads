@@ -33,6 +33,20 @@ const Actions = ({ isLiked, post, setReload }) => {
       );
     }
   };
+
+  const copyPostLink = () => {
+    const postLink = `${window.location.href}${post.postByDetails.username}/post/${post._id}`;
+    console.log(postLink);
+    navigator.clipboard.writeText(postLink)
+      .then(() => {
+        showToast("Success", "Link Copied", "success");
+      })
+      .catch(err => {
+        console.error("Failed to copy: ", err);
+        showToast("Error", "Failed to copy link", "error");
+      });
+  };
+  
   return (
     <Flex
       gap={1}
@@ -103,7 +117,7 @@ const Actions = ({ isLiked, post, setReload }) => {
           transition:
             "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
         }}
-        onClick={onOpen}
+        onClick={copyPostLink}
       >
         <FiShare cursor={"pointer"} />
       </Box>
