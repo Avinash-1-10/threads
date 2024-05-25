@@ -16,7 +16,7 @@ import {
   MenuItem,
   useColorMode,
 } from "@chakra-ui/react";
-import { MdHowToVote } from "react-icons/md";
+import { MdHowToVote, MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
@@ -33,7 +33,7 @@ const Poll = ({ pollData }) => {
   const timeAgo = useTimeAgo(poll.createdAt);
   const owner = useRecoilValue(userAtom);
 
-  const deletePoll = async() => {
+  const deletePoll = async () => {
     try {
       await axios.delete(`/api/v1/poll/${poll._id}`);
       showToast("success", "Poll deleted.", "success");
@@ -79,16 +79,21 @@ const Poll = ({ pollData }) => {
   };
 
   return (
-    <Box mb={4}>
+    <Box my={4}>
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
           <Avatar name={poll.createdBy.name} src={poll.createdBy.avatar} />
-          <Text fontSize={"md"} fontWeight={"bold"} mt={2}>
+          <Text fontSize={"md"} fontWeight={"bold"} mt={1}>
             {poll.createdBy.name}
           </Text>
-          <Text mt={2}>{timeAgo}</Text>
+          <Box mt={2}>
+            {poll.createdBy.isVerfied && <MdVerified color="#2B96E9" />}
+          </Box>
+          <Text mt={1} color={"gray.light"}>
+            {timeAgo}
+          </Text>
         </Flex>
-        <Box mt={2} onClick={(e) => e.preventDefault()}>
+        <Box mt={1} onClick={(e) => e.preventDefault()}>
           <Menu>
             <MenuButton>
               <BsThreeDots onClick={(e) => e.preventDefault()} />
@@ -165,7 +170,11 @@ const Poll = ({ pollData }) => {
                 <Progress
                   value={votePercentage}
                   size="sm"
-                  colorScheme="teal"
+                  sx={{
+                    "& > div:first-of-type": {
+                      bg: "linear-gradient(90deg, #4bc0c8, #c779d0, #feac5e)",
+                    },
+                  }}
                   bg={colorMode === "dark" ? "gray.dark" : "gray.200"}
                 />
               )}

@@ -120,7 +120,7 @@ const getFeed = async (req, res) => {
   .populate({
     path: "createdBy",
     model: "User",
-    select: "name username avatar",
+    select: "name username avatar isVerfied",
   })
   .lean();
 
@@ -271,7 +271,17 @@ const getUserFeed = async (req, res) => {
       },
     ]);
 
-    const polls = await Poll.find({}).populate("options").lean();
+    const polls = await Poll.find({createdBy: new mongoose.Types.ObjectId(userId)})
+  .populate({
+    path: "options",
+    model: "Option",
+  })
+  .populate({
+    path: "createdBy",
+    model: "User",
+    select: "name username avatar isVerfied",
+  })
+  .lean();
 
     // Loop through each poll and populate votes with vote count
     for (const poll of polls) {
@@ -288,7 +298,7 @@ const getUserFeed = async (req, res) => {
       // Calculate total votes for the poll
       poll.totalVotes = votes.length;
     }
-    console.log(polls);
+    // console.log(polls);
     // Merge posts and reposts into one array
     const feed = [...posts, ...reposts, ...polls];
 
