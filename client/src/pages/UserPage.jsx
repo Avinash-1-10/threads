@@ -34,7 +34,7 @@ const UserPage = () => {
     try {
       const { data } = await axios.get(`/api/v1/feed/${username}`);
       setPosts(data.data);
-      console.log(data.data)
+      // console.log(data.data)
     } catch (error) {
       showToast("Error", error.response?.data?.message || error.message);
     } finally {

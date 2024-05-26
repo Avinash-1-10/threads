@@ -60,17 +60,23 @@ const getFollowers = async (req, res) => {
 const getFollowing = async (req, res) => {
   try {
     const { userId } = req.params;
+
+    const totalCount = await Follow.countDocuments({ follower: userId });
     // Find all follows where the follower field matches the userId
-    const following = await Follow.find({ follower: userId }).populate(
-      "following"
-    );
-    if (!following) {
-      return res.status(404).json({ message: "Following not found" });
-    }
-    return res.status(200).json(following);
+    const following = await Follow.find({ follower: userId })
+      .populate("follower")
+      .limit(10);
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, "Following fetched successfully.", {
+          totalCount,
+          following,
+        })
+      );
   } catch (error) {
     console.error("Error in getFollowing controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json(new ApiError(500, error.message));
   }
 };
 

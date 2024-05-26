@@ -33,6 +33,7 @@ const UserHeader = ({ user }) => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [followersCount, setFollowersCount] = useState("...");
+  const [followingCount, setFollowingCount] = useState("...");
   const [isFollowing, setIsFollowing] = useState("...");
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
@@ -60,6 +61,24 @@ const UserHeader = ({ user }) => {
       setLoading(false);
     }
   };
+
+  const getFollowing = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/v1/follow/following/${user._id}`);
+      setFollowingCount(data.data.totalCount);
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        showToast(
+          "Error",
+          error?.response?.data?.message || error.message,
+          "error"
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const followUser = async () => {
     setLoading(true);
@@ -103,6 +122,13 @@ const UserHeader = ({ user }) => {
   useEffect(() => {
     getFollowers();
     checkFollowing();
+    getFollowing();
+  }, []);
+
+  useEffect(() => {
+    getFollowers();
+    checkFollowing();
+    getFollowing();
   }, [reload]);
   return (
     <div>
@@ -128,7 +154,7 @@ const UserHeader = ({ user }) => {
           </Box>
           <Box>
             <Avatar
-              name="Mark Zukerberg"
+              name={user?.name}
               src={user?.avatar}
               size={{
                 base: "lg",
@@ -142,7 +168,7 @@ const UserHeader = ({ user }) => {
           <Flex gap={2} alignItems={"center"}>
             <Text color={"gray.light"}>{followersCount} Followers</Text>
             <Box w={1} h={1} bg={"gray"} borderRadius={"full"}></Box>
-            <Link color={"gray.light"}>instagram.com</Link>
+            <Text color={"gray.light"}>{followingCount} Following</Text>
           </Flex>
           <Flex>
             <Box className="icon-container">
