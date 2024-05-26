@@ -20,7 +20,7 @@ const SearchCard = ({ user }) => {
       rounded={"md"}
       p={3}
     >
-      <Avatar size={"md"} src={user.avatar} />
+      <Avatar size={"md"} src={user.avatar} name={user.name}/>
       <Box mr={"auto"}>
         <Text fontWeight={"bold"}>{user.name}</Text>
         <Text>@{user.username}</Text>

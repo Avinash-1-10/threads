@@ -23,6 +23,8 @@ import axios from "axios";
 import useTimeAgo from "../hooks/useTimeAgo";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Link } from "react-router-dom";
+import refreshAtom from "../atoms/refreshAtom";
 
 const Poll = ({ pollData }) => {
   const [poll, setPoll] = useState(pollData);
@@ -32,11 +34,14 @@ const Poll = ({ pollData }) => {
   const [totalVotes, setTotalVotes] = useState(poll.totalVotes);
   const timeAgo = useTimeAgo(poll.createdAt);
   const owner = useRecoilValue(userAtom);
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
 
   const deletePoll = async () => {
     try {
       await axios.delete(`/api/v1/poll/${poll._id}`);
       showToast("success", "Poll deleted.", "success");
+      setRefresh(!refresh);
     } catch (error) {
       showToast("error", "Poll not deleted.", "error");
     }
@@ -62,7 +67,7 @@ const Poll = ({ pollData }) => {
     await axios
       .post(`/api/v1/poll/vote`, { pollId: poll._id, optionId })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setTotalVotes(totalVotes + 1);
         poll.options.map((option) => {
           if (option._id === optionId) {
@@ -83,9 +88,16 @@ const Poll = ({ pollData }) => {
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
           <Avatar name={poll.createdBy.name} src={poll.createdBy.avatar} />
-          <Text fontSize={"md"} fontWeight={"bold"} mt={1}>
-            {poll.createdBy.name}
-          </Text>
+          <Link to={`/${poll.createdBy.username}`}>
+            <Text
+              fontSize={"md"}
+              fontWeight={"bold"}
+              mt={1}
+              _hover={{ cursor: "pointer", textDecoration: "underline" }}
+            >
+              {poll.createdBy.name}
+            </Text>
+          </Link>
           <Box mt={2}>
             {poll.createdBy.isVerfied && <MdVerified color="#2B96E9" />}
           </Box>

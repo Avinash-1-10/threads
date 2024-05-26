@@ -74,7 +74,7 @@ const CreatePost = ({ onPostFormClose }) => {
       rounded={"md"}
     >
       <Stack>
-        <Avatar src={user.avatar} />
+        <Avatar src={user.avatar} name={user.name}/>
       </Stack>
       <Stack flex={1}>
         <Text fontWeight={"bold"}>{user.username}</Text>
@@ -104,7 +104,7 @@ const CreatePost = ({ onPostFormClose }) => {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <CreatePollForm onClose={onClose} />
+              <CreatePollForm onClose={onClose} onPostFormClose={onPostFormClose}/>
             </ModalContent>
           </Modal>
           <input

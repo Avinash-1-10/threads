@@ -15,13 +15,17 @@ import {
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import refreshAtom from "../atoms/refreshAtom";
 
-const CreatePollForm = () => {
+const CreatePollForm = ({onPostFormClose, onClose}) => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const toast = useToast();
   const { colorMode } = useColorMode();
   const showToast = useShowToast();
+  const setRefresh = useSetRecoilState(refreshAtom);
+  const refresh = useRecoilValue(refreshAtom);
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -57,6 +61,9 @@ const CreatePollForm = () => {
       showToast("Success", data.message, "success");
       setQuestion("");
       setOptions(["", ""]);
+      setRefresh(!refresh);
+      onClose();
+      onPostFormClose();
     } catch (error) {
       showToast(
         "Error",

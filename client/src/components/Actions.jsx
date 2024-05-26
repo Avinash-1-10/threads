@@ -35,7 +35,7 @@ const Actions = ({ isLiked, post, setReload }) => {
   };
 
   const copyPostLink = () => {
-    const postLink = `${window.location.href}${post.postByDetails.username}/post/${post._id}`;
+    const postLink = `${window.location.origin}/${post.postByDetails.username}/post/${post._id}`;
     console.log(postLink);
     navigator.clipboard.writeText(postLink)
       .then(() => {
