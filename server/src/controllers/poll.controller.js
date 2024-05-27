@@ -30,6 +30,47 @@ const getAllPolls = async (req, res) => {
   }
 };
 
+const getPollById = async (req, res) => {
+  const pollId = req.params.id;
+  try {
+    const polls = await Poll.find({ _id: pollId })
+      .populate({
+        path: "options",
+        model: "Option",
+      })
+      .populate({
+        path: "createdBy",
+        model: "User",
+        select: "name username avatar isVerfied",
+      })
+      .lean();
+
+    if (!polls) {
+      return res.status(400).json(new ApiError(400, "Poll not found"));
+    }
+
+    // Loop through each poll and populate votes with vote count
+    for (const poll of polls) {
+      const votes = await Vote.find({ poll: poll._id });
+
+      // Transform options with vote count
+      poll.options = poll.options.map((option) => ({
+        ...option,
+        voteCount: votes.filter(
+          (vote) => vote.option.toString() === option._id.toString()
+        ).length,
+      }));
+
+      // Calculate total votes for the poll
+      poll.totalVotes = votes.length;
+    }
+
+    res.status(200).json(new ApiResponse(200, "Success", polls[0]));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
 const createPoll = async (req, res) => {
   try {
     const { question, options } = req.body;
@@ -111,7 +152,8 @@ const castVote = async (req, res) => {
 };
 
 const checkVoted = async (req, res, next) => {
-  const { pollId } = req.params;
+  try {
+    const { pollId } = req.params;
 
   const hasVoted = await Vote.findOne({
     poll: pollId,
@@ -124,6 +166,9 @@ const checkVoted = async (req, res, next) => {
       .json(new ApiResponse(200, "You have already voted on this poll", true));
   }
   return res.status(200).json(new ApiResponse(200, "Not voted yet", false));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
 };
 
 const deletePoll = async (req, res) => {
@@ -154,4 +199,11 @@ const deletePoll = async (req, res) => {
   } catch (error) {}
 };
 
-export { getAllPolls, createPoll, castVote, checkVoted, deletePoll };
+export {
+  getAllPolls,
+  getPollById,
+  createPoll,
+  castVote,
+  checkVoted,
+  deletePoll,
+};

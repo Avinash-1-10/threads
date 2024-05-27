@@ -18,10 +18,12 @@ import CommentModal from "./CommentModal";
 import RepostModal from "./RepostModal";
 import RepostButton from "./RepostButton";
 import RepostCommentModal from "./RepostCommentModal";
+import useCopyLink from "../hooks/useCopyLink";
 
 const RepostActions = ({ isLiked, repost, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { copyURL } = useCopyLink();
   const likeUnlike = async () => {
     console.log("Clicked");
     try {
@@ -39,14 +41,7 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
 
   const copyPostLink = () => {
     const postLink = `${window.location.origin}/${repost.postByDetails.username}/repost/${repost._id}`;
-    navigator.clipboard.writeText(postLink)
-      .then(() => {
-        showToast("Success", "Link Copied", "success");
-      })
-      .catch(err => {
-        console.error("Failed to copy: ", err);
-        showToast("Error", "Failed to copy link", "error");
-      });
+    copyURL(`${repost.postByDetails.username}/repost/${repost._id}`)
   };
   return (
     <Flex

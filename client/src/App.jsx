@@ -12,6 +12,7 @@ import userAtom from "./atoms/userAtom";
 import LogoutButton from "./components/LogoutButton";
 import SearchPage from "./pages/SearchPage";
 import RepostPage from "./pages/RepostPage";
+import PollPage from "./pages/PollPage";
 
 const App = () => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/:username/post/:pid" element={<PostPage />} />
           <Route path="/:username/repost/:pid" element={<RepostPage />} />
+          <Route path="/:username/poll/:pid" element={<PollPage />} />
         </Routes>
       </Container>
 

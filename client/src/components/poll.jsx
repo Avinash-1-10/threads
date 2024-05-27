@@ -25,6 +25,7 @@ import userAtom from "../atoms/userAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
 import refreshAtom from "../atoms/refreshAtom";
+import useCopyLink from "../hooks/useCopyLink";
 
 const Poll = ({ pollData }) => {
   const [poll, setPoll] = useState(pollData);
@@ -36,6 +37,7 @@ const Poll = ({ pollData }) => {
   const owner = useRecoilValue(userAtom);
   const setRefresh = useSetRecoilState(refreshAtom);
   const refresh = useRecoilValue(refreshAtom);
+  const { copyURL } = useCopyLink();
 
   const deletePoll = async () => {
     try {
@@ -57,8 +59,8 @@ const Poll = ({ pollData }) => {
   };
 
   useEffect(() => {
-    checkVoted();
-  }, []);
+    if(poll._id) checkVoted();
+  }, [poll._id]);
 
   const handleVote = async (optionId) => {
     if (hasVoted) return;
@@ -87,19 +89,19 @@ const Poll = ({ pollData }) => {
     <Box my={4}>
       <Flex justifyContent={"space-between"}>
         <Flex gap={3}>
-          <Avatar name={poll.createdBy.name} src={poll.createdBy.avatar} />
-          <Link to={`/${poll.createdBy.username}`}>
+          <Avatar name={poll?.createdBy?.name} src={poll?.createdBy?.avatar} />
+          <Link to={`/${poll?.createdBy?.username}`}>
             <Text
               fontSize={"md"}
               fontWeight={"bold"}
               mt={1}
               _hover={{ cursor: "pointer", textDecoration: "underline" }}
             >
-              {poll.createdBy.name}
+              {poll?.createdBy?.name}
             </Text>
           </Link>
           <Box mt={2}>
-            {poll.createdBy.isVerfied && <MdVerified color="#2B96E9" />}
+            {poll?.createdBy?.isVerfied && <MdVerified color="#2B96E9" />}
           </Box>
           <Text mt={1} color={"gray.light"}>
             {timeAgo}
@@ -112,7 +114,7 @@ const Poll = ({ pollData }) => {
             </MenuButton>
             <Portal>
               <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
-                {owner._id === poll.createdBy._id && (
+                {owner?._id === poll?.createdBy?._id && (
                   <MenuItem
                     color={"red"}
                     onClick={deletePoll}
@@ -124,7 +126,13 @@ const Poll = ({ pollData }) => {
                 <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
                   Report
                 </MenuItem>
-                <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                <MenuItem
+                  cursor={"pointer"}
+                  bg={colorMode === "dark" ? "gray.dark" : "white"}
+                  onClick={() =>
+                    copyURL(`${poll?.createdBy?.username}/poll/${poll?._id}`)
+                  }
+                >
                   Share
                 </MenuItem>
               </MenuList>
@@ -133,7 +141,7 @@ const Poll = ({ pollData }) => {
         </Box>
       </Flex>
       <Text fontSize="lg" my={4}>
-        {poll.question}
+        {poll?.question}
       </Text>
       <VStack
         spacing={4}
@@ -143,20 +151,20 @@ const Poll = ({ pollData }) => {
         p={4}
         borderRadius={"md"}
       >
-        {poll.options.map((option) => {
+        {poll.options  && poll.options.map((option) => {
           const voteCount = option.voteCount || 0;
           const votePercentage =
             totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
 
           return (
-            <Box key={option._id} width="100%">
+            <Box key={option?._id} width="100%">
               <HStack justify="space-between">
                 <Flex
                   w={"full"}
                   justifyContent={"space-between"}
                   alignItems={"center"}
                 >
-                  <Text>{option.text}</Text>
+                  <Text>{option?.text}</Text>
                   {!hasVoted && (
                     <Button
                       mt={2}
@@ -168,7 +176,7 @@ const Poll = ({ pollData }) => {
                           ? { bg: "white", shadow: "md" }
                           : { bg: "black", shadow: "md" }
                       }
-                      onClick={() => handleVote(option._id)}
+                      onClick={() => handleVote(option?._id)}
                     >
                       Vote
                     </Button>

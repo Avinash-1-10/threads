@@ -16,10 +16,13 @@ import useShowToast from "../hooks/useShowToast";
 import CommentModal from "./CommentModal";
 import RepostModal from "./RepostModal";
 import RepostButton from "./RepostButton";
+import useCopyLink from "../hooks/useCopyLink";
+
 
 const Actions = ({ isLiked, post, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { copyURL } = useCopyLink();
   const likeUnlike = async () => {
     try {
       const { data } = await axios.post(`/api/v1/like/post/${post._id}`);
@@ -35,16 +38,7 @@ const Actions = ({ isLiked, post, setReload }) => {
   };
 
   const copyPostLink = () => {
-    const postLink = `${window.location.origin}/${post.postByDetails.username}/post/${post._id}`;
-    console.log(postLink);
-    navigator.clipboard.writeText(postLink)
-      .then(() => {
-        showToast("Success", "Link Copied", "success");
-      })
-      .catch(err => {
-        console.error("Failed to copy: ", err);
-        showToast("Error", "Failed to copy link", "error");
-      });
+    copyURL(`${post.postByDetails.username}/post/${post._id}`)
   };
   
   return (
