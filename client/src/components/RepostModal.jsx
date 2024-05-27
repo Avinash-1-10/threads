@@ -45,6 +45,8 @@ const RepostModal = ({ onClose, post, setReload }) => {
       );
       }
   };
+
+  console.log(owner)
   return (
     <Box
       p={5}
@@ -55,15 +57,15 @@ const RepostModal = ({ onClose, post, setReload }) => {
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size={"md"}
-            name={owner?.avatar || owner?.avatar}
-            src={owner?.avatar || owner?.avatar}
+            name={owner?.name}
+            src={owner?.avatar}
           />
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
             <Flex w={"full"} alignItems={"center"}>
               <Text fontSize={"md"} fontWeight={"bold"} mr={1}>
-                {post?.postByDetails?.name || post?.postBy?.name}
+                {owner.name}
               </Text>
               <MdVerified color="#2B96E9" />
             </Flex>

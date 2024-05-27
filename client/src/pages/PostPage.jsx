@@ -105,7 +105,7 @@ const PostPage = () => {
         <Avatar
           src={post?.postBy?.avatar}
           size={"md"}
-          name={post?.postBy?.username || "User"}
+          name={post?.postBy?.name || "User"}
         />
         <Flex alignItems={"center"} gap={2}>
           <Text fontWeight={"bold"}>{post?.postBy?.name}</Text>

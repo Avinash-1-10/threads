@@ -43,7 +43,7 @@ const getCommentCount = async (req, res) => {
     const topComments = await Comment.find({ post: postId })
       .populate({
         path: "commentBy",
-        select: "username avatar",
+        select: "username avatar name",
       })
       .limit(3);
     return res.status(200).json(
@@ -69,7 +69,7 @@ const getCommentsByPostId = async (req, res) => {
     const comments = await Comment.find({ post: postId })
       .populate({
         path: "commentBy",
-        select: "username avatar",
+        select: "username avatar name",
       })
       .sort({ createdAt: -1 });
     return res.status(200).json(
@@ -175,7 +175,7 @@ const getRepostCommentCount = async (req, res) => {
     const topComments = await Comment.find({ post: repostId })
       .populate({
         path: "commentBy",
-        select: "username avatar",
+        select: "username avatar name",
       })
       .limit(3);
     return res.status(200).json(
@@ -202,7 +202,7 @@ const getRepostCommentById = async(req, res)=>{
     const comments = await Comment.find({ post: repostId })
       .populate({
         path: "commentBy",
-        select: "username avatar",
+        select: "username avatar name",
       })
       .sort({ createdAt: -1 });
     return res.status(200).json(

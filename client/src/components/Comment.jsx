@@ -60,10 +60,11 @@ const Comment = ({ comment, handleReload }) => {
   useEffect(() => {
     getCommentLikes();
   }, [refresh]);
+
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
-        <Avatar src={comment.commentBy.avatar} size={"sm"} />
+        <Avatar src={comment.commentBy.avatar} size={"sm"} name={comment.commentBy.name} />
         <Flex gap={1} w={"full"} flexDirection={"column"}>
           <Flex flexDirection={"column"}>
             <Text>{comment.commentBy.username}</Text>

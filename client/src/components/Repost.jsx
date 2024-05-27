@@ -91,13 +91,15 @@ const Repost = ({ repost, user }) => {
     getCommentCount();
   }, [reload]);
 
+  // console.log(topComments)
+
   return (
     <Link to={`/${user?.username}/repost/${repost._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar size={"md"} name={user?.name} src={user?.avatar} />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
-          <Box position={"relative"} w={"full"}>
+          <Box position={"relative"} w={"full"} mb={5}>
             {topComments.length > 0 ? (
               <>
                 {topComments.length >= 1 && (

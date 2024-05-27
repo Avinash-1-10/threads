@@ -110,7 +110,7 @@ const RepostPage = () => {
         <Avatar
           src={repost?.repostByDetails?.avatar}
           size={"md"}
-          name={repost?.repostByDetails?.username || "User"}
+          name={repost?.repostByDetails?.name}
         />
         <Flex alignItems={"center"} gap={2}>
           <Text fontWeight={"bold"}>{repost?.repostByDetails?.name}</Text>

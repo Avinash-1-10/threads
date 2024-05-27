@@ -1,7 +1,6 @@
 import React from "react";
-import { FaRegHeart } from "react-icons/fa6";
+import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import { IoChatbubbleOutline } from "react-icons/io5";
-import { BiRepost } from "react-icons/bi";
 import { FiShare } from "react-icons/fi";
 import {
   Box,
@@ -11,21 +10,34 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
-import CommentModal from "./CommentModal";
-import RepostModal from "./RepostModal";
-import RepostButton from "./RepostButton";
 import RepostCommentModal from "./RepostCommentModal";
 import useCopyLink from "../hooks/useCopyLink";
+
+const IconButton = ({ children, onClick, hoverColor, hoverBgColor }) => (
+  <Box
+    py={1}
+    px={3}
+    borderRadius={"full"}
+    _hover={{
+      color: hoverColor,
+      bgColor: hoverBgColor,
+      transition:
+        "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+    }}
+    onClick={onClick}
+  >
+    {children}
+  </Box>
+);
 
 const RepostActions = ({ isLiked, repost, setReload }) => {
   const showToast = useShowToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { copyURL } = useCopyLink();
+
   const likeUnlike = async () => {
-    console.log("Clicked");
     try {
       const { data } = await axios.post(`/api/v1/like/repost/${repost._id}`);
       showToast("Success", data.message, "success");
@@ -40,9 +52,9 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
   };
 
   const copyPostLink = () => {
-    const postLink = `${window.location.origin}/${repost.postByDetails.username}/repost/${repost._id}`;
-    copyURL(`${repost.postByDetails.username}/repost/${repost._id}`)
+    copyURL(`${repost.postByDetails.username}/repost/${repost._id}`);
   };
+
   return (
     <Flex
       gap={2}
@@ -51,55 +63,26 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
       alignItems={"center"}
       onClick={(e) => e.preventDefault()}
     >
-      {isLiked ? (
-        <Box
-          py={1}
-          px={3}
-          borderRadius={"full"}
-          _hover={{
-            color: "rgb(237, 73, 86)",
-            bgColor: "rgb(249, 212, 215)",
-            transition:
-              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
-          }}
-          onClick={likeUnlike}
-        >
-          <FaHeart
-            color="rgb(237, 73, 86)"
-            cursor={"pointer"}
-            onClick={likeUnlike}
-          />
-        </Box>
-      ) : (
-        <Box
-          py={1}
-          px={3}
-          borderRadius={"full"}
-          _hover={{
-            color: "rgb(237, 73, 86)",
-            bgColor: "rgb(249, 212, 215)",
-            transition:
-              "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
-          }}
-          onClick={likeUnlike}
-        >
-          <FaRegHeart cursor={"pointer"} onClick={likeUnlike} />
-        </Box>
-      )}
-      <Box
-        py={1}
-        px={3}
-        borderRadius={"full"}
-        _hover={{
-          color: "rgb(76, 73, 237)",
-          bgColor: "rgb(205, 205, 249)",
-          transition:
-            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
-        }}
-        onClick={onOpen}
+      <IconButton
+        onClick={likeUnlike}
+        hoverColor="rgb(237, 73, 86)"
+        hoverBgColor="rgb(249, 212, 215)"
       >
-        <IoChatbubbleOutline cursor={"pointer"} onClick={onOpen} />
-      </Box>
+        {isLiked ? (
+          <FaHeart color="rgb(237, 73, 86)" cursor={"pointer"} />
+        ) : (
+          <FaRegHeart cursor={"pointer"} />
+        )}
+      </IconButton>
+
+      <IconButton
+        onClick={onOpen}
+        hoverColor="rgb(76, 73, 237)"
+        hoverBgColor="rgb(205, 205, 249)"
+      >
+        <IoChatbubbleOutline cursor={"pointer"} />
+      </IconButton>
+
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -110,20 +93,14 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
           />
         </ModalContent>
       </Modal>
-      <Box
-        py={1}
-        px={3}
-        borderRadius={"full"}
-        _hover={{
-          color: "rgb(6, 117, 165)",
-          bgColor: "rgb(205, 236, 249)",
-          transition:
-            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
-        }}
+
+      <IconButton
         onClick={copyPostLink}
+        hoverColor="rgb(6, 117, 165)"
+        hoverBgColor="rgb(205, 236, 249)"
       >
         <FiShare cursor={"pointer"} />
-      </Box>
+      </IconButton>
     </Flex>
   );
 };
