@@ -30,9 +30,7 @@ const Footer = () => {
   const path = location.pathname;
 
   const MenuItem = ({ to, activeIcon, inactiveIcon }) => (
-    <Link to={to}>
-      {path === to ? activeIcon : inactiveIcon}
-    </Link>
+    <Link to={to}>{path === to ? activeIcon : inactiveIcon}</Link>
   );
 
   return (
@@ -54,8 +52,16 @@ const Footer = () => {
         justifyContent={"space-between"}
         color={colorMode === "dark" ? "white" : "gray.dark"}
       >
-        <MenuItem to="/" activeIcon={<GoHomeFill />} inactiveIcon={<GoHome />} />
-        <MenuItem to="/search" activeIcon={<FiSearch />} inactiveIcon={<FiSearch />} />
+        <MenuItem
+          to="/"
+          activeIcon={<GoHomeFill />}
+          inactiveIcon={<GoHome />}
+        />
+        <MenuItem
+          to="/search"
+          activeIcon={<FiSearch />}
+          inactiveIcon={<FiSearch />}
+        />
         <IconButton
           icon={<IoCreateOutline />}
           onClick={onOpen}
@@ -63,7 +69,7 @@ const Footer = () => {
           _hover={{ bg: "transparent" }}
           size={"28px"}
         />
-        <AiOutlineHeart/>
+        <AiOutlineHeart />
         <MenuItem
           to={`/${user?.username}`}
           activeIcon={<FaUser />}

@@ -3,6 +3,8 @@ import Poll from "../components/poll";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
+import NotFound from "../components/NotFound";
+import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 
 const PollPage = () => {
   const [pollData, setPollData] = useState({});
@@ -29,9 +31,11 @@ const PollPage = () => {
   },[])
 
   if(loading){
-    return <div>
-     <h1>Loading</h1>
-    </div>
+    return <PostPageSkeleton />
+  }
+
+  if(!pollData._id){
+    return <NotFound text={"Poll"}/>
   }
 
   return <div>

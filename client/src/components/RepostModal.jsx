@@ -46,7 +46,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
       }
   };
 
-  console.log(owner)
+  // console.log(owner)
   return (
     <Box
       p={5}

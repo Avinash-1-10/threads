@@ -6,18 +6,27 @@ import {
   Divider,
   Flex,
   Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
   Stack,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Actions";
 import Comment from "../components/Comment";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 import RepostActions from "../components/RepostActions";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import NotFound from "../components/NotFound";
 
 const RepostPage = () => {
   const { pid } = useParams();
@@ -30,6 +39,9 @@ const RepostPage = () => {
   const [reload, setReload] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
+  const { colorMode } = useColorMode();
+  const owner = useRecoilValue(userAtom);
+  const navigate = useNavigate();
   // console.log(repost)
 
   const getLikeData = async () => {
@@ -54,6 +66,20 @@ const RepostPage = () => {
       setCommentCount(data.data.commentCount);
     } catch (error) {
       console.log("error");
+    }
+  };
+
+  const deletePost = async () => {
+    try {
+      const { data } = await axios.delete(`/api/v1/repost/${repost._id}`);
+      showToast("Success", data.message, "success");
+      navigate("/")
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
     }
   };
 
@@ -104,6 +130,10 @@ const RepostPage = () => {
     return <PostPageSkeleton />;
   }
 
+  if(!repost?._id){
+    return <NotFound text={"Repost"}/>
+  }
+
   return (
     <>
       <Flex alignItems={"center"} gap={3}>
@@ -120,47 +150,83 @@ const RepostPage = () => {
           <Text fontSize={"sm"} color={"gray.light"}>
             {timeAgo}
           </Text>
-          <BsThreeDots />
+          <Flex gap={4} alignItems={"center"}>
+              <Box onClick={(e) => e.preventDefault()}>
+                <Menu>
+                  <MenuButton>
+                    <BsThreeDots onClick={(e) => e.preventDefault()} />
+                  </MenuButton>
+                  <Portal>
+                    <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      {owner?._id === repost.repostByDetails?._id && (
+                        <MenuItem
+                          color={"red"}
+                          onClick={deletePost}
+                          bg={colorMode === "dark" ? "gray.dark" : "white"}
+                        >
+                          Delete
+                        </MenuItem>
+                      )}
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        View
+                      </MenuItem>
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        Report
+                      </MenuItem>
+                      <MenuItem
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        Share
+                      </MenuItem>
+                    </MenuList>
+                  </Portal>
+                </Menu>
+              </Box>
+            </Flex>
         </Flex>
       </Flex>
 
       <Text my={3}>{repost?.text}</Text>
       <Stack
-            p={5}
-            border={"1px solid"}
+        p={5}
+        border={"1px solid"}
+        borderColor={"gray.light"}
+        rounded={"md"}
+      >
+        <Flex alignItems={"center"} gap={2}>
+          <Avatar
+            size={"sm"}
+            name={repost?.postByDetails?.avatar}
+            src={repost?.postByDetails?.avatar}
+          />
+          <Text size={"sm"} fontWeight={"bold"}>
+            {repost?.postByDetails?.name}
+          </Text>
+          <MdVerified size={"15px"} color="#2B96E9" />
+        </Flex>
+        <Text fontSize={"sm"}>{repost?.postDetails?.text}</Text>
+        {repost?.postDetails?.image && (
+          <Box
+            borderRadius={6}
+            overflow={"hidden"}
+            border={"1px solid "}
             borderColor={"gray.light"}
-            rounded={"md"}
           >
-            <Flex alignItems={"center"} gap={2}>
-              <Avatar
-                size={"sm"}
-                name={repost?.postByDetails?.avatar}
-                src={repost?.postByDetails?.avatar}
-              />
-              <Text size={"sm"} fontWeight={"bold"}>
-                {repost?.postByDetails?.name}
-              </Text>
-              <MdVerified size={"15px"} color="#2B96E9" />
-            </Flex>
-            <Text fontSize={"sm"}>{repost?.postDetails?.text}</Text>
-            {repost?.postDetails?.image && (
-              <Box
-                borderRadius={6}
-                overflow={"hidden"}
-                border={"1px solid "}
-                borderColor={"gray.light"}
-              >
-                <Image src={repost?.postDetails?.image} w={"full"} />
-              </Box>
-            )}
-          </Stack>
+            <Image src={repost?.postDetails?.image} w={"full"} />
+          </Box>
+        )}
+      </Stack>
 
       <Flex gap={3} my={3}>
-      <RepostActions
-              isLiked={isLiked}
-              repost={repost}
-              setReload={setReload}
-            />
+        <RepostActions
+          isLiked={isLiked}
+          repost={repost}
+          setReload={setReload}
+        />
       </Flex>
       <Flex gap={2} alignItems={"center"}>
         <Text color={"gray.light"} fontSize={"sm"}>
@@ -173,17 +239,21 @@ const RepostPage = () => {
       </Flex>
 
       <Divider my={4} />
-      {comments.length > 0 ?comments.map((comment, i) => (
-        <Comment
-          comment={comment}
-          key={i}
-          handleReload={() => setReload((prev) => !prev)}
-        />
-      )):(
-        <Text textAlign={"center"} color={"gray.light"} fontSize={"md"}>No comments</Text>
+      {comments.length > 0 ? (
+        comments.map((comment, i) => (
+          <Comment
+            comment={comment}
+            key={i}
+            handleReload={() => setReload((prev) => !prev)}
+          />
+        ))
+      ) : (
+        <Text textAlign={"center"} color={"gray.light"} fontSize={"md"}>
+          No comments
+        </Text>
       )}
     </>
-  )
+  );
 };
 
 export default RepostPage;

@@ -6,16 +6,28 @@ import {
   Divider,
   Flex,
   Image,
+  Img,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Stack,
   Text,
+  useColorMode,
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Actions";
 import Comment from "../components/Comment";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import NotFound from "../components/NotFound";
+
 
 const PostPage = () => {
   const { pid } = useParams();
@@ -28,6 +40,9 @@ const PostPage = () => {
   const [reload, setReload] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [timeAgo, setTimeAgo] = useState("");
+  const owner = useRecoilValue(userAtom);
+  const { colorMode } = useColorMode();
+  const navigate = useNavigate();
 
   const getLikeData = async () => {
     try {
@@ -50,6 +65,20 @@ const PostPage = () => {
       setCommentCount(data.data.commentCount);
     } catch (error) {
       console.log("error");
+    }
+  };
+
+  const deletePost = async () => {
+    try {
+      const { data } = await axios.delete(`/api/v1/post/${post._id}`);
+      showToast("Success", data.message, "success");
+      navigate("/");
+    } catch (error) {
+      showToast(
+        "Error",
+        error?.response?.data?.message || error.message,
+        "error"
+      );
     }
   };
 
@@ -99,6 +128,10 @@ const PostPage = () => {
     return <PostPageSkeleton />;
   }
 
+  if (!post._id) {
+    return <NotFound text={"Post"}/>
+  }
+
   return (
     <>
       <Flex alignItems={"center"} gap={3}>
@@ -115,7 +148,37 @@ const PostPage = () => {
           <Text fontSize={"sm"} color={"gray.light"}>
             {timeAgo}
           </Text>
-          <BsThreeDots />
+          <Flex gap={4} alignItems={"center"}>
+            <Box onClick={(e) => e.preventDefault()}>
+              <Menu>
+                <MenuButton>
+                  <BsThreeDots onClick={(e) => e.preventDefault()} />
+                </MenuButton>
+                <Portal>
+                  <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                    {owner?._id === post.postBy?._id && (
+                      <MenuItem
+                        color={"red"}
+                        onClick={deletePost}
+                        bg={colorMode === "dark" ? "gray.dark" : "white"}
+                      >
+                        Delete
+                      </MenuItem>
+                    )}
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      View
+                    </MenuItem>
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      Report
+                    </MenuItem>
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      Share
+                    </MenuItem>
+                  </MenuList>
+                </Portal>
+              </Menu>
+            </Box>
+          </Flex>
         </Flex>
       </Flex>
 
@@ -145,14 +208,18 @@ const PostPage = () => {
       </Flex>
 
       <Divider my={4} />
-      {comments.length > 0 ?comments.map((comment, i) => (
-        <Comment
-          comment={comment}
-          key={i}
-          handleReload={() => setReload((prev) => !prev)}
-        />
-      )):(
-        <Text textAlign={"center"} color={"gray.light"} fontSize={"md"}>No comments</Text>
+      {comments.length > 0 ? (
+        comments.map((comment, i) => (
+          <Comment
+            comment={comment}
+            key={i}
+            handleReload={() => setReload((prev) => !prev)}
+          />
+        ))
+      ) : (
+        <Text textAlign={"center"} color={"gray.light"} fontSize={"md"}>
+          No comments
+        </Text>
       )}
     </>
   );
