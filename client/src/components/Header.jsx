@@ -88,12 +88,12 @@ const Header = () => {
         <MenuButton
           as={IconButton}
           aria-label="Options"
-          icon={<HiOutlineMenuAlt3 fontSize="24px" color="white" />}
+          icon={<HiOutlineMenuAlt3 fontSize="24px" color={colorMode === "dark" ? "white" : "black"} />}
         />
         <Portal>
-          <MenuList bg="gray.700" zIndex={60}>
+          <MenuList bg={colorMode === "dark" ? "#101010" : "#EDF2F6"} zIndex={60}>
             {user && (
-              <MenuItem>
+              <MenuItem bg={colorMode === "dark" ? "#101010" : "#EDF2F6"}>
                 <LogoutButton />
               </MenuItem>
             )}
