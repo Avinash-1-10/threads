@@ -47,8 +47,6 @@ This project is a social media platform that serves as a clone of a popular soci
 - Like posts
 - Comment on posts
 - Share posts
-
-### Polls (Upcoming Feature)
 - Create polls for community engagement
 
 ## Upcoming Features
