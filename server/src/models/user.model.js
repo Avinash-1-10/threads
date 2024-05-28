@@ -38,11 +38,11 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin", "owner"],
       default: "user",
     },
-    membershipStatus:{
+    membershipStatus: {
       type: String,
       enum: ["basic", "premium", "pro"],
       default: "basic",
-    }
+    },
   },
   { timestamps: true }
 );

@@ -12,6 +12,7 @@ import feedRoutes from "./routes/feed.routes.js";
 import pollRoutes from "./routes/poll.routes.js";
 import authRoutes from "./routes/auth.routes.js"
 import cors from "cors";
+import setupPassport from "./services/passport.js";
 configDotenv();
 
 // Database connection
@@ -20,8 +21,13 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+setupPassport(app);
+
 // middlewares
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -12,6 +12,7 @@ import {
   Text,
   useColorModeValue,
   Link,
+  Img,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -20,6 +21,7 @@ import authScreenAtom from "../atoms/authAtom";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
+import googlesvg from "../assets/google.svg";
 
 const LoginCard = () => {
   const showToast = useShowToast();
@@ -37,11 +39,15 @@ const LoginCard = () => {
       // console.log(data.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
       localStorage.setItem("threadsToken", data.data.threadsToken);
-      setUser(data?.data?.user)
+      setUser(data?.data?.user);
       showToast("Success", data.message, "success");
     } catch (error) {
       showToast("Error", error.response.data.message, "error");
     }
+  };
+
+  const googleAuth = () => {
+    window.open("http://localhost:8000/auth/google/callback", "_self");
   };
   return (
     <Flex>
@@ -65,14 +71,24 @@ const LoginCard = () => {
             <Box>
               <FormControl isRequired>
                 <FormLabel>Username</FormLabel>
-                <Input type="text" onChange={(e) => setFormData({...formData, username: e.target.value})}/>
+                <Input
+                  type="text"
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                />
               </FormControl>
             </Box>
 
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} onChange={(e) => setFormData({...formData, password: e.target.value})}/>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
                 <InputRightElement h={"full"}>
                   <Button
                     variant={"ghost"}
@@ -97,6 +113,22 @@ const LoginCard = () => {
                 onClick={handleSubmit}
               >
                 Log in
+              </Button>
+            </Stack>
+            <Stack spacing={10} pt={2}>
+              <Button
+                loadingText="Submitting"
+                size="lg"
+                bg={"white"}
+                fontSize={"lg"}
+                color={"black"}
+                _hover={{
+                  bg: "white",
+                }}
+                onClick={googleAuth}
+              >
+                <Img src={googlesvg} alt="google" w={"25px"} mr={2} />
+                Google
               </Button>
             </Stack>
             <Stack pt={6}>

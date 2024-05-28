@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   Link,
   useToast,
+  Img,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -23,6 +24,7 @@ import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import { useNavigate } from "react-router-dom";
 import userAtom from "../atoms/userAtom";
+import googlesvg from "../assets/google.svg";
 
 const SignupCard = () => {
   const navigate = useNavigate();
@@ -51,6 +53,9 @@ const SignupCard = () => {
     }
   };
 
+  const googleAuth = ()=>{
+    window.open("http://localhost:8000/auth/google/callback", "_self");
+  }
   return (
     <Flex>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
@@ -132,6 +137,22 @@ const SignupCard = () => {
                 onClick={handleSubmit}
               >
                 Sign up
+              </Button>
+            </Stack>
+            <Stack spacing={10} pt={2}>
+              <Button
+                loadingText="Submitting"
+                size="lg"
+                bg={"white"}
+                fontSize={"lg"}
+                color={"black"}
+                _hover={{
+                  bg: "white",
+                }}
+                onClick={googleAuth}
+              >
+                <Img src={googlesvg} alt="google" w={"25px"} mr={2} />
+                Google
               </Button>
             </Stack>
             <Stack pt={6}>

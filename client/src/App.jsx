@@ -13,6 +13,7 @@ import LogoutButton from "./components/LogoutButton";
 import SearchPage from "./pages/SearchPage";
 import RepostPage from "./pages/RepostPage";
 import PollPage from "./pages/PollPage";
+import GoogleAuth from "./pages/GoogleAuth";
 
 const App = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/:username/post/:pid" element={<PostPage />} />
           <Route path="/:username/repost/:pid" element={<RepostPage />} />
           <Route path="/:username/poll/:pid" element={<PollPage />} />
+          <Route path="/auth/google/callback" element={<GoogleAuth />} />
         </Routes>
       </Container>
 
