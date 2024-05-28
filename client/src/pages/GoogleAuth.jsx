@@ -13,15 +13,16 @@ const GoogleAuth = () => {
             const { data } = await axios.get("http://localhost:8000/auth/login/success", {
                 withCredentials: true,
             });
-            console.log(data);
             localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
             localStorage.setItem("threadsToken", data.data.threadsToken);
             showToast("Success", data.message, "success");
             navigate("/");
+            window.location.reload()
         } catch (error) {
             const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
             showToast("Error", errorMessage, "error");
             navigate("/auth");
+            window.location.reload()
         }
     };
 
