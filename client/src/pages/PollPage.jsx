@@ -8,39 +8,39 @@ import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 
 const PollPage = () => {
   const [pollData, setPollData] = useState({});
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const { pid } = useParams();
   const showToast = useShowToast();
 
   const getPoll = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const { data } = await axios.get(`/api/v1/poll/${pid}`);
       setPollData(data.data);
-
     } catch (error) {
       showToast("Error", error.response.data.message || error.message, "error");
-    } finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(()=>{
-    getPoll()
+  useEffect(() => {
+    getPoll();
+  }, []);
 
-  },[])
-
-  if(loading){
-    return <PostPageSkeleton />
+  if (loading) {
+    return <PostPageSkeleton />;
   }
 
-  if(!pollData._id){
-    return <NotFound text={"Poll"}/>
+  if (!pollData._id) {
+    return <NotFound text={"Poll"} />;
   }
 
-  return <div>
-    <Poll pollData={pollData}/>
-  </div>;
+  return (
+    <div>
+      <Poll pollData={pollData} />
+    </div>
+  );
 };
 
 export default PollPage;
