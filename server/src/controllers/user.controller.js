@@ -248,4 +248,39 @@ const getUsers = async (req, res) => {
   }
 };
 
-export { signup, login, logout, updateUser, getUserProfile, getUsers };
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json(new ApiError(401, "Invalid password"));
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Password changed successfully"));
+  } catch (error) {
+    console.error("Error in changePassword: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while changing password."
+        )
+      );
+  }
+};
+
+export { signup, login, logout, updateUser, getUserProfile, getUsers, changePassword };
