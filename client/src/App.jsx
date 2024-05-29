@@ -14,6 +14,7 @@ import SearchPage from "./pages/SearchPage";
 import RepostPage from "./pages/RepostPage";
 import PollPage from "./pages/PollPage";
 import GoogleAuth from "./pages/GoogleAuth";
+import SettingsPage from "./pages/SettingsPage";
 
 const App = () => {
   const location = useLocation();
@@ -34,12 +35,31 @@ const App = () => {
             path="/auth"
             element={!user ? <AuthPage /> : <Navigate to={"/"} />}
           />
-          <Route path="/:username" element={<UserPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/:username/post/:pid" element={<PostPage />} />
-          <Route path="/:username/repost/:pid" element={<RepostPage />} />
-          <Route path="/:username/poll/:pid" element={<PollPage />} />
           <Route path="/auth/google/callback" element={<GoogleAuth />} />
+          <Route
+            path="/:username"
+            element={user ? <UserPage /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/search"
+            element={user ? <SearchPage /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/:username/post/:pid"
+            element={user ? <PostPage /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/:username/repost/:pid"
+            element={user ? <RepostPage /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/:username/poll/:pid"
+            element={user ? <PollPage /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/settings"
+            element={user ? <SettingsPage /> : <Navigate to={"/auth"} />}
+          />
         </Routes>
       </Container>
 
