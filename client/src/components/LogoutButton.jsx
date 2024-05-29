@@ -1,9 +1,11 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import {  Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import { useSetRecoilState } from "recoil";
+import { IoIosLogOut } from "react-icons/io";
+
 
 const LogoutButton = () => {
   const showToast = useShowToast();
@@ -21,19 +23,17 @@ const LogoutButton = () => {
     }
   };
   return (
-    <Box
-      bg={"red.500"}
-      _hover={{ bg: "red.400" }}
+    <Flex
+      color={"red.500"}
+      _hover={{ color: "red.600", cursor: "pointer" }}
       transition={"background-color 0.3s ease-in-out"}
-      p={2}
-      rounded={"md"}
-      textAlign={"center"}
-      fontWeight={"bold"}
       w={"full"}
+      gap={2}
       onClick={handleLogout}
     >
-      Logout
-    </Box>
+      <IoIosLogOut size={"23px"} />
+      <Text fontSize={"md"}>Logout</Text>
+    </Flex>
   );
 };
 

@@ -1,15 +1,9 @@
 import React from "react";
 import {
   Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Portal,
   useBreakpointValue,
   useColorMode,
   IconButton,
-  Box,
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -18,18 +12,16 @@ import {
 import { FaThreads } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
-import { IoMdHeart } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa6";
-import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { AiOutlineHeart } from "react-icons/ai";
 import { IoCreateOutline } from "react-icons/io5";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue } from "recoil";
-import LogoutButton from "./LogoutButton";
 import CreatePost from "./CreatePost";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { GoHome } from "react-icons/go";
+import HeaderMenu from "./HeaderMenu";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -84,22 +76,7 @@ const Header = () => {
           <CreatePost onPostFormClose={onClose} />
         </ModalContent>
       </Modal>
-      <Menu>
-        <MenuButton
-          as={IconButton}
-          aria-label="Options"
-          icon={<HiOutlineMenuAlt3 fontSize="24px" color={colorMode === "dark" ? "white" : "black"} />}
-        />
-        <Portal>
-          <MenuList bg={colorMode === "dark" ? "#101010" : "#EDF2F6"} zIndex={60}>
-            {user && (
-              <MenuItem bg={colorMode === "dark" ? "#101010" : "#EDF2F6"}>
-                <LogoutButton />
-              </MenuItem>
-            )}
-          </MenuList>
-        </Portal>
-      </Menu>
+      <HeaderMenu/>
     </Flex>
   );
 };
