@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Flex,
+  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -29,11 +30,6 @@ const HeaderMenu = () => {
 
   const menuItems = [
     {
-      label: "Settings",
-      icon: IoSettingsOutline,
-      link: "/settings",
-    },
-    {
       label: "Dashboard",
       icon: RxDashboard,
       link: "/dashboard",
@@ -47,6 +43,11 @@ const HeaderMenu = () => {
       label: "Bookmarks",
       icon: IoBookmarkOutline,
       link: "/bookmarks",
+    },
+    {
+      label: "Settings",
+      icon: IoSettingsOutline,
+      link: "/settings",
     },
     {
       label: "About",
@@ -86,7 +87,7 @@ const HeaderMenu = () => {
             >
               <Link to={item.link}>
                 <Flex alignItems={"center"} gap={2}>
-                  <item.icon size={20} />
+                  <Icon as={item.icon} h={5} w={5} color={"blue.500"} />
                   <Text>{item.label}</Text>
                 </Flex>
               </Link>
