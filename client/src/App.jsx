@@ -15,6 +15,7 @@ import RepostPage from "./pages/RepostPage";
 import PollPage from "./pages/PollPage";
 import GoogleAuth from "./pages/GoogleAuth";
 import SettingsPage from "./pages/SettingsPage";
+import ChangePassword from "./pages/settingPages/ChangePassword";
 
 const App = () => {
   const location = useLocation();
@@ -59,6 +60,11 @@ const App = () => {
           <Route
             path="/settings"
             element={user ? <SettingsPage /> : <Navigate to={"/auth"} />}
+          />
+
+          <Route
+            path="/settings/change-password"
+            element={user ? <ChangePassword /> : <Navigate to={"/auth"} />}
           />
         </Routes>
       </Container>

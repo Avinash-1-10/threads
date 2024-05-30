@@ -1,5 +1,14 @@
 import React from "react";
-import { Box, Heading, List, ListItem, Text, Divider, Flex, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  List,
+  ListItem,
+  Text,
+  Divider,
+  Flex,
+  Icon,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import {
   IoKeyOutline,
@@ -43,19 +52,18 @@ const settingsOptions = [
   },
 ];
 
-
-
-
 const SettingsPage = () => {
   return (
     <Box padding="4">
-      <Heading as="h3" size="lg" mb="6" textAlign={"center"}>Settings</Heading>
+      <Heading as="h2" size="lg" mb="6" textAlign={"center"}>
+        Settings
+      </Heading>
       <List spacing={3}>
         {settingsOptions.map((option, idx) => (
           <ListItem key={idx}>
             <Link to={option.link}>
               <Flex alignItems="center" gap={2}>
-                <Icon as={option.icon} color={option.color} h={5} w={5}/>
+                <Icon as={option.icon} color={option.color} h={5} w={5} />
                 <Text>{option.label}</Text>
               </Flex>
             </Link>
