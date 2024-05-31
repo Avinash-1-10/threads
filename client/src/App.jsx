@@ -16,6 +16,7 @@ import PollPage from "./pages/PollPage";
 import GoogleAuth from "./pages/GoogleAuth";
 import SettingsPage from "./pages/SettingsPage";
 import ChangePassword from "./pages/settingPages/ChangePassword";
+import DeleteAccount from "./pages/settingPages/DeleteAccount";
 
 const App = () => {
   const location = useLocation();
@@ -66,7 +67,12 @@ const App = () => {
             path="/settings/change-password"
             element={user ? <ChangePassword /> : <Navigate to={"/auth"} />}
           />
+          <Route
+            path="/settings/delete-account"
+            element={user ? <DeleteAccount /> : <Navigate to={"/auth"} />}
+          />
         </Routes>
+        
       </Container>
 
       {!showFullHeader && !isAuthPage && <Footer />}
