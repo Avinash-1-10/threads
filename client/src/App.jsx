@@ -19,6 +19,7 @@ import ChangePassword from "./pages/settingPages/ChangePassword";
 import DeleteAccount from "./pages/settingPages/DeleteAccount";
 import FreezeAccount from "./pages/settingPages/FreezeAccount";
 import ChangeTheme from "./pages/settingPages/ChangeTheme";
+import MembershipSelection from "./pages/settingPages/MembershipSelection";
 
 const App = () => {
   const location = useLocation();
@@ -80,6 +81,11 @@ const App = () => {
           <Route
             path="/settings/theme"
             element={user ? <ChangeTheme /> : <Navigate to={"/auth"} />}
+          />
+          
+          <Route
+            path="/settings/memberships"
+            element={user ? <MembershipSelection /> : <Navigate to={"/auth"} />}
           />
         </Routes>
         
