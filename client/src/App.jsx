@@ -18,6 +18,7 @@ import SettingsPage from "./pages/SettingsPage";
 import ChangePassword from "./pages/settingPages/ChangePassword";
 import DeleteAccount from "./pages/settingPages/DeleteAccount";
 import FreezeAccount from "./pages/settingPages/FreezeAccount";
+import ChangeTheme from "./pages/settingPages/ChangeTheme";
 
 const App = () => {
   const location = useLocation();
@@ -75,6 +76,10 @@ const App = () => {
           <Route
             path="/settings/freeze-account"
             element={user ? <FreezeAccount /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/settings/theme"
+            element={user ? <ChangeTheme /> : <Navigate to={"/auth"} />}
           />
         </Routes>
         
