@@ -27,6 +27,7 @@ import RepostActions from "../components/RepostActions";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import NotFound from "../components/NotFound";
+import BackButton from "../components/BackButton";
 
 const RepostPage = () => {
   const { pid } = useParams();
@@ -73,7 +74,7 @@ const RepostPage = () => {
     try {
       const { data } = await axios.delete(`/api/v1/repost/${repost._id}`);
       showToast("Success", data.message, "success");
-      navigate("/")
+      navigate("/");
     } catch (error) {
       showToast(
         "Error",
@@ -130,12 +131,15 @@ const RepostPage = () => {
     return <PostPageSkeleton />;
   }
 
-  if(!repost?._id){
-    return <NotFound text={"Repost"}/>
+  if (!repost?._id) {
+    return <NotFound text={"Repost"} />;
   }
 
   return (
     <>
+      <Box mb={6}>
+        <BackButton />
+      </Box>
       <Flex alignItems={"center"} gap={3}>
         <Avatar
           src={repost?.repostByDetails?.avatar}
@@ -151,42 +155,36 @@ const RepostPage = () => {
             {timeAgo}
           </Text>
           <Flex gap={4} alignItems={"center"}>
-              <Box onClick={(e) => e.preventDefault()}>
-                <Menu>
-                  <MenuButton>
-                    <BsThreeDots onClick={(e) => e.preventDefault()} />
-                  </MenuButton>
-                  <Portal>
-                    <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
-                      {owner?._id === repost.repostByDetails?._id && (
-                        <MenuItem
-                          color={"red"}
-                          onClick={deletePost}
-                          bg={colorMode === "dark" ? "gray.dark" : "white"}
-                        >
-                          Delete
-                        </MenuItem>
-                      )}
+            <Box onClick={(e) => e.preventDefault()}>
+              <Menu>
+                <MenuButton>
+                  <BsThreeDots onClick={(e) => e.preventDefault()} />
+                </MenuButton>
+                <Portal>
+                  <MenuList bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                    {owner?._id === repost.repostByDetails?._id && (
                       <MenuItem
+                        color={"red"}
+                        onClick={deletePost}
                         bg={colorMode === "dark" ? "gray.dark" : "white"}
                       >
-                        View
+                        Delete
                       </MenuItem>
-                      <MenuItem
-                        bg={colorMode === "dark" ? "gray.dark" : "white"}
-                      >
-                        Report
-                      </MenuItem>
-                      <MenuItem
-                        bg={colorMode === "dark" ? "gray.dark" : "white"}
-                      >
-                        Share
-                      </MenuItem>
-                    </MenuList>
-                  </Portal>
-                </Menu>
-              </Box>
-            </Flex>
+                    )}
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      View
+                    </MenuItem>
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      Report
+                    </MenuItem>
+                    <MenuItem bg={colorMode === "dark" ? "gray.dark" : "white"}>
+                      Share
+                    </MenuItem>
+                  </MenuList>
+                </Portal>
+              </Menu>
+            </Box>
+          </Flex>
         </Flex>
       </Flex>
 

@@ -5,6 +5,8 @@ import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import NotFound from "../components/NotFound";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
+import BackButton from "../components/BackButton";
+import { Box } from "@chakra-ui/react";
 
 const PollPage = () => {
   const [pollData, setPollData] = useState({});
@@ -38,6 +40,9 @@ const PollPage = () => {
 
   return (
     <div>
+      <Box mb={6}>
+        <BackButton />
+      </Box>
       <Poll pollData={pollData} />
     </div>
   );

@@ -27,7 +27,7 @@ import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import NotFound from "../components/NotFound";
-
+import BackButton from "../components/BackButton";
 
 const PostPage = () => {
   const { pid } = useParams();
@@ -129,11 +129,14 @@ const PostPage = () => {
   }
 
   if (!post._id) {
-    return <NotFound text={"Post"}/>
+    return <NotFound text={"Post"} />;
   }
 
   return (
     <>
+      <Box mb={6}>
+        <BackButton />
+      </Box>
       <Flex alignItems={"center"} gap={3}>
         <Avatar
           src={post?.postBy?.avatar}
