@@ -12,10 +12,12 @@ import {
   Button,
   useColorModeValue,
   Spinner,
+  Icon,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import useShowToast from "../../hooks/useShowToast";
 import axios from "axios";
+import BackButton from "../../components/BackButton";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -24,6 +26,7 @@ const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const showToast = useShowToast();
+
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -61,6 +64,8 @@ const ChangePassword = () => {
   const lightBgColor = useColorModeValue("gray.100", "gray.dark");
 
   return (
+    <>
+    <BackButton/>
     <Box
       width="full"
       maxW="md"
@@ -124,6 +129,7 @@ const ChangePassword = () => {
         </Button>
       </VStack>
     </Box>
+    </>
   );
 };
 
