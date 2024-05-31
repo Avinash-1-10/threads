@@ -11,6 +11,7 @@ import repostRoutes from "./routes/repost.routes.js";
 import feedRoutes from "./routes/feed.routes.js";
 import pollRoutes from "./routes/poll.routes.js";
 import authRoutes from "./routes/auth.routes.js"
+import accountRoutes from "./routes/account.routes.js"
 import cors from "cors";
 import setupPassport from "./services/passport.js";
 configDotenv();
@@ -42,6 +43,7 @@ app.use("/api/v1/like", likeRoutes);
 app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/poll", pollRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/v1/account", accountRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
