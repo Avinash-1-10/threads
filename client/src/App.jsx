@@ -17,6 +17,7 @@ import GoogleAuth from "./pages/GoogleAuth";
 import SettingsPage from "./pages/SettingsPage";
 import ChangePassword from "./pages/settingPages/ChangePassword";
 import DeleteAccount from "./pages/settingPages/DeleteAccount";
+import FreezeAccount from "./pages/settingPages/FreezeAccount";
 
 const App = () => {
   const location = useLocation();
@@ -70,6 +71,10 @@ const App = () => {
           <Route
             path="/settings/delete-account"
             element={user ? <DeleteAccount /> : <Navigate to={"/auth"} />}
+          />
+          <Route
+            path="/settings/freeze-account"
+            element={user ? <FreezeAccount /> : <Navigate to={"/auth"} />}
           />
         </Routes>
         
