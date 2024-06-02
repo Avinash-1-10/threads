@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Button, Flex } from "@chakra-ui/react";
 
 ChartJS.register(
   CategoryScale,
@@ -26,26 +27,26 @@ const generateData = (interval) => {
     daily: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     weekly: ["Week 1", "Week 2", "Week 3", "Week 4"],
     monthly: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-    yearly: ["2018", "2019", "2020", "2021", "2022", "2023"]
+    yearly: ["2018", "2019", "2020", "2021", "2022", "2023"],
   };
 
   const data = {
     daily: {
       followers: [20, 30, 40, 50, 60, 70, 80],
-      following: [10, 15, 25, 35, 45, 55, 65]
+      following: [10, 15, 25, 35, 45, 55, 65],
     },
     weekly: {
       followers: [150, 200, 250, 300],
-      following: [100, 150, 200, 250]
+      following: [100, 150, 200, 250],
     },
     monthly: {
       followers: [300, 350, 400, 450, 500, 550, 600],
-      following: [200, 250, 300, 350, 400, 450, 500]
+      following: [200, 250, 300, 350, 400, 450, 500],
     },
     yearly: {
       followers: [1000, 1200, 1400, 1600, 1800, 2000],
-      following: [800, 1000, 1200, 1400, 1600, 1800]
-    }
+      following: [800, 1000, 1200, 1400, 1600, 1800],
+    },
   };
 
   return {
@@ -68,7 +69,7 @@ const generateData = (interval) => {
 };
 
 const LineGraph = () => {
-  const [interval, setInterval] = useState('daily');
+  const [interval, setInterval] = useState("daily");
   const [chartData, setChartData] = useState(generateData(interval));
 
   const handleIntervalChange = (newInterval) => {
@@ -90,24 +91,37 @@ const LineGraph = () => {
   };
 
   return (
-    <div className="line-graph-container">
-      <div className="button-group">
-        <button onClick={() => handleIntervalChange('daily')} className={interval === 'daily' ? 'active' : ''}>
-          Daily
-        </button>
-        <button onClick={() => handleIntervalChange('weekly')} className={interval === 'weekly' ? 'active' : ''}>
-          Weekly
-        </button>
-        <button onClick={() => handleIntervalChange('monthly')} className={interval === 'monthly' ? 'active' : ''}>
-          Monthly
-        </button>
-        <button onClick={() => handleIntervalChange('yearly')} className={interval === 'yearly' ? 'active' : ''}>
-          Yearly
-        </button>
-      </div>
+    <div>
       <Line options={options} data={chartData} />
+
+      <Flex gap={5} mt={5} justifyContent={"space-between"}>
+        <Button
+          onClick={() => handleIntervalChange("daily")}
+          className={interval === "daily" ? "active" : ""}
+        >
+          Daily
+        </Button>
+        <Button
+          onClick={() => handleIntervalChange("weekly")}
+          className={interval === "weekly" ? "active" : ""}
+        >
+          Weekly
+        </Button>
+        <Button
+          onClick={() => handleIntervalChange("monthly")}
+          className={interval === "monthly" ? "active" : ""}
+        >
+          Monthly
+        </Button>
+        <Button
+          onClick={() => handleIntervalChange("yearly")}
+          className={interval === "yearly" ? "active" : ""}
+        >
+          Yearly
+        </Button>
+      </Flex>
     </div>
   );
-}
+};
 
 export default LineGraph;

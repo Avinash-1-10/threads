@@ -20,6 +20,7 @@ import DeleteAccount from "./pages/settingPages/DeleteAccount";
 import FreezeAccount from "./pages/settingPages/FreezeAccount";
 import ChangeTheme from "./pages/settingPages/ChangeTheme";
 import MembershipSelection from "./pages/settingPages/MembershipSelection";
+import Dasboard from "./pages/Dasboard";
 
 const App = () => {
   const location = useLocation();
@@ -86,6 +87,12 @@ const App = () => {
           <Route
             path="/settings/memberships"
             element={user ? <MembershipSelection /> : <Navigate to={"/auth"} />}
+          />
+
+          {/* Dashboard */}
+          <Route
+            path="/dashboard"
+            element={user ? <Dasboard /> : <Navigate to={"/auth"} />}
           />
         </Routes>
         
