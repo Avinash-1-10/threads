@@ -2,6 +2,7 @@ import React from "react";
 import LineGraph from "../components/dashboard/LineGraph";
 import UserCard from "../components/dashboard/UserCard";
 import BarChart from "../components/dashboard/BarChart";
+import PieChart from "../components/dashboard/PieChart";
 
 const Dasboard = () => {
   return (
@@ -9,6 +10,7 @@ const Dasboard = () => {
       <UserCard />
       <LineGraph />
       <BarChart/>
+      <PieChart/>
     </div>
   );
 };
