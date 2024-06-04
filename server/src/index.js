@@ -1,5 +1,6 @@
 import express from "express";
 import { configDotenv } from "dotenv";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./db/index.js";
 import userRoutes from "./routes/user.routes.js";
@@ -12,8 +13,8 @@ import feedRoutes from "./routes/feed.routes.js";
 import pollRoutes from "./routes/poll.routes.js";
 import authRoutes from "./routes/auth.routes.js"
 import accountRoutes from "./routes/account.routes.js"
-import cors from "cors";
 import setupPassport from "./services/passport.js";
+import dashboardRouter from "./routes/dashboard.routes.js";
 configDotenv();
 
 // Database connection
@@ -44,6 +45,7 @@ app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/poll", pollRoutes);
 app.use("/auth", authRoutes);
 app.use("/api/v1/account", accountRoutes);
+app.use("/api/v1/dashboard", dashboardRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
