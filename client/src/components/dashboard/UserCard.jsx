@@ -1,19 +1,35 @@
 import { Avatar, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const UserCard = () => {
+
+  const [user, setUser] = useState({});
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get("/api/v1/dashboard/user");
+      setUser(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
   return (
     <Flex gap={10} borderBottom={"1px"} borderColor={"gray.light"} p={3} mb={5}>
       <Stack justify={"center"} align={"center"}>
         <Avatar
           size={"2xl"}
-          src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src={user?.user?.avatar}
+          name={user?.user?.name}
         />
         <Text fontWeight={"bold"} fontSize={"2xl"}>
-          John Doe
+        {user?.user?.name}
         </Text>
         <Text fontSize={"sm"} color={"gray.500"} mt={-2}>
-          @username
+        @{user?.user?.username}
         </Text>
       </Stack>
       <Flex
@@ -24,7 +40,7 @@ const UserCard = () => {
       >
         <Stack>
           <Text fontWeight={"bold"} fontSize={"5xl"} textAlign={"center"}>
-            10
+            {user?.postCount}
           </Text>
           <Text color={"gray.500"} mt={-2} textAlign={"center"}>
             Posts
@@ -32,7 +48,7 @@ const UserCard = () => {
         </Stack>
         <Stack>
           <Text fontWeight={"bold"} fontSize={"5xl"} textAlign={"center"}>
-            23K
+            {user?.followersCount}
           </Text>
           <Text color={"gray.500"} mt={-2} textAlign={"center"}>
             Followers
@@ -40,7 +56,7 @@ const UserCard = () => {
         </Stack>
         <Stack>
           <Text fontWeight={"bold"} fontSize={"5xl"} textAlign={"center"}>
-            390
+            {user?.followingCount}
           </Text>
           <Text color={"gray.500"} mt={-2} textAlign={"center"}>
             Following
