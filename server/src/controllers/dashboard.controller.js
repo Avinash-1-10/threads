@@ -246,4 +246,48 @@ export const getUserFollowData = async (req, res) => {
   }
 };
 
-export { getUserDashboardDetails };
+const getFollowersCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Aggregate to get count of verified and unverified followers
+    const followersCount = await Follow.aggregate([
+      { $match: { following: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "follower",
+          foreignField: "_id",
+          as: "followerDetails",
+        },
+      },
+      { $unwind: "$followerDetails" },
+    ]);
+
+    // Initialize counts
+    let verifiedCount = 0;
+    let normalCount = 0;
+
+    // Assign counts based on aggregation results
+    followersCount.forEach((follower) => {
+      if (follower.followerDetails.isVerfied === true) {
+        verifiedCount++
+      } else {
+        normalCount++
+      }
+    });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, "Data fetched successfully", {
+          verifiedCount,
+          normalCount,
+        })
+      );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export { getUserDashboardDetails, getFollowersCount };

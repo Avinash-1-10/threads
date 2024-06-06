@@ -8,7 +8,6 @@ const verifyJwt = async (req, res, next) => {
     const token =
       req.cookies?.threadsToken ||
       req.headers["Authorization"]?.replace("Bearer ", "");
-
     if (!token) {
       // No token was found in either cookies or Authorization header
       return res
@@ -33,7 +32,6 @@ const verifyJwt = async (req, res, next) => {
         .status(404)
         .json(new ApiError(404, "User associated with the token not found."));
     }
-
     // Attach the user object to the request for use in subsequent middleware/functions
     req.user = user;
     next(); // Pass control to the next middleware
@@ -47,6 +45,7 @@ const verifyJwt = async (req, res, next) => {
         .status(401)
         .json(new ApiError(401, "Access token has expired."));
     } else {
+      console.log(error.message)
       return res
         .status(500)
         .json(

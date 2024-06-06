@@ -32,7 +32,9 @@ const LineGraph = () => {
 
   const getFollowData = async (interval) => {
     try {
-      const response = await axios.get(`/api/v1/dashboard/user/${user._id}/${interval}`);
+      const response = await axios.get(
+        `/api/v1/dashboard/user/${user._id}/${interval}`
+      );
       const data = response.data;
 
       const formattedData = {
@@ -40,13 +42,13 @@ const LineGraph = () => {
         datasets: [
           {
             label: "Followers",
-            data: data.data.followers,
+            data: data.data.followers || 0,
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)",
           },
           {
             label: "Following",
-            data: data.data.following,
+            data: data.data.following || 0,
             borderColor: "rgb(53, 162, 235)",
             backgroundColor: "rgba(53, 162, 235, 0.5)",
           },
