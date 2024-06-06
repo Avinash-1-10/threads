@@ -3,15 +3,16 @@ import LineGraph from "../components/dashboard/LineGraph";
 import UserCard from "../components/dashboard/UserCard";
 import BarChart from "../components/dashboard/BarChart";
 import PieChart from "../components/dashboard/PieChart";
+import { Box } from "@chakra-ui/react";
 
 const Dasboard = () => {
   return (
-    <div>
+    <Box mb={10}>
       <UserCard />
       <LineGraph />
-      <BarChart/>
+      {/* <BarChart/> */}
       <PieChart/>
-    </div>
+    </Box>
   );
 };
 
