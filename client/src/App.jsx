@@ -9,7 +9,6 @@ import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
-import LogoutButton from "./components/LogoutButton";
 import SearchPage from "./pages/SearchPage";
 import RepostPage from "./pages/RepostPage";
 import PollPage from "./pages/PollPage";

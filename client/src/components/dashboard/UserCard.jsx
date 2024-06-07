@@ -25,9 +25,6 @@ const UserCard = () => {
           src={user?.user?.avatar}
           name={user?.user?.name}
         />
-        <Text fontWeight={"bold"} fontSize={"2xl"}>
-        {user?.user?.name}
-        </Text>
         <Text fontSize={"sm"} color={"gray.500"} mt={-2}>
         @{user?.user?.username}
         </Text>
