@@ -7,7 +7,7 @@ import { Box } from "@chakra-ui/react";
 
 const Dasboard = () => {
   return (
-    <Box mb={10}>
+    <Box mb={20}>
       <UserCard />
       <LineGraph />
       {/* <BarChart/> */}
