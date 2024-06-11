@@ -54,8 +54,8 @@ const CommentModal = ({ onClose, post, setReload }) => {
         <Flex flexDirection={"column"} alignItems={"center"}>
           <Avatar
             size={"md"}
-            name={post?.postByDetails?.avatar || post.postBy.avatar}
-            src={post?.postByDetails?.avatar || post.postBy.avatar}
+            name={post?.postByDetails?.name}
+            src={post?.postByDetails?.avatar}
           />
           <Box w={"1px"} h={"full"} bg={"gray.light"} my={2}></Box>
           <Box w={"full"}>
