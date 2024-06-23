@@ -1,5 +1,5 @@
 // components/ResetPassword.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -12,35 +12,41 @@ import {
   useColorMode,
   useColorModeValue,
   Text,
-} from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import BackButton from '../components/BackButton';
-import useShowToast from '../hooks/useShowToast';
-import axios from 'axios';
+} from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
+import BackButton from "../components/BackButton";
+import useShowToast from "../hooks/useShowToast";
+import axios from "axios";
 
 const ResetPassword = () => {
   const { colorMode } = useColorMode();
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const showToast = useShowToast();
   const navigate = useNavigate();
+  const { token } = useParams();
 
   const handleResetPassword = async () => {
     try {
       if (!password || !confirmPassword) {
-        setError('Both fields are required');
+        setError("Both fields are required");
         return;
       }
       if (password !== confirmPassword) {
-        setError('Passwords do not match');
+        setError("Passwords do not match");
         return;
       }
-      setError('');
+      setError("");
 
-    console.log("Success")
+      const { data } = await axios.post(`/api/v1/user/reset-password`, {
+        password,
+        token,
+      });
+      showToast("Success", data.message, "success");
+      navigate("/login");
     } catch (error) {
-        console.log(error)
+      showToast("Error", error.response.data.message, "error");
     }
   };
 
@@ -49,7 +55,7 @@ const ResetPassword = () => {
       <BackButton />
       <Container centerContent py={8}>
         <Box
-          bg={useColorModeValue('white', 'gray.dark')}
+          bg={useColorModeValue("white", "gray.dark")}
           p={8}
           borderRadius="md"
           boxShadow="lg"

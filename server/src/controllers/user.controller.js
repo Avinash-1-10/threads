@@ -315,10 +315,13 @@ const sendPasswordResetEmail = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { password } = req.body;
-  const { token } = req.params;
+  const { password, token } = req.body;
   try {
     const { userId } = jwt.verify(token, process.env.JWT_SECRET);
+    if (!userId) {
+      return res.status(401).json(new ApiError(401, "Invalid token"));
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json(new ApiError(404, "User not found"));
