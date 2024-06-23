@@ -6,6 +6,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import uploadOnCloudinary from "../utils/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
+import jwt from "jsonwebtoken";
+import sendEmail from "../utils/sendEmail.js";
 
 const signup = async (req, res) => {
   try {
@@ -283,4 +285,43 @@ const changePassword = async (req, res) => {
   }
 };
 
-export { signup, login, logout, updateUser, getUserProfile, getUsers, changePassword };
+const sendPasswordResetEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
+    sendEmail(user.email, "Password Reset", resetUrl);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Password reset email sent successfully"));
+  } catch (error) {
+    console.error("Error in sendPasswordResetEmail: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message ||
+            "An error occurred while sending password reset email."
+        )
+      );
+  }
+};
+
+
+export {
+  signup,
+  login,
+  logout,
+  updateUser,
+  getUserProfile,
+  getUsers,
+  changePassword,
+  sendPasswordResetEmail
+};
