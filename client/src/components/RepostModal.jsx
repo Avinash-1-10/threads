@@ -46,7 +46,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
       }
   };
 
-  // console.log(owner)
+  // console.log(post?.postByDetails)
   return (
     <Box
       p={5}
@@ -96,8 +96,8 @@ const RepostModal = ({ onClose, post, setReload }) => {
           <Flex gap={3} alignItems={"center"}>
           <Avatar
             size={"sm"}
-            name={post?.postByDetails?.avatar || post.postBy.avatar}
-            src={post?.postByDetails?.avatar || post.postBy.avatar}
+            name={post?.postByDetails?.name}
+            src={post?.postByDetails?.avatar}
           />
           <Text fontSize={"sm"} fontWeight={"bold"} mr={1}>
                 {post?.postByDetails?.name || post?.postBy?.name}

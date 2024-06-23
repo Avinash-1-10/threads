@@ -96,6 +96,15 @@ const createRepost = async (req, res) => {
         .status(400)
         .json(new ApiError(400, "Post id and text are required"));
     }
+    const existingRepost = await Repost.findOne({
+      post: postId,
+      repostBy: userId,
+    });
+    if (existingRepost) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "You already reposted this post"));
+    }
     const newRepost = new Repost({
       post: postId,
       repostBy: userId,
@@ -107,6 +116,22 @@ const createRepost = async (req, res) => {
       .json(new ApiResponse(200, "Repost created successfully", newRepost));
   } catch (error) {
     console.error("Error in createRepost controller:", error.message);
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
+const checkReposted = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user._id;
+    const repost = await Repost.findOne({ post: postId, repostBy: userId });
+    if (repost) {
+      return res.status(200).json({ isReposted: true });
+    } else {
+      return res.status(200).json({ isReposted: false });
+    }
+  } catch (error) {
+    console.error("Error in checkReposted controller:", error.message);
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
@@ -128,4 +153,10 @@ const deleteRepost = async (req, res) => {
   }
 };
 
-export { createRepost, deleteRepost, getAllReposts, getRepostById };
+export {
+  createRepost,
+  deleteRepost,
+  getAllReposts,
+  getRepostById,
+  checkReposted,
+};
