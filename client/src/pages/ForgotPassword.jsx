@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import BackButton from '../components/BackButton';
 import useShowToast from '../hooks/useShowToast';
+import axios from 'axios';
 
 const ForgotPassword = () => {
   const { colorMode } = useColorMode();
@@ -23,11 +24,18 @@ const ForgotPassword = () => {
   const showToast = useShowToast();
 
   const handleForgotPassowrd = async () => {
+   try {
     if (!email) {
       setError('Email is required');
       return;
     }
     setError('');
+
+    const {data} = await axios.post('/api/v1/user/forgot-password', {email});
+    showToast("Success", data.message, "success");
+   } catch (error) {
+    showToast("Error", error.response.data.message, "error");
+   }
   };
 
   return (

@@ -5,6 +5,7 @@ import {
   getUsers,
   login,
   logout,
+  sendPasswordResetEmail,
   signup,
   updateUser,
 } from "../controllers/user.controller.js";
@@ -20,5 +21,7 @@ router.get("/profile/:query", getUserProfile);
 router.put("/update", verifyJwt, upload.single("avatar"), updateUser);
 router.get("/search", getUsers);
 router.put("/change-password", verifyJwt, changePassword);
+router.post("/forgot-password", sendPasswordResetEmail);
+
 
 export default router;
