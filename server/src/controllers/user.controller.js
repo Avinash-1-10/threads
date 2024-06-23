@@ -314,6 +314,34 @@ const sendPasswordResetEmail = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+  try {
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json(new ApiError(404, "User not found"));
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.password = hashedPassword;
+    await user.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Password reset successfully"));
+  } catch (error) {
+    console.error("Error in resetPassword: ", error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          error.message || "An error occurred while resetting password."
+        )
+      );
+  }
+};
 
 export {
   signup,
@@ -323,5 +351,6 @@ export {
   getUserProfile,
   getUsers,
   changePassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  resetPassword,
 };

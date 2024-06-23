@@ -5,6 +5,7 @@ import {
   getUsers,
   login,
   logout,
+  resetPassword,
   sendPasswordResetEmail,
   signup,
   updateUser,
@@ -22,6 +23,6 @@ router.put("/update", verifyJwt, upload.single("avatar"), updateUser);
 router.get("/search", getUsers);
 router.put("/change-password", verifyJwt, changePassword);
 router.post("/forgot-password", sendPasswordResetEmail);
-
+router.post("/reset-password", resetPassword);
 
 export default router;
