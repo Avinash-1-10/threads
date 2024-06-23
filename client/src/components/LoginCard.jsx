@@ -22,6 +22,7 @@ import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import googlesvg from "../assets/google.svg";
+import { NavLink } from "react-router-dom";
 
 const LoginCard = () => {
   const showToast = useShowToast();
@@ -140,6 +141,14 @@ const LoginCard = () => {
                 >
                   Signup
                 </Link>
+              </Text>
+            </Stack>
+            <Stack pt={1}>
+              <Text align={"center"} fontSize={"sm"} color={"blue.400"} _hover={{ color: "blue.500", textDecoration: "underline", transition: "color 0.3s ease-in-out"}}>
+                <NavLink to={"/forgot-passowrd"}
+                >
+                  Forgot Password?
+                </NavLink>
               </Text>
             </Stack>
           </Stack>

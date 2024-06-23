@@ -20,6 +20,7 @@ import FreezeAccount from "./pages/settingPages/FreezeAccount";
 import ChangeTheme from "./pages/settingPages/ChangeTheme";
 import MembershipSelection from "./pages/settingPages/MembershipSelection";
 import Dasboard from "./pages/Dasboard";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   const location = useLocation();
@@ -93,6 +94,8 @@ const App = () => {
             path="/dashboard"
             element={user ? <Dasboard /> : <Navigate to={"/auth"} />}
           />
+
+          <Route path="forgot-passowrd" element={<ForgotPassword />} />
         </Routes>
         
       </Container>
