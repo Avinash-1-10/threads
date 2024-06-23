@@ -21,6 +21,7 @@ import ChangeTheme from "./pages/settingPages/ChangeTheme";
 import MembershipSelection from "./pages/settingPages/MembershipSelection";
 import Dasboard from "./pages/Dasboard";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   const location = useLocation();
@@ -83,7 +84,7 @@ const App = () => {
             path="/settings/theme"
             element={user ? <ChangeTheme /> : <Navigate to={"/auth"} />}
           />
-          
+
           <Route
             path="/settings/memberships"
             element={user ? <MembershipSelection /> : <Navigate to={"/auth"} />}
@@ -95,9 +96,9 @@ const App = () => {
             element={user ? <Dasboard /> : <Navigate to={"/auth"} />}
           />
 
-          <Route path="forgot-passowrd" element={<ForgotPassword />} />
+          <Route path="/forgot-passowrd" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
-        
       </Container>
 
       {!showFullHeader && !isAuthPage && <Footer />}
