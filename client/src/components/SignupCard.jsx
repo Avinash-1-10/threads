@@ -54,7 +54,7 @@ const SignupCard = () => {
   };
 
   const googleAuth = ()=>{
-    window.open("http://localhost:8000/auth/google/callback", "_self");
+    window.open("https://threads-ffw7.onrender.com/auth/google/callback", "_self");
   }
   return (
     <Flex>
