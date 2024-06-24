@@ -27,7 +27,7 @@ setupPassport(app);
 
 // middlewares
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.PORT.CLIENT_URL,
   credentials: true,
 }));
 app.use(express.json());
