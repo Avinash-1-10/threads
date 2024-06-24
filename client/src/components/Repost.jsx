@@ -208,7 +208,7 @@ const Repost = ({ repost, user }) => {
             <Flex alignItems={"center"} gap={2}>
               <Avatar
                 size={"sm"}
-                name={repost.postByDetails.avatar}
+                name={repost.postByDetails.name}
                 src={repost.postByDetails?.avatar}
               />
               <Text size={"sm"} fontWeight={"bold"}>
