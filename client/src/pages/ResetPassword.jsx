@@ -39,7 +39,7 @@ const ResetPassword = () => {
       }
       setError("");
 
-      const { data } = await axios.post(`/api/v1/user/reset-password`, {
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/user/reset-password`, {
         password,
         token,
       });

@@ -42,7 +42,7 @@ const UpdateProfileCard = ({ onClose }) => {
     formData.append("email", userData.email);
     formData.append("avatar", imgFile);
     try {
-      const { data } = await axios.put("/api/v1/user/update", formData);
+      const { data } = await axios.put("https://threads-ffw7.onrender.com/api/v1/user/update", formData);
       setUser(data?.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data));
       showToast("Success", data.message, "success");

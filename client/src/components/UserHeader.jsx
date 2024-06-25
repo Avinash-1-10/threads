@@ -47,7 +47,7 @@ const UserHeader = ({ user }) => {
   const getFollowers = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/v1/follow/follwers/${user._id}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/follow/follwers/${user._id}`);
       setFollowersCount(data.data.totalCount);
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -65,7 +65,7 @@ const UserHeader = ({ user }) => {
   const getFollowing = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/v1/follow/following/${user._id}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/follow/following/${user._id}`);
       setFollowingCount(data.data.totalCount);
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -83,7 +83,7 @@ const UserHeader = ({ user }) => {
   const followUser = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`/api/v1/follow/${user._id}`);
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/follow/${user._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {
@@ -103,7 +103,7 @@ const UserHeader = ({ user }) => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `/api/v1/follow/check/following/${user._id}`
+        `https://threads-ffw7.onrender.com/api/v1/follow/check/following/${user._id}`
       );
       setIsFollowing(data.data);
     } catch (error) {

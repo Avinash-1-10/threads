@@ -39,7 +39,7 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
 
   const likeUnlike = async () => {
     try {
-      const { data } = await axios.post(`/api/v1/like/repost/${repost._id}`);
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/like/repost/${repost._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {

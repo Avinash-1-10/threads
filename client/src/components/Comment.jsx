@@ -22,7 +22,7 @@ const Comment = ({ comment, handleReload }) => {
   const getCommentLikes = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/comment/count/likes/${comment._id}`
+        `https://threads-ffw7.onrender.com/api/v1/comment/count/likes/${comment._id}`
       );
       setCommentLikeCount(data.data.likeCount);
       setCommentLiked(data.data.liked);
@@ -33,7 +33,7 @@ const Comment = ({ comment, handleReload }) => {
 
   const handleLike = async () => {
     try {
-      const { data } = await axios.post(`/api/v1/comment/like/${comment._id}`);
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/comment/like/${comment._id}`);
       showToast("Success", data.message, "success");
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ const Comment = ({ comment, handleReload }) => {
 
   const handleDelete = async () => {
     try {
-      const { data } = await axios.delete(`/api/v1/comment/${comment._id}`);
+      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/api/v1/comment/${comment._id}`);
       showToast("Success", data.message, "success");
       handleReload();
     } catch (error) {

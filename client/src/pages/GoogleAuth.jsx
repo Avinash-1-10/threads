@@ -10,7 +10,7 @@ const GoogleAuth = () => {
 
     const getUser = async () => {
         try {
-            const { data } = await axios.get("http://localhost:8000/auth/login/success", {
+            const { data } = await axios.get("https://threads-ffw7.onrender.com/auth/login/success", {
                 withCredentials: true,
             });
             localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));

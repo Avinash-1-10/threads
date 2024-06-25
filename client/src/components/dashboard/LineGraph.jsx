@@ -33,7 +33,7 @@ const LineGraph = () => {
   const getFollowData = async (interval) => {
     try {
       const response = await axios.get(
-        `/api/v1/dashboard/user/${user._id}/${interval}`
+        `https://threads-ffw7.onrender.com/api/v1/dashboard/user/${user._id}/${interval}`
       );
       const data = response.data;
 

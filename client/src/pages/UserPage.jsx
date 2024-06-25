@@ -20,7 +20,7 @@ const UserPage = () => {
   const getUser = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/v1/user/profile/${username}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/user/profile/${username}`);
       setUser(data.data);
     } catch (error) {
       showToast("Error", error.response?.data?.message || "Failed to load user data", "error");
@@ -32,7 +32,7 @@ const UserPage = () => {
   const getPosts = async () => {
     setPostsLoading(true);
     try {
-      const { data } = await axios.get(`/api/v1/feed/${username}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/feed/${username}`);
       setPosts(data.data);
       // console.log(data.data)
     } catch (error) {

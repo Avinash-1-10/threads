@@ -46,7 +46,7 @@ const CreatePost = ({ onPostFormClose }) => {
     formData.append("text", text);
     formData.append("image", imgFile);
     try {
-      const { data } = await axios.post("/api/v1/post/create", formData);
+      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/post/create", formData);
       setText("");
       setImgUrl(null);
       setRefresh(!refresh);

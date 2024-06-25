@@ -17,7 +17,7 @@ const PollPage = () => {
   const getPoll = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/v1/poll/${pid}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/poll/${pid}`);
       setPollData(data.data);
     } catch (error) {
       showToast("Error", error.response.data.message || error.message, "error");

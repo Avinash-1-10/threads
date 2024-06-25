@@ -41,7 +41,7 @@ const Poll = ({ pollData }) => {
 
   const deletePoll = async () => {
     try {
-      await axios.delete(`/api/v1/poll/${poll._id}`);
+      await axios.delete(`https://threads-ffw7.onrender.com/api/v1/poll/${poll._id}`);
       showToast("success", "Poll deleted.", "success");
       setRefresh(!refresh);
     } catch (error) {
@@ -51,7 +51,7 @@ const Poll = ({ pollData }) => {
 
   const checkVoted = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/poll/check-vote/${poll._id}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/poll/check-vote/${poll._id}`);
       setHasVoted(data.data);
     } catch (error) {
       console.log(error.message);
@@ -67,7 +67,7 @@ const Poll = ({ pollData }) => {
     console.log(optionId);
     // Perform vote submission logic here
     await axios
-      .post(`/api/v1/poll/vote`, { pollId: poll._id, optionId })
+      .post(`https://threads-ffw7.onrender.com/api/v1/poll/vote`, { pollId: poll._id, optionId })
       .then((res) => {
         // console.log(res.data);
         setTotalVotes(totalVotes + 1);

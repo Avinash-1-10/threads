@@ -7,7 +7,7 @@ const UserCard = () => {
   const [user, setUser] = useState({});
   const getUser = async () => {
     try {
-      const { data } = await axios.get("/api/v1/dashboard/user");
+      const { data } = await axios.get("https://threads-ffw7.onrender.com/api/v1/dashboard/user");
       setUser(data.data);
     } catch (error) {
       console.log(error);

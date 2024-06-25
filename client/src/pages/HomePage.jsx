@@ -18,7 +18,7 @@ const HomePage = () => {
   const getPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("/api/v1/feed");
+      const { data } = await axios.get("https://threads-ffw7.onrender.com/api/v1/feed");
       setPosts(data.data);
       // console.log(data.data)
     } catch (error) {

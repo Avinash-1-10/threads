@@ -24,7 +24,7 @@ const PieChart = () => {
 
   const getData = async () => {
     try {
-      const {data} = await axios.get(`/api/v1/dashboard/user/followers/count/${user._id}`);
+      const {data} = await axios.get(`https://threads-ffw7.onrender.com/api/v1/dashboard/user/followers/count/${user._id}`);
      const count  = data.data;
       setChartData(
         {

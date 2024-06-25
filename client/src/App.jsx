@@ -29,6 +29,9 @@ const App = () => {
   const isAuthPage = location.pathname === "/auth";
   const user = useRecoilValue(userAtom);
 
+  // set credentials true for cookies in axios
+  axios.defaults.withCredentials = true;
+
   return (
     <Center flexDirection={"column"}>
       {!isAuthPage && <Header />}

@@ -45,7 +45,7 @@ const Repost = ({ repost, user }) => {
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/like/count/repost/${repost._id}`
+        `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${repost._id}`
       );
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
@@ -57,7 +57,7 @@ const Repost = ({ repost, user }) => {
   const getCommentCount = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/comment/count/repost/${repost._id}`
+        `https://threads-ffw7.onrender.com/api/v1/comment/count/repost/${repost._id}`
       );
       // console.log(data);
       setCommentCount(data.data.commentCount);
@@ -73,7 +73,7 @@ const Repost = ({ repost, user }) => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`/api/v1/repost/${repost._id}`);
+      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/api/v1/repost/${repost._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
       setRefresh(!refresh);

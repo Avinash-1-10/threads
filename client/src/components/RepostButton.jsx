@@ -20,7 +20,7 @@ const RepostButton = ({ post, setReload }) => {
   const checkReposted = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/repost/check-reposted/${post._id}`
+        `https://threads-ffw7.onrender.com/api/v1/repost/check-reposted/${post._id}`
       );
       setIsReposted(data.isReposted);
     } catch (error) {

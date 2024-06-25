@@ -45,7 +45,7 @@ const ChangePassword = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.put("/api/v1/user/change-password", {
+      const { data } = await axios.put("https://threads-ffw7.onrender.com/api/v1/user/change-password", {
         oldPassword,
         newPassword,
       });

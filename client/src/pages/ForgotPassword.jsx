@@ -31,7 +31,7 @@ const ForgotPassword = () => {
     }
     setError('');
 
-    const {data} = await axios.post('/api/v1/user/forgot-password', {email});
+    const {data} = await axios.post('https://threads-ffw7.onrender.com/api/v1/user/forgot-password', {email});
     showToast("Success", data.message, "success");
    } catch (error) {
     showToast("Error", error.response.data.message, "error");

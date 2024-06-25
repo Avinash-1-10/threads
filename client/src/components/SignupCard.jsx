@@ -42,7 +42,7 @@ const SignupCard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/v1/user/signup", formData);
+      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/user/signup", formData);
       // console.log(data.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
       localStorage.setItem("threadsToken", data.data.threadsToken);

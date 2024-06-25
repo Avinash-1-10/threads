@@ -28,7 +28,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
   const addComment = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`/api/v1/comment/${post._id}`, {
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/comment/${post._id}`, {
         text,
       });
       showToast("Success", data.message, "success");

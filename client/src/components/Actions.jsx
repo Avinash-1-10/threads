@@ -25,7 +25,7 @@ const Actions = ({ isLiked, post, setReload }) => {
   const { copyURL } = useCopyLink();
   const likeUnlike = async () => {
     try {
-      const { data } = await axios.post(`/api/v1/like/post/${post._id}`);
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/like/post/${post._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {

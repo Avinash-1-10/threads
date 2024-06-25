@@ -20,7 +20,7 @@ const SearchPage = () => {
   const getUsers = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await axios.get(`/api/v1/user/search?query=${search}`);
+      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/user/search?query=${search}`);
       setUsers(data.data);
     } catch (error) {
       showToast(

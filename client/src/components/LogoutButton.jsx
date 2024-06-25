@@ -13,7 +13,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.post("/api/v1/user/logout");
+      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/user/logout");
       localStorage.removeItem("threads-user");
       localStorage.removeItem("threadsToken");
       setUser(null);

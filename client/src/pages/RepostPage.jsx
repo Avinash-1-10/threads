@@ -48,7 +48,7 @@ const RepostPage = () => {
   const getLikeData = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/like/count/repost/${repost._id || pid}`
+        `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${repost._id || pid}`
       );
       // console.log(data)
       setLikeCount(data.data.likeCount);
@@ -61,7 +61,7 @@ const RepostPage = () => {
   const getCommentData = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/comment/repost/${repost._id || pid}`
+        `https://threads-ffw7.onrender.com/comment/repost/${repost._id || pid}`
       );
       setComments(data.data.comments);
       setCommentCount(data.data.commentCount);
@@ -72,7 +72,7 @@ const RepostPage = () => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`/api/v1/repost/${repost._id}`);
+      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/repost/${repost._id}`);
       showToast("Success", data.message, "success");
       navigate("/");
     } catch (error) {
@@ -88,7 +88,7 @@ const RepostPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: postData } = await axios.get(`/api/v1/repost/${pid}`);
+        const { data: postData } = await axios.get(`https://threads-ffw7.onrender.com/repost/${pid}`);
         setRepost(postData.data);
         // console.log(postData.data)
         let date = new Date(postData.data.createdAt);
@@ -98,10 +98,10 @@ const RepostPage = () => {
         setTimeAgo(`${d}/${m}/${y}`);
         if (postData.post?._id) {
           const { data: likeData } = await axios.get(
-            `/api/v1/like/count/repost/${postData.data._id}`
+            `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${postData.data._id}`
           );
           const { data: comments } = await axios.get(
-            `/api/v1/comment/post/${postData.data._id}`
+            `https://threads-ffw7.onrender.com/api/v1/comment/post/${postData.data._id}`
           );
           setComments(comments.data.comments);
           setCommentCount(comments.data.commentCount);

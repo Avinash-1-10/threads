@@ -30,7 +30,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
   const createRepost = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`/api/v1/repost/${post._id}`, {
+      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/repost/${post._id}`, {
         text,
       });
       showToast("Success", data.message, "success");
