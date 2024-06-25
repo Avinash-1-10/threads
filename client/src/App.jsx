@@ -33,6 +33,12 @@ const App = () => {
   // set credentials true for cookies in axios
   axios.defaults.withCredentials = true;
 
+  // send token in header with every api
+  const token = localStorage.getItem("threadsToken");
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+
   return (
     <Center flexDirection={"column"}>
       {!isAuthPage && <Header />}
