@@ -26,10 +26,7 @@ const PORT = process.env.PORT || 4000;
 setupPassport(app);
 
 // middlewares
-app.use(cors({
-  origin: process.env.PORT.CLIENT_URL,
-  credentials: true,
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
