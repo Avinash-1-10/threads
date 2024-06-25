@@ -22,6 +22,7 @@ import MembershipSelection from "./pages/settingPages/MembershipSelection";
 import Dasboard from "./pages/Dasboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import axios from "axios";
 
 const App = () => {
   const location = useLocation();
