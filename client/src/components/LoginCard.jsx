@@ -23,6 +23,8 @@ import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import googlesvg from "../assets/google.svg";
 import { NavLink } from "react-router-dom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const GOOGLE_CALLBACK_URL = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
 
 const LoginCard = () => {
   const showToast = useShowToast();
@@ -33,10 +35,11 @@ const LoginCard = () => {
     username: "",
     password: "",
   });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/user/login", formData);
+      const { data } = await axios.post(`${BACKEND_URL}/user/login`, formData);
       // console.log(data.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
       localStorage.setItem("threadsToken", data.data.threadsToken);
@@ -48,7 +51,7 @@ const LoginCard = () => {
   };
 
   const googleAuth = () => {
-    window.open("https://threads-ffw7.onrender.com/auth/google/callback", "_self");
+    window.open(GOOGLE_CALLBACK_URL, "_self");
   };
   return (
     <Flex>
@@ -144,11 +147,17 @@ const LoginCard = () => {
               </Text>
             </Stack>
             <Stack pt={1}>
-              <Text align={"center"} fontSize={"sm"} color={"blue.400"} _hover={{ color: "blue.500", textDecoration: "underline", transition: "color 0.3s ease-in-out"}}>
-                <NavLink to={"/forgot-passowrd"}
-                >
-                  Forgot Password?
-                </NavLink>
+              <Text
+                align={"center"}
+                fontSize={"sm"}
+                color={"blue.400"}
+                _hover={{
+                  color: "blue.500",
+                  textDecoration: "underline",
+                  transition: "color 0.3s ease-in-out",
+                }}
+              >
+                <NavLink to={"/forgot-passowrd"}>Forgot Password?</NavLink>
               </Text>
             </Stack>
           </Stack>

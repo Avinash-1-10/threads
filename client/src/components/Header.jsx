@@ -76,7 +76,7 @@ const Header = () => {
           <CreatePost onPostFormClose={onClose} />
         </ModalContent>
       </Modal>
-      <HeaderMenu/>
+      <HeaderMenu />
     </Flex>
   );
 };

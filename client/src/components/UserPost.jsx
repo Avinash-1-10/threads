@@ -22,6 +22,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useTimeAgo from "../hooks/useTimeAgo";
 import refreshAtom from "../atoms/refreshAtom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserPost = ({ post, user }) => {
   const showToast = useShowToast();
@@ -39,7 +40,9 @@ const UserPost = ({ post, user }) => {
 
   const getLikeCount = async () => {
     try {
-      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/like/count/post/${post._id}`);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/like/count/post/${post._id}`
+      );
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
     } catch (error) {
@@ -49,7 +52,7 @@ const UserPost = ({ post, user }) => {
   const getCommentCount = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/comment/count/post/${post._id}`
+        `${BACKEND_URL}/comment/count/post/${post._id}`
       );
       // console.log(data);
       setCommentCount(data.data.commentCount);
@@ -65,7 +68,7 @@ const UserPost = ({ post, user }) => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/api/v1/post/${post._id}`);
+      const { data } = await axios.delete(`${BACKEND_URL}/post/${post._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
       setRefresh(!refresh);

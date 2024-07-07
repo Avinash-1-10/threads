@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import UserPost from "../components/UserPost";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import {
@@ -16,7 +15,6 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import UserPostSkeleton from "../skeletons/UserPostSkeleton";
 import { Link, useNavigate } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
@@ -25,6 +23,7 @@ import useTimeAgo from "../hooks/useTimeAgo";
 import userAtom from "../atoms/userAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import refreshAtom from "../atoms/refreshAtom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Repost = ({ repost, user }) => {
   const timeAgo = useTimeAgo(repost.createdAt);
@@ -45,7 +44,7 @@ const Repost = ({ repost, user }) => {
   const getLikeCount = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${repost._id}`
+        `${BACKEND_URL}/like/count/repost/${repost._id}`
       );
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
@@ -57,7 +56,7 @@ const Repost = ({ repost, user }) => {
   const getCommentCount = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/comment/count/repost/${repost._id}`
+        `${BACKEND_URL}/comment/count/repost/${repost._id}`
       );
       // console.log(data);
       setCommentCount(data.data.commentCount);
@@ -73,7 +72,9 @@ const Repost = ({ repost, user }) => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/api/v1/repost/${repost._id}`);
+      const { data } = await axios.delete(
+        `${BACKEND_URL}/repost/${repost._id}`
+      );
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
       setRefresh(!refresh);

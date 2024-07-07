@@ -17,6 +17,7 @@ import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import { Spinner } from "@chakra-ui/react";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UpdateProfileCard = ({ onClose }) => {
   const [user, setUser] = useRecoilState(userAtom);
@@ -42,7 +43,7 @@ const UpdateProfileCard = ({ onClose }) => {
     formData.append("email", userData.email);
     formData.append("avatar", imgFile);
     try {
-      const { data } = await axios.put("https://threads-ffw7.onrender.com/api/v1/user/update", formData);
+      const { data } = await axios.put(`${BACKEND_URL}/user/update`, formData);
       setUser(data?.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data));
       showToast("Success", data.message, "success");

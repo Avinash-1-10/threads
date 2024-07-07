@@ -11,6 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import BackButton from '../../components/BackButton';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ChangeTheme = ({ onThemeChange }) => {
   const { colorMode, toggleColorMode } = useColorMode();

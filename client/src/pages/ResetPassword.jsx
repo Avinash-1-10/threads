@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ResetPassword = () => {
   const { colorMode } = useColorMode();
@@ -39,7 +40,7 @@ const ResetPassword = () => {
       }
       setError("");
 
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/user/reset-password`, {
+      const { data } = await axios.post(`${BACKEND_URL}/user/reset-password`, {
         password,
         token,
       });

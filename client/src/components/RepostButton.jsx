@@ -6,11 +6,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { BiRepost } from "react-icons/bi";
 import RepostModal from "./RepostModal";
 import { FaRetweet } from "react-icons/fa6";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const RepostButton = ({ post, setReload }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -20,7 +20,7 @@ const RepostButton = ({ post, setReload }) => {
   const checkReposted = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/repost/check-reposted/${post._id}`
+        `${BACKEND_URL}/repost/check-reposted/${post._id}`
       );
       setIsReposted(data.isReposted);
     } catch (error) {
@@ -30,11 +30,11 @@ const RepostButton = ({ post, setReload }) => {
 
   useEffect(() => {
     checkReposted();
-  },[setReload])
+  }, [setReload]);
 
-  const showError = ()=>{
+  const showError = () => {
     showToast("Error", "Repost can only be done once", "error");
-  }
+  };
   return (
     <Box>
       <Box
@@ -44,7 +44,8 @@ const RepostButton = ({ post, setReload }) => {
         _hover={{
           color: "rgb(2, 153, 45)",
           bgColor: "rgb(205, 249, 211)",
-          transition: "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+          transition:
+            "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
         }}
         color={isReposted ? "#0ddb11" : "inherit"}
         onClick={isReposted ? showError : onOpen}

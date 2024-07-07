@@ -16,7 +16,7 @@ import { MdVerified } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import useTimeAgo from "../hooks/useTimeAgo";
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const CommentModal = ({ onClose, post, setReload }) => {
   const showToast = useShowToast();
@@ -28,7 +28,7 @@ const CommentModal = ({ onClose, post, setReload }) => {
   const addComment = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/comment/${post._id}`, {
+      const { data } = await axios.post(`${BACKEND_URL}/comment/${post._id}`, {
         text,
       });
       showToast("Success", data.message, "success");

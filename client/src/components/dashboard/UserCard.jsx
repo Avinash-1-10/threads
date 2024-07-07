@@ -1,13 +1,13 @@
-import { Avatar, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Stack, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserCard = () => {
-
   const [user, setUser] = useState({});
   const getUser = async () => {
     try {
-      const { data } = await axios.get("https://threads-ffw7.onrender.com/api/v1/dashboard/user");
+      const { data } = await axios.get(`${BACKEND_URL}/dashboard/user`);
       setUser(data.data);
     } catch (error) {
       console.log(error);
@@ -20,13 +20,9 @@ const UserCard = () => {
   return (
     <Flex gap={10} borderBottom={"1px"} borderColor={"gray.light"} p={3} mb={5}>
       <Stack justify={"center"} align={"center"}>
-        <Avatar
-          size={"2xl"}
-          src={user?.user?.avatar}
-          name={user?.user?.name}
-        />
+        <Avatar size={"2xl"} src={user?.user?.avatar} name={user?.user?.name} />
         <Text fontSize={"sm"} color={"gray.500"} mt={-2}>
-        @{user?.user?.username}
+          @{user?.user?.username}
         </Text>
       </Stack>
       <Flex

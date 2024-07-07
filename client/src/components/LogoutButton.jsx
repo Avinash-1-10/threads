@@ -1,11 +1,11 @@
-import {  Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
 import useShowToast from "../hooks/useShowToast";
 import userAtom from "../atoms/userAtom";
 import { useSetRecoilState } from "recoil";
 import { IoIosLogOut } from "react-icons/io";
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const LogoutButton = () => {
   const showToast = useShowToast();
@@ -13,7 +13,7 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/user/logout");
+      const { data } = await axios.post(`${BACKEND_URL}/user/logout`);
       localStorage.removeItem("threads-user");
       localStorage.removeItem("threadsToken");
       setUser(null);

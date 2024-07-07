@@ -26,6 +26,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
 import refreshAtom from "../atoms/refreshAtom";
 import useCopyLink from "../hooks/useCopyLink";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Poll = ({ pollData }) => {
   const [poll, setPoll] = useState(pollData);
@@ -41,7 +42,7 @@ const Poll = ({ pollData }) => {
 
   const deletePoll = async () => {
     try {
-      await axios.delete(`https://threads-ffw7.onrender.com/api/v1/poll/${poll._id}`);
+      await axios.delete(`${BACKEND_URL}/poll/${poll._id}`);
       showToast("success", "Poll deleted.", "success");
       setRefresh(!refresh);
     } catch (error) {
@@ -51,7 +52,9 @@ const Poll = ({ pollData }) => {
 
   const checkVoted = async () => {
     try {
-      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/poll/check-vote/${poll._id}`);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/poll/check-vote/${poll._id}`
+      );
       setHasVoted(data.data);
     } catch (error) {
       console.log(error.message);
@@ -59,7 +62,7 @@ const Poll = ({ pollData }) => {
   };
 
   useEffect(() => {
-    if(poll._id) checkVoted();
+    if (poll._id) checkVoted();
   }, [poll._id]);
 
   const handleVote = async (optionId) => {
@@ -67,7 +70,7 @@ const Poll = ({ pollData }) => {
     console.log(optionId);
     // Perform vote submission logic here
     await axios
-      .post(`https://threads-ffw7.onrender.com/api/v1/poll/vote`, { pollId: poll._id, optionId })
+      .post(`${BACKEND_URL}/poll/vote`, { pollId: poll._id, optionId })
       .then((res) => {
         // console.log(res.data);
         setTotalVotes(totalVotes + 1);
@@ -151,56 +154,57 @@ const Poll = ({ pollData }) => {
         p={4}
         borderRadius={"md"}
       >
-        {poll.options  && poll.options.map((option) => {
-          const voteCount = option.voteCount || 0;
-          const votePercentage =
-            totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
+        {poll.options &&
+          poll.options.map((option) => {
+            const voteCount = option.voteCount || 0;
+            const votePercentage =
+              totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
 
-          return (
-            <Box key={option?._id} width="100%">
-              <HStack justify="space-between">
-                <Flex
-                  w={"full"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                >
-                  <Text>{option?.text}</Text>
-                  {!hasVoted && (
-                    <Button
-                      mt={2}
-                      size={"sm"}
-                      bg={colorMode === "dark" ? "white" : "black"}
-                      color={colorMode === "dark" ? "black" : "white"}
-                      _hover={
-                        colorMode === "dark"
-                          ? { bg: "white", shadow: "md" }
-                          : { bg: "black", shadow: "md" }
-                      }
-                      onClick={() => handleVote(option?._id)}
-                    >
-                      Vote
-                    </Button>
+            return (
+              <Box key={option?._id} width="100%">
+                <HStack justify="space-between">
+                  <Flex
+                    w={"full"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    <Text>{option?.text}</Text>
+                    {!hasVoted && (
+                      <Button
+                        mt={2}
+                        size={"sm"}
+                        bg={colorMode === "dark" ? "white" : "black"}
+                        color={colorMode === "dark" ? "black" : "white"}
+                        _hover={
+                          colorMode === "dark"
+                            ? { bg: "white", shadow: "md" }
+                            : { bg: "black", shadow: "md" }
+                        }
+                        onClick={() => handleVote(option?._id)}
+                      >
+                        Vote
+                      </Button>
+                    )}
+                  </Flex>
+                  {hasVoted && (
+                    <Text fontSize={"sm"}>{votePercentage.toFixed(2)}%</Text>
                   )}
-                </Flex>
+                </HStack>
                 {hasVoted && (
-                  <Text fontSize={"sm"}>{votePercentage.toFixed(2)}%</Text>
+                  <Progress
+                    value={votePercentage}
+                    size="sm"
+                    sx={{
+                      "& > div:first-of-type": {
+                        bg: "linear-gradient(90deg, #4bc0c8, #c779d0, #feac5e)",
+                      },
+                    }}
+                    bg={colorMode === "dark" ? "gray.dark" : "gray.200"}
+                  />
                 )}
-              </HStack>
-              {hasVoted && (
-                <Progress
-                  value={votePercentage}
-                  size="sm"
-                  sx={{
-                    "& > div:first-of-type": {
-                      bg: "linear-gradient(90deg, #4bc0c8, #c779d0, #feac5e)",
-                    },
-                  }}
-                  bg={colorMode === "dark" ? "gray.dark" : "gray.200"}
-                />
-              )}
-            </Box>
-          );
-        })}
+              </Box>
+            );
+          })}
         {hasVoted && (
           <Text color={colorMode === "dark" ? "gray.400" : "gray.500"}>
             Total Votes: {totalVotes}

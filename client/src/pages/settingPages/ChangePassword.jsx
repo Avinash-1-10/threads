@@ -18,6 +18,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import useShowToast from "../../hooks/useShowToast";
 import axios from "axios";
 import BackButton from "../../components/BackButton";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -26,7 +27,6 @@ const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const showToast = useShowToast();
-
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -45,7 +45,7 @@ const ChangePassword = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.put("https://threads-ffw7.onrender.com/api/v1/user/change-password", {
+      const { data } = await axios.put(`${BACKEND_URL}/user/change-password`, {
         oldPassword,
         newPassword,
       });
@@ -55,8 +55,8 @@ const ChangePassword = () => {
       setConfirmPassword("");
     } catch (error) {
       showToast("Error", error.response?.data.message, "error");
-    } finally{
-        setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,70 +65,74 @@ const ChangePassword = () => {
 
   return (
     <>
-    <BackButton/>
-    <Box
-      width="full"
-      maxW="md"
-      mx="auto"
-      mt={8}
-      p={4}
-      bgColor={lightBgColor}
-      borderRadius="lg"
-      boxShadow="md"
-    >
-      <Heading as="h2" size="md" textAlign="center">
-        Change Password
-      </Heading>
-      <VStack spacing={4} mt={4}>
-        <FormControl isRequired>
-          <FormLabel htmlFor="oldPassword">Old Password</FormLabel>
-          <Input
-            id="oldPassword"
-            type={showPassword ? "text" : "password"}
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            placeholder="Enter your current password"
-            required
-          />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel htmlFor="newPassword">New Password</FormLabel>
-          <InputGroup size="md">
+      <BackButton />
+      <Box
+        width="full"
+        maxW="md"
+        mx="auto"
+        mt={8}
+        p={4}
+        bgColor={lightBgColor}
+        borderRadius="lg"
+        boxShadow="md"
+      >
+        <Heading as="h2" size="md" textAlign="center">
+          Change Password
+        </Heading>
+        <VStack spacing={4} mt={4}>
+          <FormControl isRequired>
+            <FormLabel htmlFor="oldPassword">Old Password</FormLabel>
             <Input
-              id="newPassword"
+              id="oldPassword"
               type={showPassword ? "text" : "password"}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter your new password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter your current password"
               required
             />
-            <InputRightElement width="4.5rem">
-              <IconButton
-                size="sm"
-                icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                onClick={handleShowPassword}
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel htmlFor="newPassword">New Password</FormLabel>
+            <InputGroup size="md">
+              <Input
+                id="newPassword"
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter your new password"
+                required
               />
-            </InputRightElement>
-          </InputGroup>
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
-          <Input
-            id="confirmPassword"
-            type={showPassword ? "text" : "password"}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Re-enter your new password"
-            required
-          />
-        </FormControl>
-        <Button type="submit" colorScheme="blue" onClick={handleSubmit} width={"100%"} mt={4}>
-          {
-            loading ? <Spinner/> : "Change Password"
-          }
-        </Button>
-      </VStack>
-    </Box>
+              <InputRightElement width="4.5rem">
+                <IconButton
+                  size="sm"
+                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  onClick={handleShowPassword}
+                />
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+            <Input
+              id="confirmPassword"
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter your new password"
+              required
+            />
+          </FormControl>
+          <Button
+            type="submit"
+            colorScheme="blue"
+            onClick={handleSubmit}
+            width={"100%"}
+            mt={4}
+          >
+            {loading ? <Spinner /> : "Change Password"}
+          </Button>
+        </VStack>
+      </Box>
     </>
   );
 };

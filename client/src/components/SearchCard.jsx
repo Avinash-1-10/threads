@@ -20,20 +20,23 @@ const SearchCard = ({ user }) => {
       rounded={"md"}
       p={3}
     >
-      <Avatar size={"md"} src={user.avatar} name={user.name}/>
+      <Avatar size={"md"} src={user.avatar} name={user.name} />
       <Box mr={"auto"}>
         <Text fontWeight={"bold"}>{user.name}</Text>
         <Text>@{user.username}</Text>
       </Box>
-      <Link to={`/${user.username}`} style={{display: 'flex', alignItems:"center"}}>
-      <Button
-        size={"sm"}
-        bg={colorMode === "dark" ? "white" : "gray.dark"}
-        color={colorMode === "dark" ? "gray.dark" : "white"}
-        sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
+      <Link
+        to={`/${user.username}`}
+        style={{ display: "flex", alignItems: "center" }}
       >
-        View
-      </Button>
+        <Button
+          size={"sm"}
+          bg={colorMode === "dark" ? "white" : "gray.dark"}
+          color={colorMode === "dark" ? "gray.dark" : "white"}
+          sx={{ ":hover": { bg: colorMode === "dark" ? "white" : "gray.800" } }}
+        >
+          View
+        </Button>
       </Link>
     </Flex>
   );

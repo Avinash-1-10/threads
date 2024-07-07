@@ -5,7 +5,6 @@ import {
   Flex,
   Avatar,
   Text,
-  Link,
   Menu,
   MenuButton,
   MenuList,
@@ -23,9 +22,10 @@ import { BsInstagram } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import useShowToast from "../hooks/useShowToast";
 import UpdateProfileCard from "./UpdateProfileCard";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import axios from "axios";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const UserHeader = ({ user }) => {
   const showToast = useShowToast();
@@ -47,7 +47,9 @@ const UserHeader = ({ user }) => {
   const getFollowers = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/follow/follwers/${user._id}`);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/follow/follwers/${user._id}`
+      );
       setFollowersCount(data.data.totalCount);
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -65,7 +67,9 @@ const UserHeader = ({ user }) => {
   const getFollowing = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`https://threads-ffw7.onrender.com/follow/following/${user._id}`);
+      const { data } = await axios.get(
+        `${BACKEND_URL}/follow/following/${user._id}`
+      );
       setFollowingCount(data.data.totalCount);
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -78,12 +82,12 @@ const UserHeader = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const followUser = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/follow/${user._id}`);
+      const { data } = await axios.post(`${BACKEND_URL}/follow/${user._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {
@@ -103,7 +107,7 @@ const UserHeader = ({ user }) => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/follow/check/following/${user._id}`
+        `${BACKEND_URL}/follow/check/following/${user._id}`
       );
       setIsFollowing(data.data);
     } catch (error) {

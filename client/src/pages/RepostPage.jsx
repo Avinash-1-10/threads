@@ -17,7 +17,6 @@ import {
 } from "@chakra-ui/react";
 import { MdVerified } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
-import Actions from "../components/Actions";
 import Comment from "../components/Comment";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -28,6 +27,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import NotFound from "../components/NotFound";
 import BackButton from "../components/BackButton";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const RepostPage = () => {
   const { pid } = useParams();
@@ -43,12 +43,11 @@ const RepostPage = () => {
   const { colorMode } = useColorMode();
   const owner = useRecoilValue(userAtom);
   const navigate = useNavigate();
-  // console.log(repost)
 
   const getLikeData = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${repost._id || pid}`
+        `${BACKEND_URL}/like/count/repost/${repost._id || pid}`
       );
       // console.log(data)
       setLikeCount(data.data.likeCount);
@@ -61,7 +60,7 @@ const RepostPage = () => {
   const getCommentData = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/comment/repost/${repost._id || pid}`
+        `${BACKEND_URL}/comment/repost/${repost._id || pid}`
       );
       setComments(data.data.comments);
       setCommentCount(data.data.commentCount);
@@ -72,7 +71,9 @@ const RepostPage = () => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/repost/${repost._id}`);
+      const { data } = await axios.delete(
+        `${BACKEND_URL}/repost/${repost._id}`
+      );
       showToast("Success", data.message, "success");
       navigate("/");
     } catch (error) {
@@ -88,7 +89,9 @@ const RepostPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: postData } = await axios.get(`https://threads-ffw7.onrender.com/repost/${pid}`);
+        const { data: postData } = await axios.get(
+          `${BACKEND_URL}/repost/${pid}`
+        );
         setRepost(postData.data);
         // console.log(postData.data)
         let date = new Date(postData.data.createdAt);
@@ -98,10 +101,10 @@ const RepostPage = () => {
         setTimeAgo(`${d}/${m}/${y}`);
         if (postData.post?._id) {
           const { data: likeData } = await axios.get(
-            `https://threads-ffw7.onrender.com/api/v1/like/count/repost/${postData.data._id}`
+            `${BACKEND_URL}/like/count/repost/${postData.data._id}`
           );
           const { data: comments } = await axios.get(
-            `https://threads-ffw7.onrender.com/api/v1/comment/post/${postData.data._id}`
+            `${BACKEND_URL}/comment/post/${postData.data._id}`
           );
           setComments(comments.data.comments);
           setCommentCount(comments.data.commentCount);

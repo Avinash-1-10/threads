@@ -8,6 +8,7 @@ import Repost from "../components/Repost";
 import refreshAtom from "../atoms/refreshAtom";
 import { useRecoilValue } from "recoil";
 import Poll from "../components/poll";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const HomePage = () => {
   const showToast = useShowToast();
@@ -18,7 +19,7 @@ const HomePage = () => {
   const getPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("https://threads-ffw7.onrender.com/api/v1/feed");
+      const { data } = await axios.get(`${BACKEND_URL}/feed`);
       setPosts(data.data);
       // console.log(data.data)
     } catch (error) {
@@ -44,13 +45,23 @@ const HomePage = () => {
         <div>
           {posts.map((post) => {
             if (post.type === "post") {
-              return <UserPost key={post._id} post={post} user={post.postByDetails} />;
+              return (
+                <UserPost
+                  key={post._id}
+                  post={post}
+                  user={post.postByDetails}
+                />
+              );
             } else if (post.type === "repost") {
               return (
-                <Repost key={post._id} repost={post} user={post.repostByDetails} />
+                <Repost
+                  key={post._id}
+                  repost={post}
+                  user={post.repostByDetails}
+                />
               );
             } else if (post.type === "poll") {
-              return <Poll key={post._id} pollData={post} />; 
+              return <Poll key={post._id} pollData={post} />;
             } else {
               console.warn("Unknown post type:", post.type);
               return null;

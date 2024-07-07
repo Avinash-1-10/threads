@@ -5,6 +5,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import axios from "axios";
 import userAtom from "../../atoms/userAtom";
 import { useRecoilValue } from "recoil";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
@@ -24,7 +25,7 @@ const PieChart = () => {
 
   const getData = async () => {
     try {
-      const {data} = await axios.get(`https://threads-ffw7.onrender.com/api/v1/dashboard/user/followers/count/${user._id}`);
+      const {data} = await axios.get(`${BACKEND_URL}/dashboard/user/followers/count/${user._id}`);
      const count  = data.data;
       setChartData(
         {

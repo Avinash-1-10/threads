@@ -14,6 +14,7 @@ import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import RepostCommentModal from "./RepostCommentModal";
 import useCopyLink from "../hooks/useCopyLink";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const IconButton = ({ children, onClick, hoverColor, hoverBgColor }) => (
   <Box
@@ -23,8 +24,7 @@ const IconButton = ({ children, onClick, hoverColor, hoverBgColor }) => (
     _hover={{
       color: hoverColor,
       bgColor: hoverBgColor,
-      transition:
-        "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
+      transition: "color 0.3s ease-in-out, background-color 0.3s ease-in-out",
     }}
     onClick={onClick}
   >
@@ -39,7 +39,9 @@ const RepostActions = ({ isLiked, repost, setReload }) => {
 
   const likeUnlike = async () => {
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/like/repost/${repost._id}`);
+      const { data } = await axios.post(
+        `${BACKEND_URL}/like/repost/${repost._id}`
+      );
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {

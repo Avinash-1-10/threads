@@ -7,6 +7,7 @@ import NotFound from "../components/NotFound";
 import PostPageSkeleton from "../skeletons/PostPageSkeleton";
 import BackButton from "../components/BackButton";
 import { Box } from "@chakra-ui/react";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const PollPage = () => {
   const [pollData, setPollData] = useState({});
@@ -17,7 +18,7 @@ const PollPage = () => {
   const getPoll = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`https://threads-ffw7.onrender.com/poll/${pid}`);
+      const { data } = await axios.get(`${BACKEND_URL}/poll/${pid}`);
       setPollData(data.data);
     } catch (error) {
       showToast("Error", error.response.data.message || error.message, "error");

@@ -14,9 +14,9 @@ import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import useShowToast from "../hooks/useShowToast";
 import CommentModal from "./CommentModal";
-import RepostModal from "./RepostModal";
 import RepostButton from "./RepostButton";
 import useCopyLink from "../hooks/useCopyLink";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 const Actions = ({ isLiked, post, setReload }) => {
@@ -25,7 +25,7 @@ const Actions = ({ isLiked, post, setReload }) => {
   const { copyURL } = useCopyLink();
   const likeUnlike = async () => {
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/like/post/${post._id}`);
+      const { data } = await axios.post(`${BACKEND_URL}/like/post/${post._id}`);
       showToast("Success", data.message, "success");
       setReload((prev) => !prev);
     } catch (error) {

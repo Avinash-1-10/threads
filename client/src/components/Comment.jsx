@@ -1,5 +1,4 @@
 import { Avatar, Divider, Flex, Stack, Text } from "@chakra-ui/react";
-import { BsThreeDots } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa6";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -9,6 +8,7 @@ import userAtom from "../atoms/userAtom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Comment = ({ comment, handleReload }) => {
   const timeAgo = useTimeAgo(comment.createdAt);
@@ -22,7 +22,7 @@ const Comment = ({ comment, handleReload }) => {
   const getCommentLikes = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/comment/count/likes/${comment._id}`
+        `${BACKEND_URL}/comment/count/likes/${comment._id}`
       );
       setCommentLikeCount(data.data.likeCount);
       setCommentLiked(data.data.liked);
@@ -33,7 +33,9 @@ const Comment = ({ comment, handleReload }) => {
 
   const handleLike = async () => {
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/comment/like/${comment._id}`);
+      const { data } = await axios.post(
+        `${BACKEND_URL}/comment/like/${comment._id}`
+      );
       showToast("Success", data.message, "success");
     } catch (error) {
       console.log(error);
@@ -45,7 +47,9 @@ const Comment = ({ comment, handleReload }) => {
 
   const handleDelete = async () => {
     try {
-      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/api/v1/comment/${comment._id}`);
+      const { data } = await axios.delete(
+        `${BACKEND_URL}/comment/${comment._id}`
+      );
       showToast("Success", data.message, "success");
       handleReload();
     } catch (error) {
@@ -64,7 +68,11 @@ const Comment = ({ comment, handleReload }) => {
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
-        <Avatar src={comment.commentBy.avatar} size={"sm"} name={comment.commentBy.name} />
+        <Avatar
+          src={comment.commentBy.avatar}
+          size={"sm"}
+          name={comment.commentBy.name}
+        />
         <Flex gap={1} w={"full"} flexDirection={"column"}>
           <Flex flexDirection={"column"}>
             <Text>{comment.commentBy.username}</Text>

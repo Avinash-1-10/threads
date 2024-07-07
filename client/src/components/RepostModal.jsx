@@ -17,6 +17,7 @@ import useShowToast from "../hooks/useShowToast";
 import axios from "axios";
 import useTimeAgo from "../hooks/useTimeAgo";
 import refreshAtom from "../atoms/refreshAtom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const RepostModal = ({ onClose, post, setReload }) => {
   const showToast = useShowToast();
@@ -30,7 +31,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
   const createRepost = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.post(`https://threads-ffw7.onrender.com/api/v1/repost/${post._id}`, {
+      const { data } = await axios.post(`${BACKEND_URL}/repost/${post._id}`, {
         text,
       });
       showToast("Success", data.message, "success");
@@ -43,7 +44,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
         error?.response?.data?.message || error.message,
         "error"
       );
-      }
+    }
   };
 
   // console.log(post?.postByDetails)
@@ -55,11 +56,7 @@ const RepostModal = ({ onClose, post, setReload }) => {
     >
       <Flex gap={3}>
         <Flex flexDirection={"column"} alignItems={"center"}>
-          <Avatar
-            size={"md"}
-            name={owner?.name}
-            src={owner?.avatar}
-          />
+          <Avatar size={"md"} name={owner?.name} src={owner?.avatar} />
         </Flex>
         <Flex flex={1} flexDirection={"column"} gap={2}>
           <Flex justifyContent={"space-between"} w={"full"}>
@@ -92,32 +89,38 @@ const RepostModal = ({ onClose, post, setReload }) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <Stack m={0} border={"1px solid"} borderColor={"gray.light"} p={3} borderRadius={6}>
-          <Flex gap={3} alignItems={"center"}>
-          <Avatar
-            size={"sm"}
-            name={post?.postByDetails?.name}
-            src={post?.postByDetails?.avatar}
-          />
-          <Text fontSize={"sm"} fontWeight={"bold"} mr={1}>
+          <Stack
+            m={0}
+            border={"1px solid"}
+            borderColor={"gray.light"}
+            p={3}
+            borderRadius={6}
+          >
+            <Flex gap={3} alignItems={"center"}>
+              <Avatar
+                size={"sm"}
+                name={post?.postByDetails?.name}
+                src={post?.postByDetails?.avatar}
+              />
+              <Text fontSize={"sm"} fontWeight={"bold"} mr={1}>
                 {post?.postByDetails?.name || post?.postBy?.name}
               </Text>
-        </Flex>
-          <Text fontSize={"sm"}>{post.text}</Text>
-          {post.image && (
-            <Box
-              borderRadius={6}
-              overflow={"hidden"}
-              border={"1px solid "}
-              borderColor={"gray.light"}
-            >
-              <Image src={post.image} w={"full"} />
-            </Box>
-          )}
+            </Flex>
+            <Text fontSize={"sm"}>{post.text}</Text>
+            {post.image && (
+              <Box
+                borderRadius={6}
+                overflow={"hidden"}
+                border={"1px solid "}
+                borderColor={"gray.light"}
+              >
+                <Image src={post.image} w={"full"} />
+              </Box>
+            )}
           </Stack>
         </Flex>
       </Flex>
-      
+
       <Flex>
         <Button
           mt={2}

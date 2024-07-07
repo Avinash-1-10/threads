@@ -14,6 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import BackButton from '../../components/BackButton';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const DeleteAccount = () => {
   const { colorMode } = useColorMode();

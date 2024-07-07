@@ -25,6 +25,8 @@ import useShowToast from "../hooks/useShowToast";
 import { useNavigate } from "react-router-dom";
 import userAtom from "../atoms/userAtom";
 import googlesvg from "../assets/google.svg";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const GOOGLE_CALLBACK_URL = import.meta.env.VITE_GOOGLE_CALLBACK_URL;
 
 const SignupCard = () => {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ const SignupCard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/user/signup", formData);
+      const { data } = await axios.post(`${BACKEND_URL}/user/signup`, formData);
       // console.log(data.data);
       localStorage.setItem("threads-user", JSON.stringify(data?.data?.user));
       localStorage.setItem("threadsToken", data.data.threadsToken);
@@ -53,9 +55,9 @@ const SignupCard = () => {
     }
   };
 
-  const googleAuth = ()=>{
-    window.open("https://threads-ffw7.onrender.com/auth/google/callback", "_self");
-  }
+  const googleAuth = () => {
+    window.open(GOOGLE_CALLBACK_URL, "_self");
+  };
   return (
     <Flex>
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>

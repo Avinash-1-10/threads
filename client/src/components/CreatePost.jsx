@@ -2,10 +2,7 @@ import {
   Avatar,
   Button,
   Flex,
-  FormControl,
   Image,
-  Input,
-  Menu,
   Modal,
   ModalContent,
   ModalOverlay,
@@ -26,6 +23,7 @@ import axios from "axios";
 import refreshAtom from "../atoms/refreshAtom";
 import { MdOutlinePoll } from "react-icons/md";
 import CreatePollForm from "./CreatePollForm";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const CreatePost = ({ onPostFormClose }) => {
   const user = useRecoilValue(userAtom);
@@ -46,7 +44,7 @@ const CreatePost = ({ onPostFormClose }) => {
     formData.append("text", text);
     formData.append("image", imgFile);
     try {
-      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/post/create", formData);
+      const { data } = await axios.post(`${BACKEND_URL}/post/create`, formData);
       setText("");
       setImgUrl(null);
       setRefresh(!refresh);
@@ -74,7 +72,7 @@ const CreatePost = ({ onPostFormClose }) => {
       rounded={"md"}
     >
       <Stack>
-        <Avatar src={user.avatar} name={user.name}/>
+        <Avatar src={user.avatar} name={user.name} />
       </Stack>
       <Stack flex={1}>
         <Text fontWeight={"bold"}>{user.username}</Text>
@@ -104,7 +102,10 @@ const CreatePost = ({ onPostFormClose }) => {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <CreatePollForm onClose={onClose} onPostFormClose={onPostFormClose}/>
+              <CreatePollForm
+                onClose={onClose}
+                onPostFormClose={onPostFormClose}
+              />
             </ModalContent>
           </Modal>
           <input

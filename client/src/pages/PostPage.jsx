@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   Flex,
   Image,
-  Img,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Portal,
-  Stack,
   Text,
   useColorMode,
 } from "@chakra-ui/react";
@@ -28,6 +25,7 @@ import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import NotFound from "../components/NotFound";
 import BackButton from "../components/BackButton";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const PostPage = () => {
   const { pid } = useParams();
@@ -47,7 +45,7 @@ const PostPage = () => {
   const getLikeData = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/like/count/post/${post._id || pid}`
+        `${BACKEND_URL}/like/count/post/${post._id || pid}`
       );
       setLikeCount(data.data.likeCount);
       setIsLiked(data.data.isLiked);
@@ -59,7 +57,7 @@ const PostPage = () => {
   const getCommentData = async () => {
     try {
       const { data } = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/comment/post/${post._id || pid}`
+        `${BACKEND_URL}/comment/post/${post._id || pid}`
       );
       setComments(data.data.comments);
       setCommentCount(data.data.commentCount);
@@ -70,7 +68,7 @@ const PostPage = () => {
 
   const deletePost = async () => {
     try {
-      const { data } = await axios.delete(`https://threads-ffw7.onrender.com/post/${post._id}`);
+      const { data } = await axios.delete(`${BACKEND_URL}/post/${post._id}`);
       showToast("Success", data.message, "success");
       navigate("/");
     } catch (error) {
@@ -86,7 +84,9 @@ const PostPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: postData } = await axios.get(`https://threads-ffw7.onrender.com/api/v1/post/${pid}`);
+        const { data: postData } = await axios.get(
+          `${BACKEND_URL}/post/${pid}`
+        );
         setPost(postData.post);
         let date = new Date(postData.post.createdAt);
         let d = date.getDate();
@@ -95,10 +95,10 @@ const PostPage = () => {
         setTimeAgo(`${d}/${m}/${y}`);
         if (postData.post?._id) {
           const { data: likeData } = await axios.get(
-            `https://threads-ffw7.onrender.com/api/v1/like/count/post/${postData.post._id}`
+            `${BACKEND_URL}/like/count/post/${postData.post._id}`
           );
           const { data: comments } = await axios.get(
-            `https://threads-ffw7.onrender.com/api/v1/comment/post/${postData.post._id}`
+            `${BACKEND_URL}/comment/post/${postData.post._id}`
           );
           setComments(comments.data.comments);
           setCommentCount(comments.data.commentCount);

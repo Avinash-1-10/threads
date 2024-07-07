@@ -24,16 +24,18 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const LineGraph = () => {
   const [chartData, setChartData] = useState(null);
   const [interval, setInterval] = useState("daily");
   const user = useRecoilValue(userAtom);
+  
 
   const getFollowData = async (interval) => {
     try {
       const response = await axios.get(
-        `https://threads-ffw7.onrender.com/api/v1/dashboard/user/${user._id}/${interval}`
+        `${BACKEND_URL}/dashboard/user/${user._id}/${interval}`
       );
       const data = response.data;
 

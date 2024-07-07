@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import BackButton from "../../components/BackButton";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const memberships = [
   {
@@ -84,19 +85,19 @@ const MembershipCard = ({ name, price, features }) => {
 const MembershipSelection = () => {
   return (
     <>
-    <Box position={"fixed"}>
-    <BackButton/>
-    </Box>
-    <Container centerContent py={12}>
-      <Heading as="h1" size="lg" mb={12} textAlign="center">
-        Select Your Membership
-      </Heading>
-      <Stack gap={6}>
-        {memberships.map((membership) => (
-          <MembershipCard key={membership.name} {...membership} />
-        ))}
-      </Stack>
-    </Container>
+      <Box position={"fixed"}>
+        <BackButton />
+      </Box>
+      <Container centerContent py={12}>
+        <Heading as="h1" size="lg" mb={12} textAlign="center">
+          Select Your Membership
+        </Heading>
+        <Stack gap={6}>
+          {memberships.map((membership) => (
+            <MembershipCard key={membership.name} {...membership} />
+          ))}
+        </Stack>
+      </Container>
     </>
   );
 };

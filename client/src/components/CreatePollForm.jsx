@@ -1,4 +1,3 @@
-// src/components/CreatePollForm.js
 import React, { useState } from "react";
 import {
   Box,
@@ -10,18 +9,17 @@ import {
   Textarea,
   VStack,
   useColorMode,
-  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
 import useShowToast from "../hooks/useShowToast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import refreshAtom from "../atoms/refreshAtom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-const CreatePollForm = ({onPostFormClose, onClose}) => {
+const CreatePollForm = ({ onPostFormClose, onClose }) => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
-  const toast = useToast();
   const { colorMode } = useColorMode();
   const showToast = useShowToast();
   const setRefresh = useSetRecoilState(refreshAtom);
@@ -53,7 +51,7 @@ const CreatePollForm = ({onPostFormClose, onClose}) => {
     }
 
     try {
-      const { data } = await axios.post("https://threads-ffw7.onrender.com/api/v1/poll", {
+      const { data } = await axios.post(`${BACKEND_URL}/poll`, {
         question,
         options,
       });
